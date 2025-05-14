@@ -1,0 +1,103 @@
+{
+    "success": true,
+    "data": {
+      "testAttempt": {
+        "_id": "6820a1eb4267fe9ce4c66129",
+        "user": {
+          "_id": "68143eed42469fcb5382494a",
+          "name": "Yudo Scheduler",
+          "email": "yudoreminder@gmail.com"
+        },
+        "test": {
+          "_id": "68160eea4febf81656ca2c09",
+          "user": {
+            "_id": "68143eed42469fcb5382494a",
+            "name": "Yudo Scheduler",
+            "email": "yudoreminder@gmail.com"
+          },
+          "title": "capitals of different countries and thire history",
+          "description": "This test series, titled 'Capitals of Different Countries and Their History', is designed to comprehensively assess knowledge of world capitals and their historical significance. \n\n\t**Purpose:** To evaluate understanding of the current capital cities of various countries, coupled with their rich historical backgrounds and evolution as centers of power, culture, and economy. It aims to test not only factual recall but also the ability to connect historical events to the present-day characteristics of these capitals. \n\n\t**Content:** The tests will cover a wide range of countries and their capitals across all continents. Questions will address: \n\t\t* The official capital and its alternate designations (if any). \n\t\t* Key historical events, figures, and periods associated with the capital. \n\t\t* The capital's role in shaping the country's identity and development. \n\t\t* Notable landmarks, historical sites, and cultural institutions within the capital. \n\t\t* Reasons for the capital's selection and any shifts in capital status throughout history. \n\n\t**Target Audience:** This test series is primarily intended for: \n\t\t* Students studying geography, history, or international relations. \n\t\t* Individuals preparing for competitive exams with a general knowledge component. \n\t\t* Travel enthusiasts and those with a keen interest in world cultures and history. \n\n\t**Key Features:**\n\t\t* Diverse question formats including multiple choice, true/false, matching, and short answer questions. \n\t\t* Varied difficulty levels to cater to different levels of expertise. \n\t\t* Detailed answer explanations providing historical context and further learning opportunities. \n\t\t* Comprehensive coverage of countries from around the globe. \n\t\t* Performance analysis reports to identify strengths and weaknesses in specific areas."
+        },
+        "questions": [
+          {
+            "question": {
+              "_id": "6816fc9044d35a6acb658c94",
+              "title": "What is the capital of France? xyzabcd",
+              "description": "A basic geography question.",
+              "solution": "ggggggggggggggggggggggdd",
+              "options": [
+                "Berlin",
+                "Madrid",
+                "Paris",
+                "Rome"
+              ],
+              "rightOption": "Paris",
+              "image": "data:image/jpeg;base64,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",
+              "video": "https://youtu.be/CuQmQpvw04I?si=s5mnk1uXC424_JZx",
+              "shorts": [
+                "https://youtube.com/shorts/aqvmXwmI_V4?si=pZHOJLhoL0kl8kut",
+                "https://youtube.com/shorts/XS0XyfRqE2U?si=yuZCJnlSy29ZAsAy",
+                "https://youtube.com/shorts/fx0zTcxfwgE?si=Gp3B4Twys3lZZoXg"
+              ],
+              "id": "6816fc9044d35a6acb658c94"
+            },
+            "right": false,
+            "_id": "6820a2254267fe9ce4c66198",
+            "id": "6820a2254267fe9ce4c66198"
+          }
+        ],
+        "score": 2,
+        "completed": false,
+        "startedAt": "2025-05-11T13:11:07.174Z",
+        "timeSpent": 0,
+        "createdAt": "2025-05-11T13:11:07.181Z",
+        "updatedAt": "2025-05-11T13:12:05.582Z",
+        "__v": 9,
+        "percentageScore": 22.22222222222222,
+        "id": "6820a1eb4267fe9ce4c66129"
+      },
+      "test": {
+        "_id": "68160eea4febf81656ca2c09",
+        "title": "capitals of different countries and thire history",
+        "description": "This test series, titled 'Capitals of Different Countries and Their History', is designed to comprehensively assess knowledge of world capitals and their historical significance. \n\n\t**Purpose:** To evaluate understanding of the current capital cities of various countries, coupled with their rich historical backgrounds and evolution as centers of power, culture, and economy. It aims to test not only factual recall but also the ability to connect historical events to the present-day characteristics of these capitals. \n\n\t**Content:** The tests will cover a wide range of countries and their capitals across all continents. Questions will address: \n\t\t* The official capital and its alternate designations (if any). \n\t\t* Key historical events, figures, and periods associated with the capital. \n\t\t* The capital's role in shaping the country's identity and development. \n\t\t* Notable landmarks, historical sites, and cultural institutions within the capital. \n\t\t* Reasons for the capital's selection and any shifts in capital status throughout history. \n\n\t**Target Audience:** This test series is primarily intended for: \n\t\t* Students studying geography, history, or international relations. \n\t\t* Individuals preparing for competitive exams with a general knowledge component. \n\t\t* Travel enthusiasts and those with a keen interest in world cultures and history. \n\n\t**Key Features:**\n\t\t* Diverse question formats including multiple choice, true/false, matching, and short answer questions. \n\t\t* Varied difficulty levels to cater to different levels of expertise. \n\t\t* Detailed answer explanations providing historical context and further learning opportunities. \n\t\t* Comprehensive coverage of countries from around the globe. \n\t\t* Performance analysis reports to identify strengths and weaknesses in specific areas.",
+        "user": {
+          "_id": "68143eed42469fcb5382494a",
+          "name": "Yudo Scheduler",
+          "email": "yudoreminder@gmail.com"
+        },
+        "questions": [
+          {
+            "_id": "681afdf59e9192d8808b0a75",
+            "title": "what is restoperator in javascript ?",
+            "description": "\"The question \\\"What is the rest operator in JavaScript?\\\" relates to a feature of the language that provides a flexible way to handle an indefinite number of arguments passed to a function, or to extract values from arrays and objects.\n\n\nContext:\tJavaScript functions can accept any number of arguments, even if the function definition specifies fewer parameters. The rest operator provides a structured way to access these extra arguments. Also, array and object destructuring are powerful features in JavaScript. The rest operator adds to the flexibility of destructuring.\n\n\nWhat is being asked:\tThe question seeks an explanation of the rest operator's syntax (the ellipsis `...`) and its purpose, focusing on how it collects remaining function arguments into an array or captures the remaining properties or elements during destructuring.\n\n\nBackground Knowledge:\tA student should understand basic JavaScript function definitions, function arguments, array literals and object literals, and the concept of destructuring assignment to effectively understand the rest operator. They should also know what a parameter is in a function and what it means to pass arguments into a function.\n\"",
+            "solution": "\"Here's a clear and detailed explanation of the rest operator in JavaScript:\n\n**Question:** What is the rest operator in JavaScript?\n\n**Solution:**\n\nThe rest operator in JavaScript (`...`) is a powerful feature introduced in ES6 (ECMAScript 2015). It allows you to represent an indefinite number of arguments as an array. It has two primary use cases:\n\n1.  **Collecting remaining function parameters:**  Inside a function's parameter list, the rest operator collects any trailing arguments into a single array.\n\n2.  **Destructuring arrays and objects:**  In destructuring assignments, the rest operator gathers the remaining elements or properties into a new array or object.\n\nLet's break down each use case with examples and explanations:\n\n**1. Collecting Remaining Function Parameters**\n\n*Reasoning:*\n\nSometimes, you might want to create a function that can accept any number of arguments, but you don't know the exact number beforehand. The rest operator allows you to gather these arguments into an array, making it easy to work with them.\n\n*Steps:*\n\na.  Define a function with parameters.  The rest operator should be the last parameter in the list.\n\nb.  Use the rest operator (`...`) followed by a variable name (e.g., `...args`). This variable will become an array containing all the arguments passed to the function *after* any named parameters.\n\nc.  Access and manipulate the collected arguments within the function using array methods.\n\n*Example:*\n\n```javascript\n\tfunction sumAll(firstArg, ...numbers) {\n\t\tlet sum = firstArg || 0; // Handle case when function is called without any arguments after the first one\n\n\t\tfor (let number of numbers) {\n\t\t\tsum += number;\n\t\t}\n\n\t\treturn sum;\n\t}\n\n\tconsole.log(sumAll(1, 2, 3, 4));   // Output: 10\n\tconsole.log(sumAll(5, 10, 15));  // Output: 30\n\tconsole.log(sumAll(1)); // Output: 1\n\tconsole.log(sumAll()); // Output: 0 - Handles case where no arguments are provided\n```\n\n*Explanation:*\n\nIn the `sumAll` function, `firstArg` is the first parameter, and `...numbers` is the rest parameter. When you call `sumAll(1, 2, 3, 4)`, `firstArg` gets the value `1`, and `numbers` becomes the array `[2, 3, 4]`.  The function then iterates through the `numbers` array, adding each number to the `sum`.\n\n**2. Destructuring Arrays and Objects**\n\n*Reasoning:*\n\nDestructuring allows you to extract values from arrays and objects into distinct variables. The rest operator extends this capability by allowing you to capture the remaining, unextracted parts of an array or object.\n\n*Steps for Array Destructuring:*\n\na.  Create an array.\n\nb.  Use destructuring assignment with the rest operator.  The rest operator will collect the remaining elements (after the initial elements) into a new array.\n\n*Example for Array Destructuring:*\n\n```javascript\n\tconst myArray = [10, 20, 30, 40, 50];\n\n\tconst [first, second, ...rest] = myArray;\n\n\tconsole.log(first);   // Output: 10\n\tconsole.log(second);  // Output: 20\n\tconsole.log(rest);    // Output: [30, 40, 50]\n```\n\n*Explanation:*\n\nIn this example, `first` gets the value `10`, `second` gets the value `20`, and `rest` becomes the array `[30, 40, 50]`, containing the remaining elements of `myArray`.\n\n*Steps for Object Destructuring:*\n\na.  Create an object.\n\nb.  Use destructuring assignment with the rest operator. The rest operator will collect the remaining properties (after the specified properties) into a new object.\n\n*Example for Object Destructuring:*\n\n```javascript\n\tconst myObject = { a: 1, b: 2, c: 3, d: 4 };\n\n\tconst { a, b, ...remaining } = myObject;\n\n\tconsole.log(a);          // Output: 1\n\tconsole.log(b);          // Output: 2\n\tconsole.log(remaining);  // Output: { c: 3, d: 4 }\n```\n\n*Explanation:*\n\nIn this case, `a` gets the value `1`, `b` gets the value `2`, and `remaining` becomes a new object `{ c: 3, d: 4 }` containing the remaining properties of `myObject`.\n\n**Important Notes:**\n\n*   The rest operator *must* be the last parameter in a function definition or the last element in a destructuring assignment.\n\n*   The variable used with the rest operator (`numbers`, `rest`, `remaining`, etc.) becomes a *new* array or object.  It doesn't modify the original array or object.\n\n*   The `arguments` object (available inside functions) is *not* the same as the rest parameter.  `arguments` is an array-like object, not a true array, and its behavior can be different in strict mode. The rest parameter provides a proper array.\n\n**Final Answer:**\n\nThe rest operator (`...`) in JavaScript provides a concise way to represent an indefinite number of arguments as an array within a function or to gather the remaining elements or properties into a new array or object during destructuring. It simplifies working with variable-length argument lists and manipulating arrays and objects in a declarative way.\n\"",
+            "options": [
+              "A method for removing all event listeners from an HTML element.",
+              "A function that resets all global variables to their default values.",
+              "An operator that checks if a variable is undefined and assigns a default value.",
+              "A way to collect all remaining arguments passed to a function into an array."
+            ],
+            "rightOption": "A way to collect all remaining arguments passed to a function into an array.",
+            "image": "",
+            "video": "",
+            "shorts": []
+          }
+        ],
+        "totalQuestions": 8,
+        "answeredQuestions": 9,
+        "progress": 112.5,
+        "answeredQuestionIds": [
+          "6816c53f13fb03ad556af818",
+          "6816f80a56b591acbc0fc53a",
+          "6816c8f813fb03ad556af831",
+          "6816fcc844d35a6acb658c9e",
+          "681ac772e2e254f48747ecdb",
+          "681afdf59e9192d8808b0a75",
+          "68182923e5ecdd7d64f62829",
+          "68182923e5ecdd7d64f62829",
+          "6816fc9044d35a6acb658c94"
+        ]
+      }
+    },
+    "message": "Existing test attempt found"
+  }

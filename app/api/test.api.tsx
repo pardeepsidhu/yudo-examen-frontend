@@ -1,4 +1,5 @@
 import { getToken } from "./user.api";
+import axios from "axios";
 
 interface TestSeriesData {
   title: string;
@@ -121,7 +122,7 @@ export const addNewQuestion = async (questionData: Question) => {
 export const updageMyQuestion = async (questionData: Question) => {
     try {
         console.log(questionData)
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/question/update`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/question/update/${questionData._id}`, {
         method: "put",
         headers: {
           "content-type": "application/json",
@@ -172,3 +173,132 @@ export const updageMyQuestion = async (questionData: Question) => {
       };
     }
   };
+
+export const getAllTestSeries = async (page: number = 1, limit: number = 10, category?: string, search?: string) => {
+  try {
+    const queryParams = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      ...(category && { category }),
+      ...(search && { search })
+    });
+
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/test/getAll?${queryParams}`);
+    console.log(response)
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching test series:', error);
+    throw error;
+  }
+};
+
+export const getTest = async (id: string) => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/test/getTest/${id}`, {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        "auth-token": getToken()
+      }
+    });
+
+    const data = await res.json();
+    
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to fetch test");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching test:", error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : "Failed to fetch test" 
+    };
+  }
+};
+
+export const getAttendTest = async (testId: string) => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/question/getCurrentTestAttempt/${testId}`, {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        "auth-token": getToken()
+      }
+    });
+
+    const data = await res.json();
+    
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to fetch test attempt");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error handling test attempt:", error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : "Failed to handle test attempt" 
+    };
+  }
+};
+
+export const answerQuestion = async (testId: string, questionId: string, right: boolean) => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/question/answerQuestion`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "auth-token": getToken()
+      },
+      body: JSON.stringify({
+        testId,
+        questionId,
+        right
+      })
+    });
+
+    const data = await res.json();
+    
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to record answer");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error recording answer:", error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : "Failed to record answer" 
+    };
+  }
+};
+
+export const getTestResults = async (testId: string) => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/question/getTestResults/${testId}`, {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        "auth-token": getToken()
+      }
+    });
+
+    const data = await res.json();
+    
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to fetch test results");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching test results:", error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : "Failed to fetch test results" 
+    };
+  }
+};
+
+// Add TypeScript interfaces for the response data

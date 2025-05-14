@@ -117,7 +117,7 @@ export default function CreateTestSeries() {
       setIsGeneratingAI(false);
     }
   };
-
+  
   // Handle question input change
   const handleQuestionChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -162,7 +162,7 @@ export default function CreateTestSeries() {
       }
       else{
         toast.success('Question added successfully!');
-        getMyTest(testId)
+       await getMyTest(testId)
     setCurrentQuestion({
           _id: `question_${Date.now()}`,
       title: '',
@@ -579,6 +579,7 @@ export default function CreateTestSeries() {
   const hangleGetMyTest = async(testId:string)=>{
     try {
       const res = await getMyTest(testId)
+      console.log(res)
       if(!res.success){
         toast.error(res.message)
       } 
@@ -1157,7 +1158,7 @@ export default function CreateTestSeries() {
                         <div className="absolute bottom-0 left-0 right-0 h-6 bg-blue-600 flex items-center justify-center">
                           <p className="text-white text-xs font-medium">Image</p>
                         </div>
-                      </div>
+                    </div>
                   )}
                 </div>
                 
@@ -1244,7 +1245,7 @@ export default function CreateTestSeries() {
                         <div className="absolute bottom-0 left-0 right-0 h-6 bg-red-600 flex items-center justify-center">
                           <p className="text-white text-xs font-medium">YouTube Video</p>
                         </div>
-                      </div>
+                    </div>
                   )}
                 </div>
                 
@@ -1345,7 +1346,7 @@ export default function CreateTestSeries() {
               
               <TabsContent value="preview" className="space-y-4 mt-0">
                 <div className="space-y-2">
-                  <h3 className="font-medium">{currentQuestion.title}</h3>
+                  <h3 className="font-medium text-gray-700">{currentQuestion.title}</h3>
                   <h4 className='text-gray-600' >Description :</h4>
                   {currentQuestion.description && (
                     <Textarea 
