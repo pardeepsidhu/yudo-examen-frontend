@@ -91,41 +91,28 @@ const TestDetails = ({ testData }: { testData: TestAttempt }) => {
   const [progressValue, setProgressValue] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  console.log("child")
-console.log({...testData})
-  // Safe data extraction with fallbacks
 
+  // Use only these theme keys for colors:
+  // theme.primary, theme.secondary, theme.tertiary, theme.neutral, theme.white
 
   const testOwner = testData.testOwner || {};
   const thumbnail = testData?.test?.thumbnail || '';
-  const totalQuestionsx =testData?.test?.questions?.length
-  
-  // Combine progress data from all possible sources
-
+  const totalQuestionsx = testData?.test?.questions?.length;
 
   const progressData = {
     totalQuestions: totalQuestionsx || 0,
-    answeredQuestions: testData?.answeredQuestions|| 0,
-    progress: testData?.progress  || 0,
+    answeredQuestions: testData?.answeredQuestions || 0,
+    progress: testData?.progress || 0,
     correctAnswers: testData?.score || 0,
-    score: testData?.score  || 0,
+    score: testData?.score || 0,
   };
-  
-  // Combine completion status from all possible sources
+
   const isCompleted = testData.completed || false;
 
   useEffect(() => {
-    // Add simulated loading state
     setIsLoading(true);
-    const loadTimer = setTimeout(() => {
-      setIsLoading(false);
-    }, 500);
-    
-    // Animate progress bar
-    const progressTimer = setTimeout(() => {
-      setProgressValue(Math.round(progressData.progress || 0));
-    }, 800);
-    
+    const loadTimer = setTimeout(() => setIsLoading(false), 500);
+    const progressTimer = setTimeout(() => setProgressValue(Math.round(progressData.progress || 0)), 800);
     return () => {
       clearTimeout(loadTimer);
       clearTimeout(progressTimer);
@@ -137,57 +124,38 @@ console.log({...testData})
     try {
       const date = new Date(dateString);
       if (isNaN(date.getTime())) return "Invalid Date";
-      
       return date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "short",
         day: "numeric",
       });
-    } catch (e) {
-      if(e)
+    } catch {
       return "Invalid Date";
     }
   };
 
-
-
-  // Get user name with fallbacks
-  const getUsername = (user: User) => {
-    if (!user) return "Unknown";
-    return user.name || user.email || "Unknown";
-  };
-
-  // Get user avatar initial with fallbacks
-  const getUserInitial = (user: User) => {
-    if (!user) return "U";
-    const name = user.name || user.email || "U";
-    return name.charAt(0).toUpperCase();
-  };
-
-  // Get user profile image with fallbacks
-  const getUserProfile = (user: User) => {
-    if (!user) return "";
-    return user.profile || user.profilePicture || "";
-  };
+  const getUsername = (user: User) => user?.name || user?.email || "Unknown";
+  const getUserInitial = (user: User) => (user?.name || user?.email || "U").charAt(0).toUpperCase();
+  const getUserProfile = (user: User) => user?.profile || user?.profilePicture || "";
 
   const stats = [
     {
       icon: <Trophy className="h-4 w-4" />,
       label: "Correct Answers",
       value: progressData.correctAnswers,
-      color: theme.accent,
+      color: theme.primary,
     },
     {
       icon: <Users className="h-4 w-4" />,
       label: "Total Questions",
       value: progressData.totalQuestions,
-      color: theme.tertiary,
+      color: theme.primary,
     },
     {
       icon: <CheckCircle className="h-4 w-4" />,
       label: "Answered",
       value: progressData.answeredQuestions,
-      color: theme.secondary,
+      color: theme.primary,
     },
     {
       icon: <BarChart2 className="h-4 w-4" />,
@@ -197,13 +165,11 @@ console.log({...testData})
     },
   ];
 
-  const handleImageError = () => {
-    setImageError(true);
-  };
+  const handleImageError = () => setImageError(true);
 
   if (isLoading) {
     return (
-      <div className="w-full min-h-screen p-4 md:p-8 bg-white dark:bg-black flex items-center justify-center">
+      <div className="w-full min-h-screen flex items-center justify-center bg-white dark:bg-black p-4">
         <div className="flex flex-col items-center gap-4">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-t-transparent" style={{ borderColor: `${theme.primary}40`, borderTopColor: 'transparent' }}></div>
           <p className="text-lg font-medium" style={{ color: theme.primary }}>Loading test details...</p>
@@ -213,22 +179,29 @@ console.log({...testData})
   }
 
   return (
-    <div className="w-full min-h-screen p-4 md:p-8 bg-white dark:bg-black">
-      <Card className="w-full h-full shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+    <div
+      className="w-full min-h-screen p-2 sm:p-4 md:p-8"
+      style={{
+        background: `linear-gradient(135deg, ${theme.neutral} 0%, ${theme.tertiary} 100%)`,
+        fontFamily: "Inter, system-ui, sans-serif",
+      }}
+    >
+      <Card className="w-full h-full shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden bg-white dark:bg-gray-900">
         <CardHeader className="p-0">
           <div className="flex flex-col lg:flex-row w-full overflow-hidden">
+            {/* Thumbnail */}
             {thumbnail && !imageError ? (
-              <div className="w-full lg:w-1/3 h-64 lg:h-auto relative overflow-hidden  lg:ml-6 cursor-pointer lg:rounded-tl-xl">
+              <div className="w-full lg:w-1/3 h-48 sm:h-64 lg:h-auto relative overflow-hidden cursor-pointer">
                 <img
                   src={thumbnail}
                   alt={`${testData?.test?.title || 'Test'} Thumbnail`}
-                  className=" w-full h-full hover:scale-115 ease-in-out duration-600"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                   onError={handleImageError}
                 />
               </div>
             ) : (
               <div 
-                className="w-full lg:w-1/3 h-64 lg:h-auto flex items-center justify-center"
+                className="w-full lg:w-1/3 h-48 sm:h-64 lg:h-auto flex items-center justify-center"
                 style={{ background: `${theme.neutral}15` }}
               >
                 <div className="flex flex-col items-center text-gray-400">
@@ -237,36 +210,36 @@ console.log({...testData})
                 </div>
               </div>
             )}
+            {/* Info */}
             <div
-              className="flex flex-col gap-4 p-6 flex-1"
+              className="flex flex-col gap-4 p-4 sm:p-6 flex-1"
               style={{ background: `linear-gradient(to right, ${theme.tertiary}15, ${theme.neutral}30)` }}
             >
-              <div className="flex items-start gap-4">
-                <Avatar className="h-16 w-16 border-2 shadow-md" >
+              <div className="flex flex-col sm:flex-row items-start gap-4">
+                <Avatar className="h-14 w-14 border-2 shadow-md">
                   <AvatarImage src={getUserProfile(testOwner)} alt={getUsername(testOwner)} />
                   <AvatarFallback style={{ background: `${theme.secondary}40`, color: theme.primary }} className="font-semibold">
                     {getUserInitial(testOwner)}
                   </AvatarFallback>
                 </Avatar>
-                <div className="flex flex-col">
+                <div className="flex-1 flex flex-col">
                   <h2 
-                    className="text-2xl md:text-3xl font-bold text-wrap break-words line-clamp-2"
+                    className="text-xl sm:text-2xl md:text-3xl font-bold break-words line-clamp-2"
                     style={{ color: theme.primary }}
                   >
                     <BookOpen className="inline-block w-5 h-5 md:w-6 md:h-6 mr-1" style={{ color: theme.primary }} />
                     {testData?.test?.title || "Untitled Test"}
                   </h2>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                  <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">
                     Created by {getUsername(testOwner)}
                   </p>
-                  <div className="flex flex-wrap gap-4 mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  <div className="flex flex-wrap gap-3 mt-1 text-xs text-gray-500 dark:text-gray-400">
                     {testData?.createdAt && (
                       <span className="flex items-center gap-1">
                         <Calendar className="h-3 w-3" />
                         {formatDate(testData?.createdAt)}
                       </span>
                     )}
-                  
                     {isCompleted && testData?.completedAt && (
                       <span className="flex items-center gap-1">
                         <CheckCircle className="h-3 w-3" style={{ color: theme.secondary }} />
@@ -276,6 +249,7 @@ console.log({...testData})
                   </div>
                 </div>
               </div>
+              {/* Stats */}
               <div className="flex flex-wrap gap-2 mt-2">
                 {stats.map((stat, idx) => (
                   <TooltipProvider key={idx}>
@@ -283,7 +257,7 @@ console.log({...testData})
                       <TooltipTrigger asChild>
                         <Badge
                           variant="outline"
-                          className="flex items-center gap-1 py-1 px-3 text-sm transition-all hover:shadow-md"
+                          className="flex items-center gap-1 py-1 px-3 text-xs sm:text-sm transition-all hover:shadow-md"
                           style={{
                             borderColor: `${theme.neutral}80`,
                             background: `${theme.white}`,
@@ -305,59 +279,50 @@ console.log({...testData})
                   </TooltipProvider>
                 ))}
               </div>
-              <div className='flex gap-4  items-end'>
-
-
- {(testData?.test?.category || (testData?.test?.tags && testData?.test?.tags.length > 0)) && (
-            <div className="mb-6">
-              <label className="text-sm font-medium block mb-2" style={{ color: theme.primary }}>Category & Tags</label>
-              <div className="flex flex-wrap gap-2">
-                {testData?.test?.category && (
-                  <Badge 
-                    className="py-1 px-3"
-                    style={{ background: theme.primary, color: theme.white }}
-                  >
-                    {testData?.test.category}
-                  </Badge>
-                )}
-                {testData?.test?.tags && testData?.test.tags.map((tag:string, index:number) => (
-                  <Badge 
-                    key={index}
-                    variant="outline" 
-                    className="py-1 px-3"
-                    style={{ borderColor: `${theme.secondary}80`, color: theme.secondary }}
-                  >
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          )}
-
-            <div className="mb-6">
-              {/* <label className="text-sm font-medium block mb-2" style={{ color: theme.primary }}>Test Statistics</label> */}
-              <div className="flex flex-wrap gap-4">
-      
-                
-                  <div className="flex items-center gap-2">
-                   <ThumbsUp className="h-4 w-4" style={{ color: theme.secondary }} />
-                    <span className="text-sm">{testData?.test?.likes?.length} Likes</span>
+              {/* Category & Tags and Likes */}
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-end w-full">
+                {(testData?.test?.category || (testData?.test?.tags && testData?.test?.tags.length > 0)) && (
+                  <div>
+                    <label className="text-xs sm:text-sm font-medium block mb-2" style={{ color: theme.primary }}>Category & Tags</label>
+                    <div className="flex flex-wrap gap-2">
+                      {testData?.test?.category && (
+                        <Badge 
+                          className="py-1 px-3 text-xs sm:text-sm"
+                          style={{ background: theme.primary, color: theme.white }}
+                        >
+                          {testData?.test.category}
+                        </Badge>
+                      )}
+                      {testData?.test?.tags && testData?.test.tags.map((tag:string, index:number) => (
+                        <Badge 
+                          key={index}
+                          variant="outline" 
+                          className="py-1 px-3 text-xs sm:text-sm"
+                          style={{ borderColor: `${theme.secondary}80`, color: theme.secondary }}
+                        >
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
-             
+                )}
+                <div>
+                  <div className="flex items-center gap-2 mt-2 sm:mt-0">
+                    <ThumbsUp className="h-4 w-4" style={{ color: theme.secondary }} />
+                    <span className="text-xs sm:text-sm">{testData?.test?.likes?.length} Likes</span>
+                  </div>
+                </div>
               </div>
-            </div>
-              </div>
-              
             </div>
           </div>
         </CardHeader>
 
-        <CardContent className="p-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <CardContent className="p-4 sm:p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-6">
             <StatBox 
               label="Total Questions" 
               value={progressData.totalQuestions} 
-              color={theme.tertiary} 
+              color={theme.primary} 
               icon={<BookOpen className="h-5 w-5" />}
             />
             <StatBox 
@@ -369,31 +334,25 @@ console.log({...testData})
             <StatBox 
               label="Score" 
               value={progressData.score} 
-              color={theme.accent}
+              color={theme.primary}
               icon={<Trophy className="h-5 w-5" />}
             />
             <StatBox 
               label="Status"
               value={isCompleted ? "Completed" : "In Progress"}
-              color={isCompleted ? theme.secondary : theme.accent}
+              color={isCompleted ? theme.secondary : theme.primary}
               icon={isCompleted ? <CheckCircle className="h-5 w-5" /> : <Clock3 className="h-5 w-5" />}
             />
           </div>
-
-  
-
-         
-          
-
           <div>
-            <label className="text-sm font-medium block mb-2" style={{ color: theme.primary }}>Test Description</label>
+            <label className="text-xs sm:text-sm font-medium block mb-2" style={{ color: theme.primary }}>Test Description</label>
             <div
-              className="w-full min-h-36 p-4 rounded-md border overflow-auto whitespace-pre-wrap"
+              className="w-full min-h-24 sm:min-h-36 p-3 sm:p-4 rounded-md border overflow-auto whitespace-pre-wrap text-xs sm:text-sm"
               style={{
                 background: `${theme.neutral}10`,
                 borderColor: `${theme.neutral}40`,
                 color: 'inherit',
-                maxHeight: '500px'
+                maxHeight: '300px'
               }}
             >
               {testData?.test?.description || "No description provided."}
@@ -402,17 +361,17 @@ console.log({...testData})
         </CardContent>
 
         <CardFooter
-          className="p-6 border-t"
+          className="p-4 sm:p-6 border-t"
           style={{ borderColor: `${theme.neutral}40`, background: `${theme.neutral}10` }}
         >
           <div className="w-full">
-            <div className="flex justify-between text-sm mb-2">
+            <div className="flex justify-between text-xs sm:text-sm mb-2">
               <span className="font-medium" style={{ color: theme.primary }}>Progress</span>
               <span className="font-medium" style={{ color: theme.primary }}>{progressValue}%</span>
             </div>
-            <div className="w-full h-3 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
+            <div className="w-full h-2 sm:h-3 rounded-full bg-gray-200 dark:bg-gray-700 overflow-hidden">
               <div
-                className="h-3 rounded-full transition-all duration-1000 ease-in-out"
+                className="h-2 sm:h-3 rounded-full transition-all duration-1000 ease-in-out"
                 style={{
                   width: `${progressValue}%`,
                   background: `linear-gradient(to right, ${theme.secondary}, ${theme.primary})`,
@@ -423,7 +382,7 @@ console.log({...testData})
             {isCompleted && testData?.completedAt && (
               <div className="mt-4 flex items-center justify-center">
                 <Badge 
-                  className="py-2 px-4 text-sm font-medium"
+                  className="py-2 px-4 text-xs sm:text-sm font-medium"
                   style={{ background: theme.secondary, color: theme.white }}
                 >
                   <CheckCircle className="h-4 w-4 mr-2" />
@@ -450,14 +409,14 @@ const StatBox = ({
   icon: React.ReactNode;
 }) => (
   <div
-    className="p-4 rounded-lg shadow-sm transition-all hover:shadow-md"
+    className="p-3 sm:p-4 rounded-lg shadow-sm transition-all hover:shadow-md"
     style={{ background: `${color}15` }}
   >
-    <div className="flex justify-between items-center mb-2">
-      <div className="text-xs font-medium" style={{ color }}>{label}</div>
+    <div className="flex justify-between items-center mb-1 sm:mb-2">
+      <div className="text-xs sm:text-sm font-medium" style={{ color }}>{label}</div>
       <div style={{ color }} className="opacity-80">{icon}</div>
     </div>
-    <div className="text-2xl font-bold" style={{ color }}>{value}</div>
+    <div className="text-lg sm:text-2xl font-bold" style={{ color }}>{value}</div>
   </div>
 );
 

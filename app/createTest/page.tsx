@@ -599,26 +599,39 @@ export default function CreateTestSeries() {
   },[])
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-6 m-2 border-1 sm:m-4 rounded-2xl shadow-md">
+    <div
+      className="min-h-screen p-2 sm:p-4 md:p-6"
+      style={{
+        background: theme.neutral,
+        borderRadius: "1.5rem",
+      }}
+    >
       {/* Header */}
-      <header className="mb-6 flex justify-between items-center">
+      <header className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-        <h1 className="text-2xl md:text-3xl font-bold" style={{ color: theme.primary }}>Create Test Series</h1>
-        <p className="text-gray-600 mt-1">Create a new test series and add questions</p>
+          <h1
+            className="text-2xl md:text-3xl font-bold"
+            style={{ color: theme.primary }}
+          >
+            Create Test Series
+          </h1>
+          <p className="text-gray-600 mt-1 text-sm sm:text-base">
+            Create a new test series and add questions
+          </p>
         </div>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           size="sm"
           className="h-8 px-3 text-sm"
-          style={{ 
+          style={{
             borderColor: theme.primary,
             color: theme.primary,
-            backgroundColor: theme.primary + '10'
+            backgroundColor: theme.primary + "10",
           }}
           onClick={() => {
-            if(testId) {
+            if (testId) {
               hangleGetMyTest(testId);
-              toast.success('Test refreshed successfully');
+              toast.success("Test refreshed successfully");
             }
           }}
         >
@@ -627,14 +640,23 @@ export default function CreateTestSeries() {
         </Button>
       </header>
 
-   
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Left Column - Test Series Details */}
         <div className="lg:col-span-1">
-          <Card>
+          <Card
+            className="shadow-lg"
+            style={{
+              background: theme.white,
+              borderColor: theme.primary + "30",
+            }}
+          >
             <CardHeader>
-              <CardTitle className="text-lg font-medium" style={{ color: theme.primary }}>Test Series Details</CardTitle>
+              <CardTitle
+                className="text-lg font-medium"
+                style={{ color: theme.primary }}
+              >
+                Test Series Details
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -884,7 +906,13 @@ export default function CreateTestSeries() {
         
         {/* Right Column - Question Editor */}
         <div className="lg:col-span-2">
-          <Card>
+          <Card
+            className="shadow-lg"
+            style={{
+              background: theme.white,
+              borderColor: theme.primary + "30",
+            }}
+          >
             <CardHeader>
               <CardTitle className="text-lg font-medium" style={{ color: theme.primary }}>
                 {currentQuestion?._id?.includes('question_') ? 'Add New Question' : 'Edit Question'}
@@ -1434,9 +1462,9 @@ export default function CreateTestSeries() {
             </CardContent>
           </Card>
           
-          <Button 
+          <Button
             className="w-full mt-4"
-            style={{ backgroundColor: theme.primary }}
+            style={{ backgroundColor: theme.primary, color: theme.white }}
             onClick={addQuestion}
           >
             <Plus className="mr-2 h-4 w-4" />

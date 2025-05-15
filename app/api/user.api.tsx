@@ -94,3 +94,23 @@ export const sendResetPassLink =async(email:string)=>{
         return {error :"some error accured while signin"}
     }
 }
+
+export const getMyProfile = async () => {
+    try {
+        const token = getToken();
+        if (!token) {
+            return { error: "Not authenticated" };
+        }
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/user/getMyProfile`, {
+            method: "GET",
+            headers: {
+                "content-type": "application/json",
+                "auth-token": token
+            }
+        });
+        return await res.json();
+    } catch (error) {
+        console.log(error);
+        return { error: "Some error occurred while fetching profile" };
+    }
+};

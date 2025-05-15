@@ -1,11 +1,11 @@
 "use client";
 
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import AceEditor from "react-ace";
-import { 
-  Play, 
-  Code2, 
-  Terminal, 
+import {
+  Play,
+  Code2,
+  Terminal,
   Loader2,
   CheckCircle2,
   XCircle,
@@ -29,16 +29,19 @@ import "ace-builds/src-noconflict/theme-github";
 // Enable autocomplete
 import "ace-builds/src-noconflict/ext-language_tools";
 
-
-
-export const CodeRunner = ({code,language}:{code:string,language:string}) => {
+export const CodeRunner = ({
+  code,
+  language,
+}: {
+  code: string;
+  language: string;
+}) => {
   const { theme } = useTheme();
   const [output, setOutput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const editorValue = code
-
-
+  const editorValue = code;
+console.log(language)
   const handleRunCode = async () => {
     if (!code) {
       toast.error("Please enter code!");
@@ -58,7 +61,7 @@ export const CodeRunner = ({code,language}:{code:string,language:string}) => {
         },
         {
           headers: {
-            "x-rapidapi-key": "c075844e09msh7ee8aeb9f4f3874p1d8484jsnc3ea092df37f",
+            "x-rapidapi-key": process.env.NEXT_PUBLIC_RAPIDAPI_KEY,
             "x-rapidapi-host": "onecompiler-apis.p.rapidapi.com",
             "Content-Type": "application/json",
           },
@@ -66,6 +69,7 @@ export const CodeRunner = ({code,language}:{code:string,language:string}) => {
       );
 
       // Handle both stdout and stderr
+      console.log(res)
       let result = "";
       if (res.data.stdout) {
         result = res.data.stdout;
@@ -77,11 +81,11 @@ export const CodeRunner = ({code,language}:{code:string,language:string}) => {
 
       // Format the output to handle special characters and line breaks
       const formattedOutput = result
-        .replace(/\\n/g, '\n')  // Replace \n with actual line breaks
-        .replace(/\\t/g, '\t')  // Replace \t with actual tabs
-        .replace(/\\"/g, '"')   // Replace \" with actual quotes
-        .replace(/\\\\/g, '\\') // Replace \\ with actual backslashes
-        .trim();                // Remove extra whitespace
+        .replace(/\\n/g, "\n")
+        .replace(/\\t/g, "\t")
+        .replace(/\\"/g, '"')
+        .replace(/\\\\/g, "\\")
+        .trim();
 
       setOutput(formattedOutput);
 
@@ -98,21 +102,33 @@ export const CodeRunner = ({code,language}:{code:string,language:string}) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl sm:rounded-xl overflow-hidden border border-gray-100">
-      <div className="p-4 sm:p-4 md:p-6">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 mb-6 sm:mb-4">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <Code2 className="h-6 w-6 sm:h-8 sm:w-8" style={{ color: theme.primary }} />
-            <h2 className="text-md sm:text-xl font-bold text-gray-900">Code Editor</h2>
+    <div
+      className="rounded-2xl sm:rounded-xl overflow-hidden border"
+      style={{
+        borderColor: `${theme.primary}22`,
+        background: theme.white,
+      }}
+    >
+      <div className="p-3 sm:p-4 md:p-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-6 mb-4">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Code2
+              className="h-6 w-6 sm:h-8 sm:w-8"
+              style={{ color: theme.primary }}
+            />
+            <h2
+              className="text-base sm:text-lg md:text-xl font-bold"
+              style={{ color: theme.primary }}
+            >
+              Code Editor
+            </h2>
           </div>
-          
-          <div className="flex items-center gap-3 sm:gap-4">
-  
 
+          <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto">
             <button
               onClick={handleRunCode}
               disabled={isLoading}
-              className="px-4 sm:px-5 py-2 sm:py-2 rounded-sm sm:rounded-md text-white text-sm font-sm hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="w-full sm:w-auto px-4 sm:px-5 py-2 rounded-md text-white text-sm font-semibold hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               style={{ backgroundColor: theme.primary }}
             >
               {isLoading ? (
@@ -120,14 +136,17 @@ export const CodeRunner = ({code,language}:{code:string,language:string}) => {
               ) : (
                 <Play className="h-4 w-4" />
               )}
-              <p className="sm:hidden">Run</p>
-              <p className="hidden sm:flex text-nowrap">Run Code</p>
+              <span className="sm:hidden">Run</span>
+              <span className="hidden sm:inline">Run Code</span>
             </button>
           </div>
         </div>
 
-        <div className="space-y-6 sm:space-y-8">
-          <div className="rounded-lg p-4 sm:rounded-xl overflow-hidden border border-gray-200">
+        <div className="space-y-4 sm:space-y-6">
+          <div
+            className="rounded-lg sm:rounded-xl overflow-hidden border"
+            style={{ borderColor: `${theme.primary}22`, background: theme.white }}
+          >
             <AceEditor
               mode={language}
               theme="github"
@@ -137,10 +156,17 @@ export const CodeRunner = ({code,language}:{code:string,language:string}) => {
               enableBasicAutocompletion={true}
               enableLiveAutocompletion={true}
               enableSnippets={true}
-              fontSize={14}
-              style={{ borderRadius: "8px" }}
+              fontSize={13}
+              style={{
+                borderRadius: "8px",
+                width: "100%",
+                minHeight: "350px",
+                maxHeight: "550px",
+                fontFamily: "Fira Mono, Menlo, Monaco, Consolas, monospace",
+                background: theme.white,
+              }}
               width="100%"
-              height="400px"
+              height="200px"
               showPrintMargin={false}
               showGutter={true}
               highlightActiveLine={true}
@@ -155,21 +181,38 @@ export const CodeRunner = ({code,language}:{code:string,language:string}) => {
           </div>
 
           {(output || error) && (
-            <div className="rounded-lg sm:rounded-xl overflow-hidden border border-gray-200">
-              <div className="bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex items-center gap-2">
-                <Terminal className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600" />
-                <span className="text-sm sm:text-base font-medium text-gray-700">Output</span>
+            <div
+              className="rounded-lg sm:rounded-xl overflow-hidden border"
+              style={{ borderColor: `${theme.primary}22`, background: theme.white }}
+            >
+              <div
+                className="px-4 sm:px-6 py-2 sm:py-3 border-b flex items-center gap-2"
+                style={{
+                  borderColor: `${theme.primary}22`,
+                  background: theme.neutral,
+                }}
+              >
+                <Terminal
+                  className="h-4 w-4 sm:h-5 sm:w-5"
+                  style={{ color: theme.primary }}
+                />
+                <span
+                  className="text-sm sm:text-base font-medium"
+                  style={{ color: theme.primary }}
+                >
+                  Output
+                </span>
               </div>
-              <div className="p-4 sm:p-6 bg-white max-h-100 overflow-y-auto">
+              <div className="p-3 sm:p-5 bg-white max-h-60 overflow-y-auto">
                 {error ? (
                   <div className="flex items-start gap-2 text-red-600">
                     <XCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                    <pre className="text-sm sm:text-base whitespace-pre-wrap">{error}</pre>
+                    <pre className="text-xs sm:text-sm whitespace-pre-wrap">{error}</pre>
                   </div>
                 ) : (
                   <div className="flex items-start gap-2 text-gray-700">
                     <CheckCircle2 className="h-5 w-5 mt-0.5 flex-shrink-0 text-green-600" />
-                    <pre className="text-sm sm:text-base whitespace-pre-wrap">{output}</pre>
+                    <pre className="text-xs sm:text-sm whitespace-pre-wrap">{output}</pre>
                   </div>
                 )}
               </div>

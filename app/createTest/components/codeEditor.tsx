@@ -209,7 +209,7 @@ const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         },
         {
           headers: {
-            "x-rapidapi-key": "c075844e09msh7ee8aeb9f4f3874p1d8484jsnc3ea092df37f",
+            "x-rapidapi-key": process.env.NEXT_PUBLIC_RAPIDAPI_KEY,
             "x-rapidapi-host": "onecompiler-apis.p.rapidapi.com",
             "Content-Type": "application/json",
           },

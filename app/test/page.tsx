@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Search, Loader2, Filter, ChevronDown, X, Heart, Eye, Clock } from 'lucide-react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-// import Image from 'next/image';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -101,17 +100,24 @@ export default function ExplorePage() {
     }
   };
 
-  // Fetch test series
+  // Fix: Only fetch more if we haven't reached totalPages, and always show one row max (3 cards per row on xl)
   const fetchTestSeries = useCallback(async () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
     try {
       const response = await getAllTestSeries(page, 10, selectedCategory, debouncedSearch);
-      console.log(response.testSeries[0].user.profile)
       if (response.success) {
         const newTestSeries = response.testSeries || [];
-        setTestSeries(prev => [...prev, ...newTestSeries]);
+        // Prevent fetching more if we've reached the total count
+        setTestSeries(prev => {
+          const combined = [...prev, ...newTestSeries];
+          // Only keep up to totalCount if provided, else just combine
+          if (response.totalCount && combined.length > response.totalCount) {
+            return combined.slice(0, response.totalCount);
+          }
+          return combined;
+        });
         setHasMore(page < response.totalPages && newTestSeries.length > 0);
         setPage(prev => prev + 1);
       } else {
@@ -153,34 +159,52 @@ export default function ExplorePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      <div className="container mx-auto px-4 py-8">
+    <div
+      className="min-h-screen w-full"
+      style={{
+        background: `linear-gradient(135deg, ${theme.neutral} 0%, ${theme.white} 100%)`,
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-8 py-6 sm:py-10">
         <div className="space-y-8">
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div className="space-y-2">
-              <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+              <h1
+                className="text-3xl sm:text-4xl font-bold"
+                style={{
+                  background: `linear-gradient(90deg, ${theme.primary}, ${theme.secondary})`,
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
                 Explore Test Series
               </h1>
-              <p className="text-gray-600">Discover and learn from our curated collection of test series</p>
+              <p className="text-gray-600 dark:text-gray-300 text-base">
+                Discover and learn from our curated collection of test series
+              </p>
             </div>
             
             {/* Search and Filter */}
-            <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+            <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
                   placeholder="Search test series..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-10 bg-white shadow-sm border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200"
+                  className="pl-10 bg-white dark:bg-gray-900 shadow-sm border border-gray-200 dark:border-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200 text-sm"
                 />
               </div>
               
               <div className="relative">
                 <button
                   onClick={() => setIsFilterOpen(!isFilterOpen)}
-                  className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-md shadow-sm hover:bg-gray-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200"
+                  className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm hover:bg-blue-50 dark:hover:bg-gray-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 text-sm"
+                  style={{
+                    color: theme.primary,
+                    borderColor: theme.primary + "55",
+                  }}
                 >
                   <Filter className="h-4 w-4" />
                   <span>Filter</span>
@@ -193,11 +217,11 @@ export default function ExplorePage() {
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
-                      className="absolute right-0 mt-2 w-64 bg-white rounded-md shadow-lg z-10 border border-gray-100"
+                      className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-900 rounded-md shadow-lg z-10 border border-gray-100 dark:border-gray-700"
                     >
                       <div className="p-4">
                         <div className="flex items-center justify-between mb-3">
-                          <h3 className="font-medium text-gray-900">Categories</h3>
+                          <h3 className="font-medium" style={{ color: theme.primary }}>Categories</h3>
                           <button
                             onClick={() => setIsFilterOpen(false)}
                             className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -214,7 +238,7 @@ export default function ExplorePage() {
                             className={`w-full text-left px-3 py-2 rounded-md mb-1 transition-colors ${
                               selectedCategory === '' 
                                 ? 'bg-blue-50 text-blue-600 font-medium' 
-                                : 'hover:bg-gray-50 text-gray-700'
+                                : 'hover:bg-gray-50 text-gray-700 dark:hover:bg-gray-800 dark:text-gray-200'
                             }`}
                           >
                             All Categories
@@ -229,7 +253,7 @@ export default function ExplorePage() {
                               className={`w-full text-left px-3 py-2 rounded-md mb-1 transition-colors ${
                                 selectedCategory === category 
                                   ? 'bg-blue-50 text-blue-600 font-medium' 
-                                  : 'hover:bg-gray-50 text-gray-700'
+                                  : 'hover:bg-gray-50 text-gray-700 dark:hover:bg-gray-800 dark:text-gray-200'
                               }`}
                             >
                               {category}
@@ -246,13 +270,13 @@ export default function ExplorePage() {
 
           {/* Active Filters */}
           {(selectedCategory || debouncedSearch) && (
-            <div className="flex items-center gap-2 text-sm">
-              <span className="text-gray-600">Active filters:</span>
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <span className="text-gray-600 dark:text-gray-300">Active filters:</span>
               {selectedCategory && (
                 <Badge
                   variant="secondary"
                   className="flex items-center gap-1 px-3 py-1"
-                  style={{ backgroundColor: `${theme.primary}15` }}
+                  style={{ backgroundColor: `${theme.primary}15`, color: theme.primary }}
                 >
                   {selectedCategory}
                   <button
@@ -267,7 +291,7 @@ export default function ExplorePage() {
                 <Badge
                   variant="secondary"
                   className="flex items-center gap-1 px-3 py-1"
-                  style={{ backgroundColor: `${theme.primary}15` }}
+                  style={{ backgroundColor: `${theme.primary}15`, color: theme.primary }}
                 >
                   Search: {debouncedSearch}
                   <button
@@ -288,24 +312,36 @@ export default function ExplorePage() {
             hasMore={hasMore}
             loader={
               <div className="flex justify-center py-8">
-                <div className="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm">
+                <div
+                  className="flex items-center gap-2 px-4 py-2 rounded-full shadow-sm"
+                  style={{
+                    background: theme.white,
+                    border: `1px solid ${theme.primary}22`,
+                  }}
+                >
                   <Loader2 className="h-5 w-5 animate-spin" style={{ color: theme.primary }} />
-                  <span className="text-gray-600">Loading more...</span>
+                  <span className="text-gray-600 dark:text-gray-300">Loading more...</span>
                 </div>
               </div>
             }
             endMessage={
               <div className="text-center py-8">
                 {testSeries.length > 0 ? (
-                  <div className="inline-flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-full">
-                    <span className="text-gray-600">No more test series to load</span>
+                  <div
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full"
+                    style={{
+                      background: theme.neutral,
+                      color: theme.primary,
+                    }}
+                  >
+                    <span>No more test series to load</span>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     <div className="text-gray-400">
                       <Search className="h-12 w-12 mx-auto mb-2" />
-                      <p className="text-lg font-medium text-gray-900">No test series found</p>
-                      <p className="text-sm mt-1">Try adjusting your filters or search terms</p>
+                      <p className="text-lg font-medium text-gray-900 dark:text-gray-200">No test series found</p>
+                      <p className="text-sm mt-1 text-gray-500 dark:text-gray-400">Try adjusting your filters or search terms</p>
                     </div>
                   </div>
                 )}
@@ -313,56 +349,70 @@ export default function ExplorePage() {
             }
             scrollThreshold="90%"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Only one row: show up to 3 cards per row, and only one row */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               <AnimatePresence>
-                {testSeries.map((series, index) => (
+                {testSeries.slice(0, 3).map((series, index) => (
                   <motion.div
                     key={series._id}
                     variants={cardVariants}
                     initial="hidden"
                     animate="visible"
-                    transition={{ delay: index * 0.1 }}
+                    transition={{ delay: index * 0.07 }}
                   >
                     <Link href={`/test/${series._id}`}>
-                      <Card className="h-full hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1 border-gray-100 group">
-                        <div className="relative h-48 w-full overflow-hidden">
+                      <Card
+                        className="h-full hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 border-0"
+                        style={{
+                          background: theme.white,
+                          border: `1.5px solid ${theme.primary}22`,
+                          borderRadius: "1.25rem",
+                        }}
+                      >
+                        <div className="relative h-44 sm:h-52 w-full overflow-hidden rounded-t-xl">
                           <Image
                             src={series.thumbnail || '/placeholder.webp'}
                             alt={series.title}
                             fill
                             className="object-cover transition-transform duration-300 group-hover:scale-105"
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                          
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-80 pointer-events-none" />
                           {/* Stats Overlay */}
-                          <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <div className="flex items-center gap-4 text-white text-sm">
-                              <div className="flex items-center gap-1">
-                                <Eye className="h-4 w-4" />
-                                <span>{series.views}</span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <Clock className="h-4 w-4" />
-                                <span>{new Date(series.createdAt).toLocaleDateString()}</span>
-                              </div>
+                          <div className="absolute bottom-0 left-0 right-0 p-3 flex items-center gap-4 text-white text-xs sm:text-sm z-10">
+                            <div className="flex items-center gap-1">
+                              <Eye className="h-4 w-4" />
+                              <span>{series.views}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-4 w-4" />
+                              <span>{new Date(series.createdAt).toLocaleDateString()}</span>
                             </div>
                           </div>
                         </div>
 
                         <CardHeader className="pb-2">
-                          <CardTitle className="line-clamp-2 text-lg">{series.title}</CardTitle>
+                          <CardTitle
+                            className="line-clamp-2 text-lg"
+                            style={{ color: theme.primary }}
+                          >
+                            {series.title}
+                          </CardTitle>
                         </CardHeader>
 
                         <CardContent>
-                          <p className="text-sm text-gray-600 line-clamp-2 mb-4">
+                          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-4">
                             {series.description}
                           </p>
                           
                           <div className="flex flex-wrap gap-2 mb-4">
                             <Badge 
                               variant="outline" 
-                              className="border-blue-200"
-                              style={{ color: theme.primary }}
+                              className="border-0"
+                              style={{
+                                color: theme.primary,
+                                background: theme.primary + "10",
+                              }}
                             >
                               {series.category}
                             </Badge>
@@ -382,7 +432,7 @@ export default function ExplorePage() {
                             )}
                           </div>
 
-                          <div className="flex items-center justify-between pt-3 border-t border-gray-100">
+                          <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: theme.primary + "22" }}>
                             <div className="flex items-center gap-3">
                               <div className="relative h-8 w-8 rounded-full overflow-hidden ring-2 ring-white">
                                 <Image 
@@ -393,8 +443,8 @@ export default function ExplorePage() {
                                 />
                               </div>
                               <div>
-                                <p className="text-sm font-medium text-gray-900">{series.user.name}</p>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-sm font-medium" style={{ color: theme.primary }}>{series.user.name}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400">
                                   {new Date(series.createdAt).toLocaleDateString()}
                                 </p>
                               </div>
@@ -405,7 +455,7 @@ export default function ExplorePage() {
                                 e.preventDefault();
                                 handleLike(series._id);
                               }}
-                              className={`flex items-center gap-1 px-3 py-1.5 rounded-full transition-all duration-200 ${
+                              className={`flex items-center gap-1 px-3 py-1.5 rounded-full transition-all duration-200 text-sm ${
                                 likedSeries.has(series._id)
                                   ? 'bg-red-50 text-red-500 hover:bg-red-100'
                                   : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
@@ -416,7 +466,7 @@ export default function ExplorePage() {
                                   likedSeries.has(series._id) ? 'fill-current' : ''
                                 }`}
                               />
-                              <span className="text-sm font-medium">{series.likes.length}</span>
+                              <span className="font-medium">{series.likes.length}</span>
                             </button>
                           </div>
                         </CardContent>

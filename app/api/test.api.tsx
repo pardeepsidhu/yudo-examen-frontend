@@ -301,4 +301,81 @@ export const getTestResults = async (testId: string) => {
   }
 };
 
-// Add TypeScript interfaces for the response data
+export const getMyAllTestSeries = async () => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/test/getTests`, {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        "auth-token": getToken()
+      }
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to fetch your test series");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching your test series:", error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : "Failed to fetch your test series" 
+    };
+  }
+};
+
+
+export const getMyAllTestAttended = async () => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/test/getMyAllTestAttended`, {
+      method: "GET",
+      headers: {
+        "content-type": "application/json",
+        "auth-token": getToken()
+      }
+    });
+console.log(res)
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to fetch attended test series");
+    }
+    console.log(data)
+    return data;
+  } catch (error) {
+    console.error("Error fetching attended test series:", error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : "Failed to fetch attended test series" 
+    };
+  }
+};
+
+export const deleteMyTest = async (id: string) => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/test/deleteMyTest/${id}`, {
+      method: "DELETE",
+      headers: {
+        "content-type": "application/json",
+        "auth-token": getToken()
+      }
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      throw new Error(data.message || "Failed to delete test series");
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Error deleting test series:", error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : "Failed to delete test series" 
+    };
+  }
+};
