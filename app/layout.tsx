@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "./context/theme.context";
 import { Toaster } from 'react-hot-toast';
+import { NavBar } from "@/components/NavBar";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({
       >
         <Toaster />
         <ThemeProvider>
+          <NavBar />
         {children}
         </ThemeProvider>
       </body>

@@ -1,21 +1,18 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useTheme } from '../context/theme.context';
-import { getMyProfile, sendResetPassLink } from '../api/user.api';
+import { getMyProfile, sendResetPassLink, updateProfile } from '../api/user.api';
 import { getMyAllTestSeries, getMyAllTestAttended, deleteMyTest } from '../api/test.api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Loader2, Trash2, Eye, Clock, Edit, CheckCircle, AlertCircle, User as UserIcon, Mail, LogOut, PlusCircle } from 'lucide-react';
+import { Loader2, Trash2, Eye, Edit, CheckCircle, AlertCircle,  Mail, LogOut, PlusCircle, Calendar, BookOpen, Trophy } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { confirmAction } from '@/components/confirmAction';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-
-// You can import your static side or feature component here if you want
-// import { LoginStaticSide } from '../login/staticSide';
 
 export default function ProfilePage() {
   const { theme } = useTheme();
@@ -27,9 +24,18 @@ export default function ProfilePage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'created' | 'attended'>('created');
   const [resetLoading, setResetLoading] = useState(false);
-
+  const [editMode, setEditMode] = useState(false);
+  const [userData, setUserData] = useState<{ name: string; profile: string }>({ name: '', profile: '' });
+  const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+ 
   // Fetch profile and tests
   useEffect(() => {
+    const user = localStorage.getItem('user');
+    if (!user) {
+      router.push('/login');
+      return;
+    }
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -47,17 +53,26 @@ export default function ProfilePage() {
         if (attendedRes?.success) setAttendedTests(attendedRes.testSeries || []);
         else toast.error(attendedRes?.error || "Failed to load attended tests");
       } catch (error) {
-        toast.error("Failed to load profile data");
+        if(error)
+        toast.error("Failed to load profile data" );
       }
-      // console.log(attendedRes)
       setLoading(false);
     };
     fetchData();
   }, []);
 
+  // Update userData when profile is loaded
+  useEffect(() => {
+    if (profile) {
+      setUserData({
+        name: profile.name || '',
+        profile: profile.profile || '',
+      });
+    }
+  }, [profile]);
+
   // Delete test handler
   const handleDeleteTest = async (id: string) => {
-    console.log(attendedTests)
     const confirmed = await confirmAction(
       "Are you sure you want to delete this test series?",
       theme,
@@ -74,6 +89,7 @@ export default function ProfilePage() {
         toast.error(res.error || "Failed to delete test series");
       }
     } catch (error) {
+      if(error)
       toast.error("Failed to delete test series");
     }
     setDeletingId(null);
@@ -94,6 +110,7 @@ export default function ProfilePage() {
         toast.success(res.message || "Reset password link sent!");
       }
     } catch (error) {
+      if(error)
       toast.error("Failed to send reset password link.");
     }
     setResetLoading(false);
@@ -114,226 +131,457 @@ export default function ProfilePage() {
     }, 800);
   };
 
+  // ...existing code...
+
+// Handle file upload to Cloudinary, update preview, and update backend
+const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  setIsUploadingPhoto(true);
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'ml_default'); // Your Cloudinary upload preset
+
+    const response = await fetch('https://api.cloudinary.com/v1_1/testUserPardeep/image/upload', {
+      method: 'post',
+      body: formData,
+    });
+
+    if (!response.ok) {
+      throw new Error('Upload failed');
+    }
+
+    const data = await response.json();
+    // Update preview immediately
+    setUserData((prev) => ({ ...prev, profile: data.url }));
+
+    // Update backend with new profile image
+    const res = await updateProfile({ profile: data.url, name: userData.name });
+    if (res.success) {
+      setProfile(res.user); // update local profile state
+      toast.success('Profile photo updated!');
+    } else {
+      toast.error(res.error || 'Failed to update profile photo');
+    }
+  } catch (error) {
+    console.error('Failed to upload profile photo:', error);
+    toast.error('Failed to upload profile photo');
+  } finally {
+    setIsUploadingPhoto(false);
+  }
+};
+
+  // Handle profile update (name and/or profile photo)
+  const handleProfileUpdate = async () => {
+    const res = await updateProfile({
+      name: userData.name,
+      profile: userData.profile,
+    });
+    if (res.success) {
+      toast.success('Profile updated!');
+      setEditMode(false);
+      setProfile(res.user); // update local profile state
+    } else {
+      toast.error(res.error || 'Failed to update profile');
+    }
+  };
+
+  // Generate stats cards
+  const statsCards = [
+    {
+      title: "Created Tests",
+      value: myTests.length,
+      icon: <BookOpen className="h-6 w-6" />,
+      color: theme.primary
+    },
+    {
+      title: "Attended Tests",
+      value: attendedTests.length,
+      icon: <CheckCircle className="h-6 w-6" />,
+      color: theme.secondary
+    }
+  ];
+
   return (
     <div
-      className="min-h-screen w-full flex flex-col md:flex-row relative overflow-hidden"
+      className="min-h-screen w-full relative overflow-x-hidden"
       style={{
-        background: `linear-gradient(120deg, ${theme.neutral} 60%, ${theme.primary}22 100%)`,
+        background: `radial-gradient(circle at 80% 10%, ${theme.primary}10 0%, transparent 60%),
+                     radial-gradient(circle at 20% 90%, ${theme.secondary}15 0%, transparent 50%)`,
       }}
     >
-      {/* Decorative background blobs */}
+      {/* Animated background blobs */}
+      <div className="absolute top-0 left-0 w-40 h-40 sm:w-56 sm:h-56 bg-blue-200 rounded-full opacity-30 blur-3xl animate-pulse-slow pointer-events-none z-0" />
+      <div className="absolute bottom-0 right-0 w-56 h-56 sm:w-72 sm:h-72 bg-indigo-200 rounded-full opacity-30 blur-3xl animate-pulse-slower pointer-events-none z-0" />
       <div
-        className="absolute top-0 right-0 w-72 h-72 rounded-full opacity-30 pointer-events-none z-0"
-        style={{
-          backgroundColor: theme.tertiary,
-          filter: 'blur(16px)',
-          transform: 'translate(40%, -40%)',
-        }}
-      ></div>
-      <div
-        className="absolute bottom-0 left-0 w-56 h-56 rounded-full opacity-30 pointer-events-none z-0"
-        style={{
-          backgroundColor: theme.accent,
-          filter: 'blur(16px)',
-          transform: 'translate(-30%, 30%)',
-        }}
-      ></div>
-      <div
-        className="absolute top-1/2 left-1/2 w-[32rem] h-[32rem] rounded-full opacity-10 pointer-events-none z-0"
+        className="absolute top-1/2 left-1/2 w-[20rem] h-[20rem] sm:w-[32rem] sm:h-[32rem] rounded-full opacity-10 pointer-events-none z-0"
         style={{
           background: `radial-gradient(circle at 60% 40%, ${theme.primary} 0%, transparent 70%)`,
           transform: 'translate(-50%, -50%)',
-          filter: 'blur(24px)',
+          filter: 'blur(32px)',
         }}
-      ></div>
-      {/* End Decorative background blobs */}
+      />
 
-      {/* Left: Profile and tabs */}
-      <div className="w-full md:w-2/3 mx-auto py-8 px-2 sm:px-4 md:px-8 flex flex-col gap-10 relative z-10">
-        {/* Profile Card */}
-        <Card
-          className="shadow-2xl border-0"
-          style={{
-            background: `linear-gradient(120deg,${theme.white} 80%,${theme.primary}11 100%)`,
-            borderRadius: "1.5rem",
-          }}
-        >
-          <CardHeader className="flex flex-col sm:flex-row items-center gap-8 py-10">
-            <div className="relative h-28 w-28 rounded-full overflow-hidden border-4 shadow-lg" style={{ borderColor: theme.primary }}>
-              <Image
-                src={profile?.profile || '/avatar_paceholder.jpeg'}
-                alt={profile?.name || "User"}
-                fill
-                className="object-cover"
+      <div className="container mx-auto px-4 py-8 relative z-10 max-w-7xl">
+        {/* Profile Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-10">
+          {/* Profile Card */}
+          <Card 
+            className="lg:col-span-8 border-0 shadow-2xl overflow-hidden bg-gradient-to-br from-white via-indigo-50 to-blue-50"
+            style={{ borderRadius: "1.5rem" }}
+          >
+            <div className="relative">
+              <div 
+                className="absolute inset-0 h-32"
+                style={{
+                  background: `linear-gradient(120deg, ${theme.primary}, ${theme.secondary})`,
+                  opacity: 0.8,
+                }}
               />
-            </div>
-            <div className="flex-1 flex flex-col gap-3 items-center sm:items-start">
-              <div className="flex items-center gap-3">
-                <UserIcon className="h-6 w-6 text-gray-400" />
-                <span className="text-3xl font-extrabold tracking-tight" style={{ color: theme.primary }}>
-                  {profile?.name || "User"}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="h-5 w-5 text-gray-400" />
-                <span className="text-gray-700 text-lg">{profile?.email}</span>
-              </div>
-              <div className="flex gap-3 mt-3 flex-wrap">
-                <Badge style={{ background: theme.primary + "15", color: theme.primary, fontWeight: 600 }}>
-                  {myTests.length} Created
-                </Badge>
-                <Badge style={{ background: theme.secondary + "15", color: theme.secondary, fontWeight: 600 }}>
-                  {attendedTests.length} Attended
-                </Badge>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="ml-2"
-                  style={{ color: theme.primary, borderColor: theme.primary }}
-                  disabled={resetLoading}
-                  onClick={handleForgotPassword}
+              <div className="flex flex-col sm:flex-row items-start pt-12 pb-6 px-6 relative">
+                <div 
+                  className="relative h-24 w-24 sm:h-28 sm:w-28 rounded-full overflow-hidden border-4 shadow-lg -mt-12 z-10 bg-white group"
+                  style={{ borderColor: theme.white }}
                 >
-                  {resetLoading ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    "Forgot Password?"
+                  <Image
+                    src={userData.profile || '/avatar_paceholder.jpeg'}
+                    alt={userData.name || "User"}
+                    fill
+                    className="object-cover"
+                  />
+                  {editMode && (
+                    <button
+                      type="button"
+                      className="absolute bottom-1 right-1 bg-white/80 rounded-full p-1 shadow hover:bg-indigo-100 transition"
+                      onClick={() => fileInputRef.current?.click()}
+                      title="Change photo"
+                    >
+                      <svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536M9 13l6-6m2 2a2.828 2.828 0 11-4-4 2.828 2.828 0 014 4z" /></svg>
+                    </button>
                   )}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  className="ml-2 flex items-center gap-1"
-                  onClick={handleLogout}
-                >
-                  <LogOut className="h-4 w-4" /> Logout
-                </Button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleFileChange}
+                  />
+                  {isUploadingPhoto && (
+                    <div className="absolute inset-0 bg-white/60 flex items-center justify-center rounded-full">
+                      <Loader2 className="animate-spin text-indigo-600" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1 mt-4 sm:mt-0 sm:ml-6 flex flex-col gap-2">
+                  {editMode ? (
+                    <input
+                      type="text"
+                      value={userData.name}
+                      onChange={e => setUserData({ ...userData, name: e.target.value })}
+                      className="text-3xl font-extrabold bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-400 bg-clip-text text-transparent outline-none border-b-2 border-indigo-200 focus:border-indigo-500 transition"
+                    />
+                  ) : (
+                    <h2 className="text-3xl font-extrabold bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-400 bg-clip-text text-transparent">
+                      {userData.name || "User"}
+                    </h2>
+                  )}
+                  <div className="flex items-center gap-2">
+                    <Mail className="h-5 w-5 text-gray-400" />
+                    <span className="text-lg text-gray-700">{profile?.email}</span>
+                  </div>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-3 mt-4 sm:mt-0 sm:self-end">
+                  {editMode ? (
+                    <>
+                      <Button
+                        size="sm"
+                        className="text-xs"
+                        style={{ background: theme.primary, color: "#fff" }}
+                        onClick={handleProfileUpdate}
+                        disabled={isUploadingPhoto}
+                      >
+                        {isUploadingPhoto ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save"}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-xs"
+                        style={{ color: theme.primary, borderColor: theme.primary }}
+                        onClick={() => {
+                          setEditMode(false);
+                          setUserData({
+                            name: profile?.name || '',
+                            profile: profile?.profile || '',
+                          });
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </>
+                  ) : (
+
+                    // ...inside your profile card, after the email and before the edit/save buttons...
+
+<div className="flex items-center gap-2 mt-2">
+  <Button
+                      size="sm"
+                      variant="outline"
+                      className="text-xs"
+                      style={{ color: theme.primary, borderColor: theme.primary }}
+                      onClick={() => setEditMode(true)}
+                    >
+                      Edit Profile
+                    </Button>
+  <Button
+    size="sm"
+    variant="outline"
+    className="text-xs"
+    style={{ color: theme.primary, borderColor: theme.primary }}
+    disabled={resetLoading}
+    onClick={handleForgotPassword}
+  >
+    {resetLoading ? (
+      <Loader2 className="h-4 w-4 animate-spin mr-1" />
+    ) : (
+      "Reset Password"
+    )}
+  </Button>
+  <Button
+    size="sm"
+    variant="destructive"
+    className="text-xs flex items-center gap-1"
+    onClick={handleLogout}
+  >
+    <LogOut className="h-4 w-4" /> Logout
+  </Button>
+
+                    
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </CardHeader>
-        </Card>
-
-        {/* Tabs + Create Test Button */}
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mt-2">
-          <div className="flex gap-4">
+            {/* Stats Cards */}
+            <div className="px-6 pb-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-2">
+                {statsCards.map((stat, idx) => (
+                  <div 
+                    key={idx}
+                    className="rounded-xl p-4 flex items-center gap-4 shadow-sm"
+                    style={{
+                      background: `${stat.color}08`,
+                      border: `1px solid ${stat.color}20`,
+                    }}
+                  >
+                    <div 
+                      className="p-3 rounded-lg" 
+                      style={{ 
+                        background: `${stat.color}15`,
+                        color: stat.color 
+                      }}
+                    >
+                      {stat.icon}
+                    </div>
+                    <div>
+                      <p className="text-gray-600 text-sm">{stat.title}</p>
+                      <p className="text-xl font-bold" style={{ color: stat.color }}>{stat.value}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Card>
+          
+          {/* Create Test Card */}
+          <Card 
+            className="lg:col-span-4 border-0 shadow-2xl flex flex-col justify-between overflow-hidden bg-gradient-to-br from-white via-indigo-50 to-blue-50"
+            style={{
+              borderRadius: "1.5rem",
+            }}
+          >
+            <CardHeader className="pb-2">
+              <CardTitle className="font-bold text-2xl" style={{ color: theme.primary }}>
+                Ready to create a new test?
+              </CardTitle>
+              <p className="text-base text-gray-600 mt-2">
+                Create custom tests to challenge students and measure their knowledge.
+              </p>
+            </CardHeader>
+            <CardContent className="pt-0 flex flex-col items-center pb-6">
+              <div className="w-full h-32 relative my-4">
+                <Image
+                  src="https://static.vecteezy.com/system/resources/thumbnails/010/717/767/small_2x/boy-doing-exam-preparation-illustration-concept-on-white-background-vector.jpg"
+                  alt="Create Test"
+                  fill
+                  className="object-contain opacity-80 bg-blend-darken rounded-xl"
+                />
+              </div>
+              <Link href="/createTest" className="w-full">
+                <Button
+                  className="flex items-center gap-2 w-full font-semibold shadow-md"
+                  style={{
+                    background: `linear-gradient(90deg, ${theme.primary} 60%, ${theme.secondary} 100%)`,
+                    color: "#fff",
+                    borderRadius: "0.75rem",
+                    fontSize: "1.1rem"
+                  }}
+                >
+                  <PlusCircle className="h-5 w-5" /> Create New Test
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
+        
+        {/* Tabs Navigation */}
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex gap-3 bg-white rounded-full p-1 shadow-sm border" style={{ borderColor: `${theme.primary}20` }}>
             <button
-              className={`px-5 py-2 rounded-full font-semibold transition-all text-base ${
-                activeTab === 'created'
-                  ? 'shadow text-white'
-                  : 'text-gray-600'
-              }`}
+              className={`px-6 py-2 rounded-full font-semibold transition-all text-base flex items-center gap-2`}
               style={{
-                background: activeTab === 'created' ? theme.primary : theme.white,
-                border: `2px solid ${theme.primary}`,
+                background: activeTab === 'created' ? theme.primary : 'transparent',
+                color: activeTab === 'created' ? 'white' : 'gray',
               }}
               onClick={() => setActiveTab('created')}
             >
-              My Test Series
+              <BookOpen className="h-5 w-5" /> My Tests
             </button>
             <button
-              className={`px-5 py-2 rounded-full font-semibold transition-all text-base ${
-                activeTab === 'attended'
-                  ? 'shadow text-white'
-                  : 'text-gray-600'
-              }`}
+              className={`px-6 py-2 rounded-full font-semibold transition-all text-base flex items-center gap-2`}
               style={{
-                background: activeTab === 'attended' ? theme.secondary : theme.white,
-                border: `2px solid ${theme.secondary}`,
+                background: activeTab === 'attended' ? theme.secondary : 'transparent',
+                color: activeTab === 'attended' ? 'white' : 'gray',
               }}
               onClick={() => setActiveTab('attended')}
             >
-              Attended Tests
+              <CheckCircle className="h-5 w-5" /> Attended Tests
             </button>
           </div>
-          <Link href="/createTest">
-            <Button
-              className="flex items-center gap-2 font-semibold shadow-md"
-              style={{
-                background: `linear-gradient(90deg, ${theme.primary} 60%, ${theme.secondary} 100%)`,
-                color: "#fff",
-                borderRadius: "2rem",
-                paddingLeft: "1.5rem",
-                paddingRight: "1.5rem",
-                fontSize: "1.1rem"
-              }}
-            >
-              <PlusCircle className="h-5 w-5" /> Create Test
-            </Button>
-          </Link>
+          
+          <div className="hidden sm:block">
+            <Link href="/test">
+              <Button
+                variant="outline"
+                className="flex items-center gap-2 font-medium"
+                style={{
+                  color: theme.primary,
+                  borderColor: `${theme.primary}40`,
+                }}
+              >
+                Explore More Tests
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Tab Content */}
-        <div>
-          {activeTab === 'created' && (
-            <Card
-              className="shadow-lg border-0"
-              style={{
-                background: `linear-gradient(120deg,${theme.white} 80%,${theme.primary}11 100%)`,
-                borderRadius: "1.25rem",
-              }}
-            >
-              <CardContent className="py-6">
-                {loading ? (
-                  <div className="flex justify-center py-8">
-                    <Loader2 className="h-8 w-8 animate-spin" style={{ color: theme.primary }} />
-                  </div>
-                ) : myTests.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <AlertCircle className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                    <p>No test series created yet.</p>
-                    <Link href="/createTest">
-                      <Button className="mt-3" style={{ background: theme.primary, color: theme.white }}>
-                        <PlusCircle className="h-5 w-5 mr-1" /> Create New Test Series
+        {loading ? (
+          <div className="flex justify-center items-center h-64 bg-white rounded-xl shadow-sm">
+            <Loader2 className="h-8 w-8 animate-spin" style={{ color: theme.primary }} />
+          </div>
+        ) : (
+          <>
+            {/* Created Tests */}
+            {activeTab === 'created' && (
+              <>
+                {myTests.length === 0 ? (
+                  <div className="bg-white rounded-xl shadow-sm p-10 text-center">
+                    <div className="mb-4">
+                      <AlertCircle className="h-12 w-12 mx-auto" style={{ color: `${theme.primary}60` }} />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2 text-gray-800">No tests created yet</h3>
+                    <p className="text-gray-600 mb-6">Start creating your first test series to challenge students.</p>
+                    <Link className='flex justify-center' href="/createTest">
+                      <Button
+                        className="flex items-center gap-2 font-medium"
+                        style={{
+                          background: theme.primary,
+                          color: "#fff",
+                        }}
+                      >
+                        <PlusCircle className="h-4 w-4" /> Create First Test
                       </Button>
                     </Link>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {myTests.map(test => (
                       <Card
                         key={test._id}
-                        className="relative group border-0 shadow-md hover:shadow-xl transition-all duration-200"
+                        className="overflow-hidden border-0 shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.025]"
                         style={{
+                          borderRadius: "1.25rem",
                           background: `linear-gradient(120deg,${theme.white} 80%,${theme.primary}11 100%)`,
                           border: `1.5px solid ${theme.primary}22`,
-                          borderRadius: "1.25rem",
                         }}
                       >
-                        <div className="relative h-36 w-full overflow-hidden ">
+                        <div className="relative h-40 w-full">
                           <Image
                             src={test.thumbnail || '/placeholder.webp'}
                             alt={test.title}
                             fill
                             className="object-cover"
-                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-80 pointer-events-none" />
-                          <div className="absolute bottom-0 left-0 right-0 p-2 flex items-center gap-3 text-white text-xs z-10">
-                            <Clock className="h-4 w-4 ml-3" />
+                          <div 
+                            className="absolute inset-0 bg-gradient-to-b from-transparent to-black/70"
+                          />
+                          <div className="absolute top-3 right-3">
+                            <Badge 
+                              className="font-medium" 
+                              style={{ 
+                                background: theme.white,
+                                color: theme.primary
+                              }}
+                            >
+                              {test.category}
+                            </Badge>
+                          </div>
+                          <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 text-white text-xs">
+                            <Calendar className="h-3 w-3" />
                             <span>{new Date(test.createdAt).toLocaleDateString()}</span>
                           </div>
                         </div>
-                        <CardHeader className="pb-2">
-                          <CardTitle className="line-clamp-2 text-lg" style={{ color: theme.primary }}>
+                        
+                        <CardContent className="pt-4">
+                          <h3 
+                            className="font-bold text-lg mb-2 line-clamp-1"
+                            style={{ color: theme.primary }}
+                          >
                             {test.title}
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-sm text-gray-600 line-clamp-2 mb-3">{test.description}</p>
-                          <div className="flex flex-wrap gap-2 mb-3">
-                            <Badge style={{ color: theme.primary, background: theme.primary + "10" }}>
-                              {test.category}
-                            </Badge>
-                            {test.tags?.slice(0, 2).map(tag => (
-                              <Badge key={tag} className="bg-blue-50 text-blue-600">{tag}</Badge>
+                          </h3>
+                          <p className="text-sm text-gray-600 line-clamp-2 mb-4">{test.description}</p>
+                          
+                          <div className="flex flex-wrap gap-1 mb-4">
+                            {test.tags?.slice(0, 3).map((tag: string) => (
+                              <Badge 
+                                key={tag} 
+                                className="text-xs" 
+                                style={{ 
+                                  background: `${theme.secondary}15`,
+                                  color: theme.secondary
+                                }}
+                              >
+                                {tag}
+                              </Badge>
                             ))}
-                            {test.tags?.length > 2 && (
-                              <Badge className="bg-gray-100 text-gray-600">+{test.tags.length - 2}</Badge>
+                            {test.tags?.length > 3 && (
+                              <Badge className="text-xs bg-gray-100 text-gray-600">+{test.tags.length - 3}</Badge>
                             )}
                           </div>
-                          <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: theme.primary + "22" }}>
-                            <Link href={`/createTest?testId=${test._id}`}>
-                              <Button size="sm" variant="outline" className="flex items-center gap-1" style={{ color: theme.primary, borderColor: theme.primary }}>
-                                <Edit className="h-4 w-4" /> Edit
+                          
+                          <div className="flex items-center justify-between gap-2 pt-3 border-t" style={{ borderColor: `${theme.primary}15` }}>
+                            <Link href={`/createTest?testId=${test._id}`} className="flex-1">
+                              <Button 
+                                size="sm" 
+                                className="w-full flex items-center justify-center gap-1"
+                                style={{ 
+                                  background: theme.primary,
+                                  color: theme.white
+                                }}
+                              >
+                                <Edit className="h-3 w-3" /> Edit
                               </Button>
                             </Link>
                             <Button
@@ -344,9 +592,9 @@ export default function ProfilePage() {
                               onClick={() => handleDeleteTest(test._id)}
                             >
                               {deletingId === test._id ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
+                                <Loader2 className="h-3 w-3 animate-spin" />
                               ) : (
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="h-3 w-3" />
                               )}
                               Delete
                             </Button>
@@ -356,96 +604,139 @@ export default function ProfilePage() {
                     ))}
                   </div>
                 )}
-              </CardContent>
-            </Card>
-          )}
+              </>
+            )}
 
-          {activeTab === 'attended' && (
-            <Card
-              className="shadow-lg border-0"
-              style={{
-                background: `linear-gradient(120deg,${theme.white} 80%,${theme.secondary}11 100%)`,
-                borderRadius: "1.25rem",
-              }}
-            >
-              <CardContent className="py-6">
-                {loading ? (
-                  <div className="flex justify-center py-8">
-                    <Loader2 className="h-8 w-8 animate-spin" style={{ color: theme.secondary }} />
-                  </div>
-                ) : attendedTests.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <CheckCircle className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                    <p>No test series attended yet.</p>
+            {/* Attended Tests */}
+            {activeTab === 'attended' && (
+              <>
+                {attendedTests.length === 0 ? (
+                  <div className="bg-white rounded-xl shadow-sm p-10 text-center">
+                    <div className="mb-4">
+                      <Trophy className="h-12 w-12 mx-auto" style={{ color: `${theme.secondary}60` }} />
+                    </div>
+                    <h3 className="text-lg font-semibold mb-2 text-gray-800">No tests attended yet</h3>
+                    <p className="text-gray-600 mb-6">Explore available tests and challenge yourself.</p>
                     <Link href="/test">
-                      <Button className="mt-3" style={{ background: theme.secondary, color: theme.white }}>
-                        Explore Test Series
+                      <Button
+                        className="flex items-center gap-2 font-medium"
+                        style={{
+                          background: theme.secondary,
+                          color: "#fff",
+                        }}
+                      >
+                        Explore Tests
                       </Button>
                     </Link>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {attendedTests.map((attended) => {
                       const test = attended.test;
+                      const isCompleted = attended.completed;
+                      const passStatus = attended.percentageScore >= 70;
+                      
                       return (
                         <Card
                           key={attended._id}
-                          className="relative border-0 shadow-md transition-all duration-200 hover:shadow-2xl hover:scale-[1.025] group"
+                          className="overflow-hidden border-0 shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.025]"
                           style={{
+                            borderRadius: "1.25rem",
                             background: `linear-gradient(120deg,${theme.white} 80%,${theme.secondary}11 100%)`,
                             border: `1.5px solid ${theme.secondary}22`,
-                            borderRadius: "1.25rem",
                           }}
                         >
-                          <div className="relative h-36 w-full overflow-hidden ">
+                          <div className="relative h-40 w-full">
                             <Image
                               src={test.thumbnail || '/placeholder.webp'}
                               alt={test.title}
                               fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-300"
-                              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                              className="object-cover"
                             />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-80 pointer-events-none group-hover:opacity-90 transition-opacity duration-300" />
-                            <div className="absolute bottom-0 left-0 right-0 p-2 flex items-center gap-3 text-white text-xs z-10">
-                              <Clock className="h-4 w-4 ml-3" />
-                              <span>{new Date(test.createdAt).toLocaleDateString()}</span>
+                            <div 
+                              className="absolute inset-0 bg-gradient-to-b from-transparent to-black/70"
+                            />
+                            <div className="absolute top-3 right-3">
+                              <Badge 
+                                className="font-medium" 
+                                style={{ 
+                                  background: isCompleted ? (passStatus ? '#dcfce7' : '#fee2e2') : '#f3f4f6',
+                                  color: isCompleted ? (passStatus ? '#16a34a' : '#dc2626') : '#6b7280'
+                                }}
+                              >
+                                {isCompleted ? (passStatus ? 'Passed' : 'Failed') : 'In Progress'}
+                              </Badge>
                             </div>
-                          </div>
-                          <CardHeader className="pb-2">
-                            <CardTitle className="line-clamp-2 text-lg" style={{ color: theme.secondary }}>
-                              {test.title}
-                            </CardTitle>
-                          </CardHeader>
-                          <CardContent>
-                            <p className="text-sm text-gray-600 line-clamp-2 mb-3">{test.description}</p>
-                            <div className="flex flex-wrap gap-2 mb-3">
-                              <Badge style={{ color: theme.secondary, background: theme.secondary + "10" }}>
+                            <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                              <div className="flex items-center gap-2 text-white text-xs">
+                                <Calendar className="h-3 w-3" />
+                                <span>{new Date(test.createdAt).toLocaleDateString()}</span>
+                              </div>
+                              <Badge 
+                                className="text-xs font-medium"
+                                style={{ background: theme.white, color: theme.secondary }}
+                              >
                                 {test.category}
                               </Badge>
+                            </div>
+                          </div>
+                          
+                          <CardContent className="pt-4">
+                            <h3 
+                              className="font-bold text-lg mb-1 line-clamp-1"
+                              style={{ color: theme.secondary }}
+                            >
+                              {test.title}
+                            </h3>
+                            
+                            <div className="flex justify-between items-center mb-3">
+                              <div 
+                                className="text-sm font-medium rounded-md px-2 py-0.5"
+                                style={{
+                                  background: `${theme.secondary}10`,
+                                  color: theme.secondary
+                                }}
+                              >
+                                Score: {attended.score}/{test.questions?.length || 0}
+                              </div>
+                              <span className="text-sm text-gray-600">
+                                {attended.percentageScore || 0}%
+                              </span>
+                            </div>
+                            
+                            <p className="text-sm text-gray-600 line-clamp-2 mb-4">{test.description}</p>
+                            
+                            <div className="flex flex-wrap gap-1 mb-4">
                               {test.tags?.slice(0, 2).map((tag: string) => (
-                                <Badge key={tag} className="bg-blue-50 text-blue-600">{tag}</Badge>
+                                <Badge 
+                                  key={tag} 
+                                  className="text-xs" 
+                                  style={{ 
+                                    background: `${theme.primary}15`,
+                                    color: theme.primary
+                                  }}
+                                >
+                                  {tag}
+                                </Badge>
                               ))}
                               {test.tags?.length > 2 && (
-                                <Badge className="bg-gray-100 text-gray-600">+{test.tags.length - 2}</Badge>
+                                <Badge className="text-xs bg-gray-100 text-gray-600">+{test.tags.length - 2}</Badge>
                               )}
                             </div>
-                            <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: theme.secondary + "22" }}>
-                              <Link href={`/test/${test._id}`}>
-                                <Button size="sm" variant="outline" className="flex items-center gap-1" style={{ color: theme.secondary, borderColor: theme.secondary }}>
-                                  <Eye className="h-4 w-4" /> View
+                            
+                            <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: `${theme.secondary}15` }}>
+                              <Link href={`/test/${test._id}`} className="w-full">
+                                <Button 
+                                  size="sm" 
+                                  className="w-full flex items-center justify-center gap-1"
+                                  style={{ 
+                                    background: theme.secondary,
+                                    color: theme.white
+                                  }}
+                                >
+                                  <Eye className="h-3 w-3" /> {isCompleted ? 'Review Test' : 'Continue Test'}
                                 </Button>
                               </Link>
-                              <div className="flex flex-col items-end">
-                                <Badge className="bg-green-100 text-green-700 mb-1">
-                                  Attended
-                                </Badge>
-                                <span className="text-xs text-gray-500">
-                                  Score: {attended.score}/{test.questions?.length || 0} ({attended.percentageScore || 0}%)
-                                </span>
-                                <span className="text-xs text-gray-500">
-                                  {attended.completed ? "Completed" : "In Progress"}
-                                </span>
-                              </div>
                             </div>
                           </CardContent>
                         </Card>
@@ -453,33 +744,41 @@ export default function ProfilePage() {
                     })}
                   </div>
                 )}
-              </CardContent>
-            </Card>
-          )}
+              </>
+            )}
+          </>
+        )}
+        
+        {/* Mobile Action Button */}
+        <div className="sm:hidden fixed bottom-6 right-6 z-20">
+          <Link href="/test">
+            <Button
+              className="rounded-full h-14 w-14 flex items-center justify-center shadow-lg"
+              style={{
+                background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`,
+              }}
+            >
+              <PlusCircle className="h-6 w-6" />
+            </Button>
+          </Link>
         </div>
       </div>
-      {/* Right: Feature/Static Side */}
-      <div className="hidden md:flex flex-col items-center w-1/3 px-8 py-12 bg-gradient-to-br from-blue-50 via-white to-purple-100 shadow-2xl rounded-l-3xl relative z-10">
-        <div className="mb-8">
-          <img
-            src="https://img.freepik.com/premium-vector/students-immerse-themselves-books-sharing-insights-ideas-colorful-learning-environment-education-learning-concept-likes-read-people-read-students-study_538213-157433.jpg"
-            alt="Profile Illustration"
-            width={280}
-            height={180}
-            style={{ mixBlendMode: "multiply", borderRadius: "1.5rem" }}
-          />
-        </div>
-        <h3 className="text-2xl font-bold mb-2" style={{ color: theme.primary }}>Your Profile</h3>
-        <p className="text-gray-600 text-center mb-6 text-base">
-          Manage your test series, see your progress, and explore new challenges.
-        </p>
-        <ul className="space-y-3 text-gray-700 text-base">
-          <li>🌟 <span style={{ color: theme.primary }}>Create</span> and edit your own test series</li>
-          <li>📝 <span style={{ color: theme.secondary }}>Attempt</span> tests and track your results</li>
-          <li>🔒 Secure your account with password reset</li>
-          <li>🚀 Explore more tests and grow your skills</li>
-        </ul>
-      </div>
+      <style jsx>{`
+        @keyframes pulse-slow {
+          0%, 100% { opacity: .30; }
+          50% { opacity: .45; }
+        }
+        .animate-pulse-slow {
+          animation: pulse-slow 4s infinite;
+        }
+        @keyframes pulse-slower {
+          0%, 100% { opacity: .30; }
+          50% { opacity: .55; }
+        }
+        .animate-pulse-slower {
+          animation: pulse-slower 7s infinite;
+        }
+      `}</style>
     </div>
   );
 }

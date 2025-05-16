@@ -75,7 +75,7 @@ export default function HomeForthSection() {
           {/* Top Image */}
           <div className="relative group">
             <img
-              src="https://easy-peasy.ai/cdn-cgi/image/quality=80,format=auto,width=700/https://media.easy-peasy.ai/3832dedc-8d00-4575-a677-4ca0eef06e2d/a30f3b8f-950f-4e73-84f3-2a61e67a4c6a.png"
+              src="/home/five.avif"
               alt="Media Learning Illustration Top"
               className="w-[320px] md:w-[400px] rounded-3xl shadow-2xl transition-transform duration-300 group-hover:scale-105 "
               style={{ mixBlendMode: 'multiply' }}
@@ -93,7 +93,7 @@ export default function HomeForthSection() {
           {/* Bottom Image */}
           <div className="relative group">
             <img
-              src="https://miro.medium.com/v2/resize:fit:1024/1*RWae2rL7Fsb94yyfWQDoWQ.jpeg"
+              src="/home/six.jpg"
               alt="Media Learning Illustration Bottom"
               className="w-[320px] md:w-[400px] rounded-3xl shadow-2xl transition-transform duration-300 group-hover:scale-105"
               style={{ mixBlendMode: 'multiply' }}
@@ -112,7 +112,7 @@ export default function HomeForthSection() {
         {/* Single image for small/medium screens */}
         <div className="lg:hidden relative group">
           <img
-            src="https://easy-peasy.ai/cdn-cgi/image/quality=80,format=auto,width=700/https://media.easy-peasy.ai/3832dedc-8d00-4575-a677-4ca0eef06e2d/a30f3b8f-950f-4e73-84f3-2a61e67a4c6a.png"
+            src="/home/five.avif"
             alt="Media Learning Illustration"
             className="w-[300px] md:w-[400px] rounded-3xl shadow-2xl group-hover:scale-105 transition-transform duration-300"
             style={{ mixBlendMode: 'multiply' }}

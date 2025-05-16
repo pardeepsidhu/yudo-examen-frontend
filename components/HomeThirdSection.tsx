@@ -28,7 +28,7 @@ export default function HomeThirdSection() {
         <div className="relative flex items-center justify-center mt-10 mb-8 w-full min-h-[260px] sm:min-h-[340px]">
           {/* Central Main Image (Code Editor Illustration) */}
           <img
-            src="https://miro.medium.com/v2/resize:fit:1024/1*s-FP0zd-LSqcMPnIi3hnrQ.jpeg"
+            src="/home/four.jpg"
             alt="Code Editor Illustration"
             className="w-[160px] xs:w-[200px] sm:w-[260px] md:w-[340px] lg:w-[400px] rounded-3xl shadow-2xl z-10 animate-fade-in-up hover:scale-105 transition-transform duration-300"
             // style={{ mixBlendMode: 'multiply' }}

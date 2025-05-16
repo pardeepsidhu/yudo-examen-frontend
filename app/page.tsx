@@ -1,5 +1,6 @@
 // import Image from "next/image";
 
+import { Footer } from "@/components/footer";
 import { HomeFirstSection } from "@/components/HomeFirstSection";
 import HomeForthSection from "@/components/HomeForthSection";
 import HomeSecondSection from "@/components/HomeSecondSection";
@@ -12,6 +13,7 @@ export default function Home() {
    <HomeSecondSection />
    <HomeThirdSection />
    <HomeForthSection />
+   <Footer />
    </>
   );
 }

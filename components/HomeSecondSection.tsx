@@ -20,7 +20,7 @@ export default function HomeSecondSection() {
         {/* Top Image */}
         <div className="relative group">
           <img
-            src="https://photos.peopleimages.com/picture/202304/2811288-face-woman-and-futuristic-3d-profile-in-studio-isolated-on-a-background-or-backdrop.-person-cyber-ai-or-bot-droid-or-circuit-digital-cyborg-or-render-robotic-or-artificial-intelligence-generated-fit_400_400.jpg"
+            src="/home/two.jpg"
             alt="AI Exam Illustration Top"
             className="w-[320px] md:w-[400px] rounded-3xl shadow-2xl group-hover:scale-105 transition-transform duration-300"
             style={{ mixBlendMode: 'multiply' }}
@@ -33,7 +33,7 @@ export default function HomeSecondSection() {
         {/* Bottom Image */}
         <div className="relative group">
           <img
-            src="https://png.pngtree.com/thumb_back/fh260/background/20240216/pngtree-3d-artificial-intelligence-background-image_15627110.jpg"
+            src="/home/three.jpg"
             alt="AI Exam Illustration Bottom"
             className="w-[320px] md:w-[400px] rounded-3xl shadow-2xl group-hover:scale-105 transition-transform duration-300"
             style={{ mixBlendMode: 'multiply' }}
@@ -49,7 +49,7 @@ export default function HomeSecondSection() {
       <div className="relative z-10 flex-1 flex justify-center items-center mb-12 md:mb-0 animate-fade-in-up delay-200 lg:hidden">
         <div className="relative group">
           <img
-            src="https://photos.peopleimages.com/picture/202304/2811288-face-woman-and-futuristic-3d-profile-in-studio-isolated-on-a-background-or-backdrop.-person-cyber-ai-or-bot-droid-or-circuit-digital-cyborg-or-render-robotic-or-artificial-intelligence-generated-fit_400_400.jpg"
+            src="/home/two.jpg"
             alt="AI Exam Illustration"
             className="w-[320px] md:w-[400px] rounded-3xl shadow-2xl group-hover:scale-105 transition-transform duration-300"
             style={{ mixBlendMode: 'multiply' }}

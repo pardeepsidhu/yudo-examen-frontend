@@ -7,7 +7,7 @@ import { ArrowRight, PlayCircle, Sparkles } from 'lucide-react';
 
 export function HomeFirstSection() {
   return (
-    <section className="relative min-h-[85vh] flex flex-col md:flex-row items-center justify-between px-6 md:px-20 py-20 overflow-hidden bg-gradient-to-br from-blue-100 via-white to-purple-100">
+    <section className="relative min-h-[85vh] flex flex-col md:flex-row items-center justify-between px-6 md:px-20 pt-10 pb-20 sm:pt-20 overflow-hidden bg-gradient-to-br from-blue-100 via-white to-purple-100">
       {/* Decorative animated blobs */}
       <div className="absolute top-0 left-0 w-80 h-80 bg-blue-300 rounded-full opacity-25 blur-3xl animate-pulse-slow pointer-events-none" style={{ zIndex: 0 }} />
       <div className="absolute bottom-0 right-0 w-[30rem] h-[30rem] bg-purple-300 rounded-full opacity-25 blur-3xl animate-pulse-slower pointer-events-none" style={{ zIndex: 0 }} />
@@ -22,7 +22,7 @@ export function HomeFirstSection() {
       <div className="relative z-10 flex-1 flex flex-col gap-8 items-center md:items-start">
         <div className="flex items-center gap-3 animate-fade-in-up">
           <Sparkles className="h-8 w-8 text-indigo-400 animate-spin-slow" />
-          <span className="uppercase tracking-widest text-indigo-600 font-semibold text-sm bg-indigo-50 px-3 py-1 rounded-full shadow-sm">
+          <span className="uppercase tracking-widest text-indigo-600 font-semibold text-sm bg-indigo-50 px-2 sm:px-3 py-1 rounded-full shadow-sm">
             Next-Gen Learning Platform
           </span>
         </div>
@@ -58,7 +58,7 @@ export function HomeFirstSection() {
       <div className="relative z-10 flex-1 flex justify-center items-center mt-12 md:mt-0 animate-fade-in-up delay-300">
         <div className="relative group">
           <img
-            src="https://s3.wns.com/S3_5/Images/Capabilities/Gen-AI/Sanjay-Jain%27s-coverage-in-the-Economic-Times1.jpg"
+            src="/home/one.jpg"
             alt="Online Exam Illustration"
             className="w-[350px] md:w-[420px] rounded-3xl shadow-2xl group-hover:scale-105 transition-transform duration-300"
             style={{ mixBlendMode: 'multiply' }}

@@ -603,7 +603,7 @@ export default function CreateTestSeries() {
       className="min-h-screen p-2 sm:p-4 md:p-6"
       style={{
         background: theme.neutral,
-        borderRadius: "1.5rem",
+       
       }}
     >
       {/* Header */}

@@ -114,3 +114,28 @@ export const getMyProfile = async () => {
         return { error: "Some error occurred while fetching profile" };
     }
 };
+
+
+// ...existing code...
+
+export const updateProfile = async (data: { name?: string; profile?: string }) => {
+    try {
+        const token = getToken();
+        if (!token) {
+            return { error: "Not authenticated" };
+        }
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/user/updateProfile`, {
+            method: "PUT",
+            headers: {
+                "content-type": "application/json",
+                "auth-token": token
+            },
+            body: JSON.stringify(data)
+        });
+        return await res.json();
+    } catch (error) {
+        console.log(error);
+        return { error: "Some error occurred while updating profile" };
+    }
+};
+
