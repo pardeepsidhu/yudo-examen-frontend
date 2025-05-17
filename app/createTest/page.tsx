@@ -47,10 +47,15 @@ export default function CreateTestSeries() {
  const [testId, setTestId] = useState<string | null>(null);
 
   useEffect(() => {
+    if(localStorage.getItem("user")){
     const params = new URLSearchParams(window.location.search);
     const id = params.get('testId');
     setTestId(id);
-  }, []);
+    }
+    else{
+      router.push('/login')
+    }
+  }, [router]);
     
   
   // Test series state

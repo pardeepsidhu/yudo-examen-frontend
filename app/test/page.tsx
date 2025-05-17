@@ -12,6 +12,7 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 interface TestSeries {
   _id: string;
@@ -30,6 +31,7 @@ interface TestSeries {
 }
 
 export default function ExplorePage() {
+  
   const { theme } = useTheme();
   const [testSeries, setTestSeries] = useState<TestSeries[]>([]);
   const [loading, setLoading] = useState(false);
@@ -41,6 +43,13 @@ export default function ExplorePage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [likedSeries, setLikedSeries] = useState<Set<string>>(new Set());
+  const router = useRouter();
+   useEffect(() => {
+      if(!localStorage.getItem("user")){
+     router.push("/login");
+      }
+     
+    }, [router]);
 
   // Debounce search
   useEffect(() => {
