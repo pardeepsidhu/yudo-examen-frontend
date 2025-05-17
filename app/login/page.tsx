@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Mail, 
@@ -63,7 +63,31 @@ export default function LoginSignup() {
   //   if(token)setView("resetPass")
   // },[])
   // Google Auth Setup
-  useEffect(() => {
+
+
+  const handleGoogleResponse = useCallback(async (response: { clientId: string, credential: string }) => {
+    setIsLoading(true);
+    try {
+      const res = await googleLogin(response?.credential);
+      if (res.error) {
+        showAlert('error', res.error || "some error internal accured");
+      } else {
+        showAlert('success', 'Successfully logged in with Google!');
+        setView('success');
+        localStorage.setItem("user", JSON.stringify(res));
+        setTimeout(() => {
+          router.push("/");
+        }, 1500);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      showAlert('error', 'Google authentication failed. Please try again.');
+      console.error("Google auth error:", error);
+    }
+  }, [ setView, router]);
+
+    useEffect(() => {
     // Load Google Identity Services script
     const loadGoogleScript = () => {
       const script = document.createElement('script');
@@ -107,35 +131,7 @@ export default function LoginSignup() {
         googleScript.remove();
       }
     };
-  }, [view]);
-
-  const handleGoogleResponse = async (response:{clientId:string, credential:string}) => {
-   setIsLoading(true);
-    
-    try {
-     
-      const res = await googleLogin(response?.credential)
-      if(res.error){
-        showAlert('error', res.error || "some error internal accured");
-      }
-      else{
-          showAlert('success', 'Successfully logged in with Google!');
-            setView('success')
-            localStorage.setItem("user",JSON.stringify(res))
-          setTimeout(() => {
-            router.push("/")
-          }, 1500);
-      }
-     
-   
-    
-           setIsLoading(false);
-    } catch (error) {
-      setIsLoading(false);
-      showAlert('error', 'Google authentication failed. Please try again.');
-      console.error("Google auth error:", error);
-    }
-  };
+  }, [view,handleGoogleResponse]);
 
   // Handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

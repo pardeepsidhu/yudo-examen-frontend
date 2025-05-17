@@ -1,7 +1,7 @@
 'use client';
 
 import { Languages } from "lucide-react";
-
+import Image from "next/image";
 export function AboutSecondSection() {
   return (
     <section className="relative min-h-[60vh] flex flex-col md:flex-row items-center justify-center px-4 sm:px-10 md:px-20 py-16 sm:py-24 overflow-hidden bg-gradient-to-br from-sky-50 via-white to-indigo-100">
@@ -83,12 +83,16 @@ export function AboutSecondSection() {
         {/* Right: Illustration */}
         <div className="flex-1 flex flex-col items-center justify-center gap-8">
           <div className="relative group">
-            <img
+           <Image
               src="/about/two.jpg"
               alt="Multilingual and Accessibility Illustration"
+              width={420}
+              height={320}
               className="w-[320px] md:w-[420px] rounded-3xl shadow-2xl border-4 border-white transition-transform duration-300 group-hover:scale-105 group-hover:shadow-sky-200"
               style={{ mixBlendMode: 'multiply', boxShadow: '0 12px 40px 0 rgba(14,165,233,0.13)' }}
+              priority
             />
+          
             {/* Floating badge */}
             <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20">
   <span className="flex items-center px-3 py-1 rounded-full bg-gradient-to-r from-sky-400 via-indigo-400 to-blue-400 text-xs sm:text-sm md:text-lg shadow-lg tracking-wide border-2 border-white/70 animate-bounce-slow hover:scale-105 transition-transform duration-200 select-none text-white">

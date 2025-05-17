@@ -1,6 +1,7 @@
 'use client';
 
 import { Sparkles, BrainCircuit, FileText, Lightbulb, Wand2 } from 'lucide-react';
+import Image from 'next/image';
 
 export default function HomeSecondSection() {
   return (
@@ -19,11 +20,14 @@ export default function HomeSecondSection() {
       <div className="hidden lg:flex flex-col items-center justify-center flex-1 relative z-10 gap-12">
         {/* Top Image */}
         <div className="relative group">
-          <img
+          <Image
             src="/home/two.jpg"
             alt="AI Exam Illustration Top"
+            width={400}
+            height={300}
             className="w-[320px] md:w-[400px] rounded-3xl shadow-2xl group-hover:scale-105 transition-transform duration-300"
             style={{ mixBlendMode: 'multiply' }}
+            priority
           />
           <div className="absolute top-8 left-8 bg-gradient-to-r from-indigo-500 to-purple-400 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 animate-bounce-slow hover:scale-110 transition-transform duration-200 cursor-pointer">
             <Sparkles className="h-4 w-4" />
@@ -32,11 +36,14 @@ export default function HomeSecondSection() {
         </div>
         {/* Bottom Image */}
         <div className="relative group">
-          <img
+          <Image
             src="/home/three.jpg"
             alt="AI Exam Illustration Bottom"
+            width={400}
+            height={300}
             className="w-[320px] md:w-[400px] rounded-3xl shadow-2xl group-hover:scale-105 transition-transform duration-300"
             style={{ mixBlendMode: 'multiply' }}
+            priority
           />
           <div className="absolute top-8 right-8 bg-gradient-to-r from-indigo-500 to-purple-400 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 animate-bounce-slow hover:scale-110 transition-transform duration-200 cursor-pointer">
             <Sparkles className="h-4 w-4" />
@@ -48,11 +55,14 @@ export default function HomeSecondSection() {
       {/* Single image for small/medium screens */}
       <div className="relative z-10 flex-1 flex justify-center items-center mb-12 md:mb-0 animate-fade-in-up delay-200 lg:hidden">
         <div className="relative group">
-          <img
+          <Image
             src="/home/two.jpg"
             alt="AI Exam Illustration"
+            width={400}
+            height={300}
             className="w-[320px] md:w-[400px] rounded-3xl shadow-2xl group-hover:scale-105 transition-transform duration-300"
             style={{ mixBlendMode: 'multiply' }}
+            priority
           />
           <div className="absolute top-8 left-8 bg-gradient-to-r from-indigo-500 to-purple-400 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2 animate-bounce-slow hover:scale-110 transition-transform duration-200 cursor-pointer">
             <Sparkles className="h-4 w-4" />

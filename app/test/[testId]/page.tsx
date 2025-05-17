@@ -1,8 +1,9 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 import { Card } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -50,7 +51,7 @@ export default function TestPage() {
   const [translatedSolution, setTranslatedSolution] = useState("");
   // const [text, setText] = useState("");
   // setSelectedTranslation("en")
-  const fetchTest = async () => {
+  const fetchTest = useCallback(async () => {
     try {
       if (!params.testId) {
         throw new Error("Test ID not found in URL parameters");
@@ -73,11 +74,11 @@ export default function TestPage() {
       setTranslatedDesctription("");
       setTranslatedSolution("");
     }
-  };
+  }, [params.testId]); // Only depends on params.testId
 
   useEffect(() => {
     fetchTest();
-  }, [params.testId]);
+  }, [params.testId, fetchTest]);
 
   const handleOptionSelect = async (option: string) => {
     if (
@@ -940,13 +941,23 @@ console.log(currentQuestion)
                                                 elem.style.alignItems = "center";
                                                 elem.style.overflow = "auto";
 
+                                                // Use Image for preview
+                                                const imgWrapper = document.createElement("div");
+                                                imgWrapper.style.position = "relative";
+                                                imgWrapper.style.maxWidth = "95vw";
+                                                imgWrapper.style.maxHeight = "95vh";
+                                                imgWrapper.style.display = "flex";
+                                                imgWrapper.style.alignItems = "center";
+                                                imgWrapper.style.justifyContent = "center";
+
                                                 const img = document.createElement("img");
                                                 img.src = currentQuestion.image || "";
                                                 img.style.maxWidth = "95vw";
                                                 img.style.maxHeight = "95vh";
                                                 img.style.objectFit = "contain";
 
-                                                elem.appendChild(img);
+                                                imgWrapper.appendChild(img);
+                                                elem.appendChild(imgWrapper);
 
                                                 elem.onclick = () => document.body.removeChild(elem);
                                                 document.body.appendChild(elem);
@@ -967,9 +978,11 @@ console.log(currentQuestion)
                                               </svg>
                                             </button>
                                           </div>
-                                          <img
+                                          <Image
                                             src={currentQuestion.image}
                                             alt="Question image"
+                                            width={800}
+                                            height={240}
                                             className="w-full h-48 sm:h-60 rounded-md object-cover cursor-pointer"
                                             onClick={() => {
                                               const elem = document.createElement("div");
@@ -985,17 +998,28 @@ console.log(currentQuestion)
                                               elem.style.alignItems = "center";
                                               elem.style.overflow = "auto";
 
+                                              // Use Image for preview
+                                              const imgWrapper = document.createElement("div");
+                                              imgWrapper.style.position = "relative";
+                                              imgWrapper.style.maxWidth = "95vw";
+                                              imgWrapper.style.maxHeight = "95vh";
+                                              imgWrapper.style.display = "flex";
+                                              imgWrapper.style.alignItems = "center";
+                                              imgWrapper.style.justifyContent = "center";
+
                                               const img = document.createElement("img");
                                               img.src = currentQuestion.image || "";
                                               img.style.maxWidth = "95vw";
                                               img.style.maxHeight = "95vh";
                                               img.style.objectFit = "contain";
 
-                                              elem.appendChild(img);
+                                              imgWrapper.appendChild(img);
+                                              elem.appendChild(imgWrapper);
 
                                               elem.onclick = () => document.body.removeChild(elem);
                                               document.body.appendChild(elem);
                                             }}
+                                            priority
                                           />
                                         </div>
                                       )}

@@ -1,6 +1,7 @@
 'use client';
 
 import { Code2, TerminalSquare, Sparkles, Languages, Wand2 } from 'lucide-react';
+import Image from 'next/image';
 
 export default function HomeThirdSection() {
   return (
@@ -27,11 +28,14 @@ export default function HomeThirdSection() {
         {/* Central Code Editor Illustration */}
         <div className="relative flex items-center justify-center mt-10 mb-8 w-full min-h-[260px] sm:min-h-[340px]">
           {/* Central Main Image (Code Editor Illustration) */}
-          <img
+          <Image
             src="/home/four.jpg"
             alt="Code Editor Illustration"
+            width={400}
+            height={300}
             className="w-[160px] xs:w-[200px] sm:w-[260px] md:w-[340px] lg:w-[400px] rounded-3xl shadow-2xl z-10 animate-fade-in-up hover:scale-105 transition-transform duration-300"
             // style={{ mixBlendMode: 'multiply' }}
+            priority
           />
 
           {/* Floating Feature Cards - Responsive positions */}

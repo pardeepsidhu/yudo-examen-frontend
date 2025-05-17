@@ -1,6 +1,7 @@
 'use client';
 
 import Link from "next/link";
+import Image from 'next/image';
 
 export function AboutFirstSection() {
   return (
@@ -83,7 +84,7 @@ export function AboutFirstSection() {
       </span>
             <Link
               href="/test"
-              className="px-8 py-3 rounded-xl font-semibold text-indigo-600 bg-white/90 border border-blue-200 shadow-lg hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200 hover:scale-105 ease-in-out duration-200"
+              className="px-8 py-3 rounded-xl font-semibold text-indigo-600 bg-white/90 border border-blue-200 shadow-lg hover:bg-blue-50 hover:text-blue-700 transition-all  focus:outline-none focus:ring-2 focus:ring-blue-200 hover:scale-105 ease-in-out duration-200"
             >
               Explore More
             </Link>
@@ -92,16 +93,19 @@ export function AboutFirstSection() {
         {/* Right: Hero/Concept Image with interactive badge and hover animation */}
         <div className="flex-1 flex flex-col items-center justify-center gap-8">
           <div className="relative group">
-            <img
+            <Image
               src="/about/one.jpeg"
               alt="About Yudo Examen Illustration"
+              width={420}
+              height={320}
               className="w-[320px] md:w-[420px] rounded-3xl shadow-2xl border-4 border-white transition-transform duration-300 group-hover:scale-105 group-hover:shadow-indigo-200"
               style={{ mixBlendMode: 'multiply', boxShadow: '0 12px 40px 0 rgba(99,102,241,0.13)' }}
+              priority
             />
             {/* Interactive floating badge */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-400 to-sky-400 text-white px-3 sm:px-5 py-1.5 sm:py-2 rounded-full shadow-md flex items-center gap-1.5 sm:gap-2 animate-bounce-slow hover:scale-105 hover:bg-gradient-to-l hover:from-sky-400 hover:to-indigo-400 transition-all duration-200 cursor-pointer text-xs sm:text-sm">
-  <span className="font-semibold">AI Powered Learning</span>
-</div>
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-indigo-400 to-sky-400 text-white px-3 sm:px-5 py-1.5 sm:py-2 rounded-full shadow-md flex items-center gap-1.5 sm:gap-2 animate-bounce-slow hover:scale-105 hover:bg-gradient-to-l hover:from-sky-400 hover:to-indigo-400 transition-all duration-200 cursor-pointer text-xs sm:text-sm">
+              <span className="font-semibold">AI Powered Learning</span>
+            </div>
 
             {/* Decorative animated ring */}
             <div className="absolute -inset-4 rounded-3xl border-4 border-indigo-200 opacity-40 group-hover:opacity-70 transition-all duration-300 pointer-events-none  z-20"></div>

@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, PlayCircle, Sparkles } from 'lucide-react';
+import Image from 'next/image';
 
 export function HomeFirstSection() {
   return (
@@ -57,12 +58,16 @@ export function HomeFirstSection() {
       {/* Right: Illustration */}
       <div className="relative z-10 flex-1 flex justify-center items-center mt-12 md:mt-0 animate-fade-in-up delay-300">
         <div className="relative group">
-          <img
-            src="/home/one.jpg"
-            alt="Online Exam Illustration"
-            className="w-[350px] md:w-[420px] rounded-3xl shadow-2xl group-hover:scale-105 transition-transform duration-300"
-            style={{ mixBlendMode: 'multiply' }}
-          />
+           <Image
+          src="/home/one.jpg"
+          alt="Online Exam Illustration"
+          width={420}
+          height={320}
+          className="w-[350px] md:w-[420px] rounded-3xl shadow-2xl group-hover:scale-105 transition-transform duration-300"
+          style={{ mixBlendMode: 'multiply' }}
+          priority
+        />
+        {/* <Image */}
           {/* Animated floating badge */}
           <div className="absolute top-8 left-8 bg-white/90 px-4 py-2 rounded-full shadow-md flex items-center gap-2 animate-bounce-slow hover:scale-110 transition-transform duration-200 cursor-pointer">
             <span className="text-indigo-600 font-bold">1000+</span>

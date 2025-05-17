@@ -1,6 +1,7 @@
 'use client';
 
 import { Youtube, Film, Image as ImageIcon, Sparkles } from 'lucide-react';
+import Image from 'next/image';
 
 export default function HomeForthSection() {
   return (
@@ -74,11 +75,14 @@ export default function HomeForthSection() {
         <div className="hidden lg:flex flex-col gap-10 items-center">
           {/* Top Image */}
           <div className="relative group">
-            <img
+            <Image
               src="/home/five.avif"
               alt="Media Learning Illustration Top"
-              className="w-[320px] md:w-[400px] rounded-3xl shadow-2xl transition-transform duration-300 group-hover:scale-105 "
+              width={400}
+              height={300}
+              className="w-[320px] md:w-[400px] rounded-3xl shadow-2xl transition-transform duration-300 group-hover:scale-105"
               style={{ mixBlendMode: 'multiply' }}
+              priority
             />
             {/* Floating badges for top image */}
             <div className="absolute top-8 left-8 bg-white/90 px-4 py-2 rounded-full shadow-md flex items-center gap-2 animate-bounce-slow hover:scale-110 transition-transform duration-200 cursor-pointer">
@@ -92,11 +96,14 @@ export default function HomeForthSection() {
           </div>
           {/* Bottom Image */}
           <div className="relative group">
-            <img
+            <Image
               src="/home/six.jpg"
               alt="Media Learning Illustration Bottom"
+              width={400}
+              height={300}
               className="w-[320px] md:w-[400px] rounded-3xl shadow-2xl transition-transform duration-300 group-hover:scale-105"
               style={{ mixBlendMode: 'multiply' }}
+              priority
             />
             {/* Floating badges for bottom image */}
             <div className="absolute top-8 left-8 bg-white/90 px-4 py-2 rounded-full shadow-md flex items-center gap-2 animate-bounce-slow hover:scale-110 transition-transform duration-200 cursor-pointer">
@@ -111,11 +118,14 @@ export default function HomeForthSection() {
         </div>
         {/* Single image for small/medium screens */}
         <div className="lg:hidden relative group">
-          <img
+          <Image
             src="/home/five.avif"
             alt="Media Learning Illustration"
+            width={400}
+            height={300}
             className="w-[300px] md:w-[400px] rounded-3xl shadow-2xl group-hover:scale-105 transition-transform duration-300"
             style={{ mixBlendMode: 'multiply' }}
+            priority
           />
           {/* Animated floating badge */}
           <div className="absolute top-8 left-8 bg-white/90 px-4 py-2 rounded-full shadow-md flex items-center gap-2 animate-bounce-slow hover:scale-110 transition-transform duration-200 cursor-pointer">

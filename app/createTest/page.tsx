@@ -25,6 +25,7 @@ import toast from 'react-hot-toast';
 import { flushSync } from 'react-dom';
 import { confirmAction } from '@/components/confirmAction';
 import { genereateContent } from '../api/ai.api';
+import Image from 'next/image';
 // Types based on mongoose schema
 export type Question = {
   _id: string;
@@ -596,7 +597,7 @@ export default function CreateTestSeries() {
    if(testId){
     hangleGetMyTest(testId)
    }
-  },[])
+  },[testId])
 
   return (
     <div
@@ -793,11 +794,15 @@ export default function CreateTestSeries() {
                 </div>
                 {testSeriesData.thumbnail ? (
                   <div className="mt-2 relative">
-                    <img 
-                      src={testSeriesData.thumbnail} 
-                      alt="Thumbnail preview" 
-                      className="w-full h-60 object-cover rounded-md"
-                    />
+                    <Image
+      src={testSeriesData.thumbnail}
+      alt="Thumbnail preview"
+      width={800}
+      height={240}
+      className="w-full h-60 object-cover rounded-md"
+      style={{ objectFit: 'cover' }}
+      priority
+    />
                     <button 
                       className="absolute top-2 right-2 bg-black bg-opacity-50 rounded-full p-1 text-white hover:bg-opacity-70"
                       onClick={() => setTestSeriesData(prev => ({ ...prev, thumbnail: '' }))}
@@ -1160,11 +1165,15 @@ export default function CreateTestSeries() {
                   
                     {currentQuestion.image ? (
                     <div className="mt-2">
-                      <img 
-                        src={currentQuestion.image} 
-                        alt="Question image" 
-                          className="w-full h-70 sm:h-95 rounded-md object-cover"
-                      />
+                       <Image
+      src={currentQuestion.image}
+      alt="Question image"
+      width={800}
+      height={320}
+      className="w-full h-70 sm:h-95 rounded-md object-cover"
+      style={{ objectFit: 'cover' }}
+      priority
+    />
                     </div>
                     ) : (
                       <div 
@@ -1409,11 +1418,15 @@ export default function CreateTestSeries() {
                   <div className='flex  gap-3'>
                 {currentQuestion.image && (
                       <div className="w-full">
-                    <img 
-                      src={currentQuestion.image} 
-                      alt="Question image" 
-                          className="w-full h-60  rounded-md object-cover"
-                    />
+                     <Image
+      src={currentQuestion.image}
+      alt="Question image"
+      width={800}
+      height={240}
+      className="w-full h-60 rounded-md object-cover"
+      style={{ objectFit: 'cover' }}
+      priority
+    />
                   </div>
                 )}
                 

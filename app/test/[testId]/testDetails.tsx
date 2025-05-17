@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import Image from "next/image";
 
 interface Question {
   _id: string;
@@ -192,11 +193,14 @@ const TestDetails = ({ testData }: { testData: TestAttempt }) => {
             {/* Thumbnail */}
             {thumbnail && !imageError ? (
               <div className="w-full lg:w-1/3 h-48 sm:h-64 lg:h-auto relative overflow-hidden cursor-pointer">
-                <img
+                <Image
                   src={thumbnail}
                   alt={`${testData?.test?.title || 'Test'} Thumbnail`}
+                  fill
                   className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                   onError={handleImageError}
+                  style={{ objectFit: "cover" }}
+                  priority
                 />
               </div>
             ) : (
