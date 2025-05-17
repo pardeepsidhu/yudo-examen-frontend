@@ -5,7 +5,7 @@ import { AboutThirdSection } from '@/components/AboutThirdSection'
 import { Footer } from '@/components/footer'
 import React from 'react'
 
-export default function page() {
+export default function About() {
   return (
     <>
     <AboutFirstSection />

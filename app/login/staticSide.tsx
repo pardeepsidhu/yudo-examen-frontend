@@ -87,7 +87,7 @@ const containerVariants = {
   }
 };
 
-export function LoginStaticSide(): JSX.Element {
+export function LoginStaticSide(){
   const features = [
     {
       icon: FileQuestion,

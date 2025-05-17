@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Plus, Trash2, Upload,Film, Link, Wand2, FileImage, FileVideo, Save, XCircle, PlayCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import { useTheme } from '../context/theme.context';
 import { cn } from '@/lib/utils';
@@ -20,7 +20,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { CodeEditor } from './components/codeEditor';
 import TagSelector from './components/TagSelector';
 import { createTest, getMyTest, updataMyTest, addNewQuestion, updageMyQuestion, deleteMyQuestion } from '../api/test.api';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter} from 'next/navigation';
 import toast from 'react-hot-toast';
 import { flushSync } from 'react-dom';
 import { confirmAction } from '@/components/confirmAction';
@@ -44,7 +44,14 @@ export type Question = {
 export default function CreateTestSeries() {
   const { theme } = useTheme();
   const router = useRouter();
- 
+ const [testId, setTestId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('testId');
+    setTestId(id);
+  }, []);
+    
   
   // Test series state
   const [testSeriesData, setTestSeriesData] = useState({
@@ -76,9 +83,9 @@ export default function CreateTestSeries() {
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [isVideoPreviewOpen, setIsVideoPreviewOpen] = useState(false);
   const [previewVideo, setPreviewVideo] = useState('');
+
+
   
-  const params=useSearchParams()
-  const testId =params.get("testId")
   
   // Handle test series input change
   const handleTestSeriesChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -600,6 +607,7 @@ export default function CreateTestSeries() {
   },[testId])
 
   return (
+     <Suspense fallback={<div className="text-center">Loading...</div>}>
     <div
       className="min-h-screen p-2 sm:p-4 md:p-6"
       style={{
@@ -1502,6 +1510,7 @@ export default function CreateTestSeries() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
+    </div> 
+    </Suspense>
   );
 }
