@@ -139,3 +139,21 @@ export const updateProfile = async (data: { name?: string; profile?: string }) =
     }
 };
 
+
+
+export const getUserProfileAndTests = async (id:string) => {
+    try {
+
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/user/getUserProfileAndTests/${id}`, {
+            method: "GET",
+            headers: {
+                "content-type": "application/json",
+            
+            }
+        });
+        return await res.json();
+    } catch (error) {
+        console.log(error);
+        return { error: "Some error occurred while fetching user" };
+    }
+};

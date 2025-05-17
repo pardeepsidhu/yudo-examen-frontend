@@ -412,7 +412,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
             <CardContent className="pt-0 flex flex-col items-center pb-6">
               <div className="w-full h-32 relative my-4">
                 <Image
-                  src="https://static.vecteezy.com/system/resources/thumbnails/010/717/767/small_2x/boy-doing-exam-preparation-illustration-concept-on-white-background-vector.jpg"
+                  src="/profileIl.png"
                   alt="Create Test"
                   fill
                   className="object-contain opacity-80 bg-blend-darken rounded-xl"
