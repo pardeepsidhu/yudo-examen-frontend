@@ -5,7 +5,7 @@ export function AboutForthSection() {
     <section className="relative min-h-[60vh] flex flex-col items-center justify-center px-2 sm:px-6 md:px-20 py-10 sm:py-16 md:py-24 overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-blue-100">
       {/* Section Badge */}
       <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20">
-        <span className="inline-block px-4 py-1 rounded-full bg-gradient-to-r from-indigo-400 via-blue-400 to-sky-400 text-xs sm:text-sm md:text-lg shadow-lg tracking-wide border-2 border-white/70 animate-bounce-slow select-none text-white">
+        <span className="inline-block px-4 py-1 rounded-full bg-gradient-to-r from-indigo-400 via-blue-400 to-sky-400 text-xs sm:text-sm md:text-lg shadow-lg tracking-wide border-2 border-white/70 animate-bounce-slow select-none text-white cursor-pointer">
           What Our Users Say
         </span>
       </div>
@@ -84,7 +84,7 @@ export function AboutForthSection() {
 // StatCard component
 function StatCard({ value, label }: { value: string; label: string }) {
   return (
-    <div className="flex flex-col items-center bg-white/80 rounded-2xl shadow-lg px-6 py-5 sm:px-8 sm:py-6 border border-blue-100 min-w-[110px] sm:min-w-[140px] w-full sm:w-auto mb-2 sm:mb-0">
+    <div className="flex flex-col items-center bg-white/80 rounded-2xl shadow-lg px-6 py-5 sm:px-8 sm:py-6 border border-blue-100 min-w-[110px] sm:min-w-[140px] w-full sm:w-auto mb-2 sm:mb-0 hover:scale-110 ease-in-out duration-200 cursor-pointer">
       <div className="text-xl sm:text-2xl md:text-3xl font-extrabold bg-gradient-to-r from-indigo-500 to-sky-400 bg-clip-text text-transparent">{value}</div>
       <div className="text-gray-700 font-semibold mt-2 text-xs sm:text-base text-center">{label}</div>
     </div>
@@ -104,7 +104,7 @@ function ReviewCard({
   avatar: string;
 }) {
   return (
-    <div className="flex flex-col items-center bg-white/90 rounded-2xl shadow-xl p-5 sm:p-7 border border-blue-100 hover:shadow-2xl transition-all duration-200 w-full">
+    <div className="flex flex-col items-center bg-white/90 rounded-2xl shadow-xl p-5 sm:p-7 border border-blue-100 hover:shadow-2xl transition-all duration-200 w-full hover:scale-105 ease-in-out duration-200 cursor-pointer">
       <img
         src={avatar}
         alt={name}

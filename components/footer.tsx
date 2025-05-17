@@ -1,7 +1,6 @@
 import React from 'react';
 import { Github, Linkedin, Instagram, Mail, Phone, MapPin, Code, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -18,8 +17,8 @@ export const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
         {/* Top section with logo and social links */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 pb-8 border-b border-gray-800">
-          <div className="flex items-center mb-6 md:mb-0">
-            <Image src={'/Logo.png'} alt='Yudo Examen' height={145} width={145} />
+          <div className="">
+            {/* <Image src={'/Logo.png'} alt='Yudo Examen' height={145} width={145} /> */}
           </div>
           <div className="flex space-x-5">
             {socialLinks.map((link) => (

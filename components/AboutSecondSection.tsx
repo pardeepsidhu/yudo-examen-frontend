@@ -7,7 +7,7 @@ export function AboutSecondSection() {
     <section className="relative min-h-[60vh] flex flex-col md:flex-row items-center justify-center px-4 sm:px-10 md:px-20 py-16 sm:py-24 overflow-hidden bg-gradient-to-br from-sky-50 via-white to-indigo-100">
       {/* Section Badge */}
      <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20">
-  <span className="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-sky-400 via-indigo-400 to-blue-400 text-xs sm:text-sm md:text-lg shadow-lg tracking-wide border-2 border-white/70 animate-bounce-slow hover:scale-105 transition-transform duration-200 select-none text-white">
+  <span className="inline-block px-3 py-1 rounded-full bg-gradient-to-r from-sky-400 via-indigo-400 to-blue-400 text-xs sm:text-sm md:text-lg shadow-lg tracking-wide border-2 border-white/70 animate-bounce-slow hover:scale-105 transition-transform duration-200 select-none text-white cursor-pointer">
     Multilingual & Accessibility
   </span>
 </div>
