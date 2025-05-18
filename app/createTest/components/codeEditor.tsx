@@ -122,7 +122,9 @@ export const CodeEditor = ({currentQuestion,setCurrentQuestion}:{currentQuestion
         - Follow ${language} best practices
         
         Important: Return only the code with comments, no JSON formatting, no markdown, no extra text.
-        Just return the pure code with proper formatting and comments.`
+        Just return the pure code with proper formatting and comments.
+        no need wraping code between any type of quotes or backticks.
+        and no need writing language on top just write code and comments`
       );
 
       // Handle different response formats
@@ -250,7 +252,7 @@ const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
 
   return (
     <div className="bg-white rounded-2xl sm:rounded-xl overflow-hidden border border-gray-100">
-      <div className="p-4 sm:p-4 md:p-6">
+      <div className="p-1 sm:p-4 md:p-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 mb-6 sm:mb-8">
           <div className="flex items-center gap-3 sm:gap-4">
             <Code2 className="h-6 w-6 sm:h-8 sm:w-8" style={{ color: theme.primary }} />
@@ -274,7 +276,7 @@ const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
             <Button 
                         size="sm" 
                         variant="outline"
-              className="text-xs flex items-center gap-1 py-4.5"
+              className="text-xs hidden sm:flex items-center gap-1 py-4.5"
                         onClick={generateCode}
                         disabled={isGeneratingAI}
                       >
@@ -293,6 +295,27 @@ const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
                         )}
                       </Button>
 
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+              className="text-xs flex sm:hidden items-center gap-1 py-4.5"
+                        onClick={generateCode}
+                        disabled={isGeneratingAI}
+                      >
+                        {isGeneratingAI ? (
+                          <span className="flex items-center">
+                            <svg className="animate-spin -ml-1 mr-1 h-3 w-3 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            
+                          </span>
+                        ) : ( 
+                          <>
+                            <Wand2 className="h-3 w-3" /> 
+                          </>
+                        )}
+                      </Button>
             <button
               onClick={handleRunCode}
               disabled={isLoading}

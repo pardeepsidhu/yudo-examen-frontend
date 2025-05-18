@@ -157,3 +157,20 @@ export const getUserProfileAndTests = async (id:string) => {
         return { error: "Some error occurred while fetching user" };
     }
 };
+
+
+export const resetPassword = async (token: string, password: string) => {
+    try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/user/resetPassword`, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({ token, password })
+        });
+        return await res.json();
+    } catch (error) {
+        console.log(error);
+        return { error: "Some error occurred while resetting password" };
+    }
+}

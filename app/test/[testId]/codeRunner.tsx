@@ -109,7 +109,7 @@ console.log(language)
         background: theme.white,
       }}
     >
-      <div className="p-3 sm:p-4 md:p-6">
+      <div className="p-1 sm:p-4 md:p-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-6 mb-4">
           <div className="flex items-center gap-2 sm:gap-4">
             <Code2

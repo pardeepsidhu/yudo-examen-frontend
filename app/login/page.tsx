@@ -18,10 +18,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { googleLogin, otpVerify, sendResetPassLink, signin, signup } from '../api/user.api';
+import { googleLogin, otpVerify, resetPassword, sendResetPassLink, signin, signup } from '../api/user.api';
 import { useRouter } from 'next/navigation';
 import { useTheme } from '../context/theme.context';
+import toast from 'react-hot-toast';
 
 
 // Define types
@@ -37,17 +37,44 @@ interface FormError {
 }
 
 export default function LoginSignup() {
+  
 //   const { toast } = useToast();
   const [view, setView] = useState<AuthViewType>('login');
   const [showPassword, setShowPassword] = useState(false);
   const [otpValues, setOtpValues] = useState<string[]>(['', '', '', '']);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [alertInfo, setAlertInfo] = useState<{ type: AlertType; message: string }>({ 
-    type: null, 
-    message: '' 
-  });
+  const [token,setToken]=useState<string|null>(null)
   const router = useRouter()
   const {theme} = useTheme()
+
+
+
+    useEffect(() => {
+     
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('token');
+      if(localStorage.getItem("user")){
+        if(!id){
+         router.push("/");
+        }
+        else{
+          setView("resetPass")
+        }
+     
+      }
+      else{
+        if(id){
+          setView("resetPass")
+        }
+        else{
+          setView("login")
+        }
+      }
+
+     setToken(id)
+
+    }, [router]);
+
 
   
 
@@ -276,13 +303,46 @@ export default function LoginSignup() {
   setIsLoading(false)
   };
 
+const handleresetPasword = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Validation
+    const newErrors: FormError = {};
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+    setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) return;
+
+    setIsLoading(true);
+    try {
+
+      const data = await resetPassword(token || "", formData.password);
+      if (data.success) {
+        showAlert("success", "Password reset successful! Please login.");
+        router.push("/profile");
+        setFormData({ ...formData, password: "", confirmPassword: "" });
+      } else {
+        showAlert("error", data.error || "Failed to reset password.");
+      }
+    } catch {
+      showAlert("error", "Something went wrong.");
+    }
+    setIsLoading(false);
+  }
+
+  
+
   // Show alert message
+  
   const showAlert = (type: AlertType, message: string) => {
-    setAlertInfo({ type, message });
-    setTimeout(() => {
-      setAlertInfo({ type: null, message: '' });
-    }, 5000);
-    
+    if (type === 'success') toast.success(message);
+    else if (type === 'error') toast.error(message);
+    else toast(message);
   };
 
   // Reset form to initial state
@@ -323,35 +383,7 @@ export default function LoginSignup() {
   };
 
   // Render alert if present
-  const renderAlert = () => {
-    if (!alertInfo.type) return null;
-    
-    return (
-      <Alert 
-        className={`mb-4 ${
-          alertInfo.type === 'success' ? 'border-green-500 bg-green-50' : 
-          alertInfo.type === 'error' ? 'border-red-500 bg-red-50' : 
-          'border-blue-500 bg-blue-50'
-        }`}
-      >
-        <AlertTitle className={`${
-          alertInfo.type === 'success' ? 'text-green-700' : 
-          alertInfo.type === 'error' ? 'text-red-700' : 
-          'text-blue-700'
-        }`}>
-          {alertInfo.type === 'success' ? 'Success' : 
-           alertInfo.type === 'error' ? 'Error' : 'Information'}
-        </AlertTitle>
-        <AlertDescription className={`${
-          alertInfo.type === 'success' ? 'text-green-600' : 
-          alertInfo.type === 'error' ? 'text-red-600' : 
-          'text-blue-600'
-        }`}>
-          {alertInfo.message}
-        </AlertDescription>
-      </Alert>
-    );
-  };
+  
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row" style={{ backgroundColor: theme.neutral }}>
@@ -387,7 +419,7 @@ export default function LoginSignup() {
             </CardHeader>
             
             <CardContent className="px-6 pb-6">
-              {renderAlert()}
+              
               
               {view === 'login' || view === 'signup' ? (
                 <motion.form
@@ -613,7 +645,71 @@ export default function LoginSignup() {
                     </p>
                   </div>
                 </motion.div>
-              ) : (
+              ) : view ==="resetPass" ? 
+         (
+  // Reset Password Section
+  <motion.form
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.5 }}
+    className="space-y-5"
+    onSubmit={(e)=>handleresetPasword(e)}
+  >
+    <div>
+      <Label htmlFor="reset-password" className="text-sm font-medium text-gray-700">
+        New Password
+      </Label>
+      <Input
+        id="reset-password"
+        name="password"
+        type="password"
+        value={formData.password}
+        onChange={handleInputChange}
+        className={`h-10 ${errors.password ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
+        placeholder="********"
+      />
+      {errors.password && (
+        <p className="mt-1 text-xs text-red-500">{errors.password}</p>
+      )}
+    </div>
+    <div>
+      <Label htmlFor="reset-confirm-password" className="text-sm font-medium text-gray-700">
+        Confirm Password
+      </Label>
+      <Input
+        id="reset-confirm-password"
+        name="confirmPassword"
+        type="password"
+        value={formData.confirmPassword}
+        onChange={handleInputChange}
+        className={`h-10 ${errors.confirmPassword ? 'border-red-500 focus-visible:ring-red-500' : ''}`}
+        placeholder="********"
+      />
+      {errors.confirmPassword && (
+        <p className="mt-1 text-xs text-red-500">{errors.confirmPassword}</p>
+      )}
+    </div>
+    <Button
+      type="submit"
+      className="w-full h-10 mt-2 text-white font-medium"
+      style={{ backgroundColor: theme.primary }}
+      disabled={isLoading}
+
+    >
+      {isLoading ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Resetting...
+        </>
+      ) : (
+        <>Reset Password</>
+      )}
+    </Button>
+  </motion.form>
+)
+             
+              
+               : (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
