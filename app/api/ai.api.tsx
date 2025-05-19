@@ -15,7 +15,7 @@ export const genereateContent = async (prompt:string) => {
   
       return data;
     } catch (error) {
-      console.error("Failed to generete AI content", error);
+     if(error)
       return { 
         success: false, 
         error: error instanceof Error ? error.message : "Failed to generete AI content" 

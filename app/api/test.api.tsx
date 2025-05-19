@@ -37,7 +37,8 @@ export const createTest =async(testSeriesData:TestSeriesData)=>{
         })
         return await res.json()
     } catch (error) {
-        console.log(error)
+        // console.log(error)
+        if(error)
         return {error :"some error accured while signup"}
     }
 }
@@ -55,14 +56,14 @@ export const getMyTest = async (id: string) => {
 
         const data = await res.json();
         
-        console.log(data)
+        // console.log(data)
         if (!res.ok) {
             throw new Error(data.message || "Failed to fetch test");
         }
 
         return data;
     } catch (error) {
-        console.error("Error fetching test:", error);
+        // console.error("Error fetching test:", error);
         return { 
             success: false, 
             error: error instanceof Error ? error.message : "Failed to fetch test" 
@@ -85,7 +86,8 @@ export const updataMyTest =async(testSeriesData:TestSeriesData)=>{
         })
         return await res.json()
     } catch (error) {
-        console.log(error)
+        // console.log(error)
+        if(error)
         return {error :"some error accured while updating test"}
     }
 }
@@ -103,14 +105,14 @@ export const addNewQuestion = async (questionData: Question) => {
     });
 
     const data = await res.json();
-    console.log(data)
+    // console.log(data)
     if (!res.ok) {
       throw new Error(data.message || "Failed to add question");
     }
 
     return data;
   } catch (error) {
-    console.error("Error adding question:", error);
+    // console.error("Error adding question:", error);
     return { 
       success: false, 
       error: error instanceof Error ? error.message : "Failed to add question" 
@@ -121,7 +123,7 @@ export const addNewQuestion = async (questionData: Question) => {
 
 export const updageMyQuestion = async (questionData: Question) => {
     try {
-        console.log(questionData)
+        // console.log(questionData)
       const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/question/update/${questionData._id}`, {
         method: "put",
         headers: {
@@ -132,14 +134,14 @@ export const updageMyQuestion = async (questionData: Question) => {
       });
   
       const data = await res.json();
-      console.log(data)
+      // console.log(data)
       if (!res.ok) {
         throw new Error(data.message || "Failed to update question");
       }
   
       return data;
     } catch (error) {
-      console.error("Error updating question:", error);
+      // console.error("Error updating question:", error);
       return { 
         success: false, 
         error: error instanceof Error ? error.message : "Failed to update question" 
@@ -166,7 +168,7 @@ export const updageMyQuestion = async (questionData: Question) => {
   
       return data;
     } catch (error) {
-      console.error("Error updating question:", error);
+      // console.error("Error updating question:", error);
       return { 
         success: false, 
         error: error instanceof Error ? error.message : "Failed to update question" 
@@ -184,10 +186,10 @@ export const getAllTestSeries = async (page: number = 1, limit: number = 10, cat
     });
 
     const response = await axios.get(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/test/getAll?${queryParams}`);
-    console.log(response)
+    // console.log(response)
     return response.data;
   } catch (error) {
-    console.error('Error fetching test series:', error);
+    // console.error('Error fetching test series:', error);
     throw error;
   }
 };
@@ -210,7 +212,7 @@ export const getTest = async (id: string) => {
 
     return data;
   } catch (error) {
-    console.error("Error fetching test:", error);
+    // console.error("Error fetching test:", error);
     return { 
       success: false, 
       error: error instanceof Error ? error.message : "Failed to fetch test" 
@@ -229,14 +231,14 @@ export const getAttendTest = async (testId: string) => {
     });
 
     const data = await res.json();
-    
+  
     if (!res.ok) {
       throw new Error(data.message || "Failed to fetch test attempt");
     }
 
     return data;
   } catch (error) {
-    console.error("Error handling test attempt:", error);
+    // console.error("Error handling test attempt:", error);
     return { 
       success: false, 
       error: error instanceof Error ? error.message : "Failed to handle test attempt" 
@@ -267,7 +269,7 @@ export const answerQuestion = async (testId: string, questionId: string, right: 
 
     return data;
   } catch (error) {
-    console.error("Error recording answer:", error);
+    // console.error("Error recording answer:", error);/
     return { 
       success: false, 
       error: error instanceof Error ? error.message : "Failed to record answer" 
@@ -293,7 +295,7 @@ export const getTestResults = async (testId: string) => {
 
     return data;
   } catch (error) {
-    console.error("Error fetching test results:", error);
+    // console.error("Error fetching test results:", error);
     return { 
       success: false, 
       error: error instanceof Error ? error.message : "Failed to fetch test results" 
@@ -319,7 +321,7 @@ export const getMyAllTestSeries = async () => {
 
     return data;
   } catch (error) {
-    console.error("Error fetching your test series:", error);
+    // console.error("Error fetching your test series:", error);
     return { 
       success: false, 
       error: error instanceof Error ? error.message : "Failed to fetch your test series" 
@@ -337,16 +339,16 @@ export const getMyAllTestAttended = async () => {
         "auth-token": getToken()
       }
     });
-console.log(res)
+// console.log(res)
     const data = await res.json();
 
     if (!res.ok) {
       throw new Error(data.message || "Failed to fetch attended test series");
     }
-    console.log(data)
+    // console.log(data)
     return data;
   } catch (error) {
-    console.error("Error fetching attended test series:", error);
+    // console.error("Error fetching attended test series:", error);
     return { 
       success: false, 
       error: error instanceof Error ? error.message : "Failed to fetch attended test series" 
@@ -372,7 +374,7 @@ export const deleteMyTest = async (id: string) => {
 
     return data;
   } catch (error) {
-    console.error("Error deleting test series:", error);
+   
     return { 
       success: false, 
       error: error instanceof Error ? error.message : "Failed to delete test series" 

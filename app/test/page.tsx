@@ -6,7 +6,7 @@ import { getAllTestSeries } from '../api/test.api';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search, Loader2, Filter, ChevronDown, X, Heart, Eye, Clock } from 'lucide-react';
+import { Search, Loader2, Filter, ChevronDown, X, Eye, Clock } from 'lucide-react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
@@ -24,6 +24,7 @@ interface TestSeries {
   user: {
     name: string;
     profile?: string;
+    _id:string
   };
   createdAt: string;
   likes: string[];
@@ -42,7 +43,7 @@ export default function ExplorePage() {
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-  const [likedSeries, setLikedSeries] = useState<Set<string>>(new Set());
+
   const router = useRouter();
    useEffect(() => {
       if(!localStorage.getItem("user")){
@@ -60,87 +61,52 @@ export default function ExplorePage() {
     return () => clearTimeout(timer);
   }, [search]);
 
-  // Reset state when filters change
-  useEffect(() => {
-    setTestSeries([]);
-    setPage(1);
-    setHasMore(true);
-    setIsInitialLoad(true);
-  }, [debouncedSearch, selectedCategory]);
+useEffect(() => {
+  setTestSeries([]);
+  setPage(1);
+  setHasMore(true);
+  setIsInitialLoad(true);
+}, [debouncedSearch, selectedCategory]);
 
-  // Initial load
-  useEffect(() => {
-    if (isInitialLoad) {
-      fetchTestSeries();
-      setIsInitialLoad(false);
-    }
-  }, [isInitialLoad]);
 
-  // Handle like/unlike
-  const handleLike = async (seriesId: string) => {
-    try {
-      const isLiked = likedSeries.has(seriesId);
-      setTestSeries(prev => prev.map(series => {
-        if (series._id === seriesId) {
-          return {
-            ...series,
-            likes: isLiked 
-              ? series.likes.filter(id => id !== 'user_id')
-              : [...series.likes, 'user_id']
-          };
-        }
-        return series;
-      }));
 
-      setLikedSeries(prev => {
-        const newSet = new Set(prev);
-        if (isLiked) {
-          newSet.delete(seriesId);
-        } else {
-          newSet.add(seriesId);
-        }
-        return newSet;
-      });
-
-      toast.success(isLiked ? 'Unliked successfully' : 'Liked successfully');
-    } catch (error) {
-      console.error('Error updating like:', error);
-      toast.error('Failed to update like');
-    }
-  };
-
+ 
   // Fix: Only fetch more if we haven't reached totalPages, and always show one row max (3 cards per row on xl)
-  const fetchTestSeries = useCallback(async () => {
-    if (loading || !hasMore) return;
+ const fetchTestSeries = useCallback(async (fetchPage = 1) => {
+  if (loading || !hasMore) return;
 
-    setLoading(true);
-    try {
-      const response = await getAllTestSeries(page, 10, selectedCategory, debouncedSearch);
-      if (response.success) {
-        const newTestSeries = response.testSeries || [];
-        // Prevent fetching more if we've reached the total count
-        setTestSeries(prev => {
-          const combined = [...prev, ...newTestSeries];
-          // Only keep up to totalCount if provided, else just combine
-          if (response.totalCount && combined.length > response.totalCount) {
-            return combined.slice(0, response.totalCount);
-          }
-          return combined;
-        });
-        setHasMore(page < response.totalPages && newTestSeries.length > 0);
-        setPage(prev => prev + 1);
-      } else {
-        toast.error(response.message || 'Failed to fetch test series');
-        setHasMore(false);
-      }
-    } catch (error) {
-      console.error('Error fetching test series:', error);
-      toast.error('Failed to fetch test series');
+  setLoading(true);
+  try {
+    const response = await getAllTestSeries(fetchPage, 10, selectedCategory, debouncedSearch);
+    if (response.success) {
+      const newTestSeries = response.testSeries || [];
+      setTestSeries(prev => {
+        // Avoid duplicates by filtering out already present IDs
+        const ids = new Set(prev.map(ts => ts._id));
+        const filtered: TestSeries[] = newTestSeries.filter((ts: TestSeries) => !ids.has(ts._id));
+        return [...prev, ...filtered];
+      });
+      setHasMore(fetchPage < response.totalPages && newTestSeries.length > 0);
+      setPage(fetchPage + 1);
+    } else {
+      toast.error(response.message || 'Failed to fetch test series');
       setHasMore(false);
-    } finally {
-      setLoading(false);
     }
-  }, [page, selectedCategory, debouncedSearch, loading, hasMore]);
+  } catch (error) {
+    console.error('Error fetching test series:', error);
+    toast.error('Failed to fetch test series');
+    setHasMore(false);
+  } finally {
+    setLoading(false);
+  }
+}, [selectedCategory, debouncedSearch, loading, hasMore]);
+
+useEffect(() => {
+  if (isInitialLoad) {
+    fetchTestSeries(1);
+    setIsInitialLoad(false);
+  }
+}, [isInitialLoad, fetchTestSeries]);
 
   const categories = [
     'General Knowledge',
@@ -316,9 +282,9 @@ export default function ExplorePage() {
 
           {/* Test Series Grid */}
           <InfiniteScroll
-            dataLength={testSeries.length}
-            next={fetchTestSeries}
-            hasMore={hasMore}
+  dataLength={testSeries.length}
+  next={() => fetchTestSeries(page)}
+  hasMore={hasMore}
             loader={
               <div className="flex justify-center py-8">
                 <div
@@ -361,7 +327,7 @@ export default function ExplorePage() {
             {/* Only one row: show up to 3 cards per row, and only one row */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               <AnimatePresence>
-                {testSeries.slice(0, 3).map((series, index) => (
+                {testSeries.map((series, index) => (
                   <motion.div
                     key={series._id}
                     variants={cardVariants}
@@ -369,7 +335,7 @@ export default function ExplorePage() {
                     animate="visible"
                     transition={{ delay: index * 0.07 }}
                   >
-                    <Link href={`/test/${series._id}`}>
+                    
                       <Card
                         className="h-full hover:shadow-xl transition-all duration-200 transform hover:-translate-y-1 border-0"
                         style={{
@@ -378,6 +344,7 @@ export default function ExplorePage() {
                           borderRadius: "1.25rem",
                         }}
                       >
+                        <Link href={`/test/${series._id}`}>
                         <div className="relative h-44 sm:h-52 w-full overflow-hidden rounded-t-xl">
                           <Image
                             src={series.thumbnail || '/placeholder.webp'}
@@ -408,8 +375,9 @@ export default function ExplorePage() {
                             {series.title}
                           </CardTitle>
                         </CardHeader>
-
+                        </Link>
                         <CardContent>
+                          <Link href={`/test/${series._id}`}>
                           <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-4">
                             {series.description}
                           </p>
@@ -440,7 +408,8 @@ export default function ExplorePage() {
                               </Badge>
                             )}
                           </div>
-
+                          </Link>
+                          <Link href={`/profile/${series?.user?._id}` || "/test"}>
                           <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: theme.primary + "22" }}>
                             <div className="flex items-center gap-3">
                               <div className="relative h-8 w-8 rounded-full overflow-hidden ring-2 ring-white">
@@ -458,29 +427,11 @@ export default function ExplorePage() {
                                 </p>
                               </div>
                             </div>
-
-                            <button
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleLike(series._id);
-                              }}
-                              className={`flex items-center gap-1 px-3 py-1.5 rounded-full transition-all duration-200 text-sm ${
-                                likedSeries.has(series._id)
-                                  ? 'bg-red-50 text-red-500 hover:bg-red-100'
-                                  : 'bg-gray-50 text-gray-500 hover:bg-gray-100'
-                              }`}
-                            >
-                              <Heart
-                                className={`h-4 w-4 transition-transform duration-200 ${
-                                  likedSeries.has(series._id) ? 'fill-current' : ''
-                                }`}
-                              />
-                              <span className="font-medium">{series.likes.length}</span>
-                            </button>
                           </div>
+                          </Link>
                         </CardContent>
                       </Card>
-                    </Link>
+                    {/* </Link> */}
                   </motion.div>
                 ))}
               </AnimatePresence>

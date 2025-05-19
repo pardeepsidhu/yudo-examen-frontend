@@ -10,8 +10,12 @@ export function NavBar() {
   const { theme, updateTheme, colorPalettes } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
   const [themeMenu, setThemeMenu] = useState(false);
+  const [desktopThemeMenu, setDesktopThemeMenu] = useState(false);
+  const [mobileThemeMenu, setMobileThemeMenu] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const themeMenuRef = useRef<HTMLDivElement>(null);
+  const desktopThemeMenuRef = useRef<HTMLDivElement>(null);
+  const mobileThemeMenuRef = useRef<HTMLDivElement>(null);
 
   // Check login status on mount
   useEffect(() => {
@@ -124,10 +128,10 @@ export function NavBar() {
           </Link>
         ))}
         {/* Theme Palette Dropdown */}
-        <div className="relative ml-2" ref={themeMenuRef}>
+        <div className="relative ml-2" ref={desktopThemeMenuRef}>
           <button
             aria-label="Change Theme"
-            onClick={() => setThemeMenu((v) => !v)}
+            onClick={() => setDesktopThemeMenu((v) => !v)}
             className="px-3 py-1.5 rounded-xl shadow border transition-all flex items-center gap-2 font-semibold"
             style={{
               background: theme.white,
@@ -140,7 +144,7 @@ export function NavBar() {
           </button>
           <div
             className={`absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 z-50 transition-all duration-200 ${
-              themeMenu ? 'opacity-100 scale-100 pointer-events-auto animate-fade-in' : 'opacity-0 scale-95 pointer-events-none'
+              desktopThemeMenu ? 'opacity-100 scale-100 pointer-events-auto animate-fade-in' : 'opacity-0 scale-95 pointer-events-none'
             }`}
             style={{ transformOrigin: 'top right' }}
           >
@@ -154,7 +158,10 @@ export function NavBar() {
                       fontWeight: palette.name === theme.name ? 700 : 500,
                       background: palette.name === theme.name ? `${palette.primary}11` : undefined,
                     }}
-                    onClick={() => handleThemeChange(palette.name)}
+                    onClick={() => {
+                      handleThemeChange(palette.name);
+                      setDesktopThemeMenu(false);
+                    }}
                   >
                     <span
                       className="inline-block w-4 h-4 rounded-full border"
@@ -214,10 +221,10 @@ export function NavBar() {
           </Link>
         ))}
         {/* Theme Palette Dropdown for Mobile */}
-        <div className="relative w-full flex flex-col items-center" ref={themeMenuRef}>
+        <div className="relative w-full flex flex-col items-center" ref={mobileThemeMenuRef}>
           <button
             aria-label="Change Theme"
-            onClick={() => setThemeMenu((v) => !v)}
+            onClick={() => setMobileThemeMenu((v) => !v)}
             className="mt-2 px-4 py-2 rounded-xl shadow border transition-all flex items-center gap-2 font-semibold"
             style={{
               background: theme.white,
@@ -230,7 +237,7 @@ export function NavBar() {
           </button>
           <div
             className={`absolute left-1/2 -translate-x-1/2 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 z-50 transition-all duration-200 ${
-              themeMenu ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
+              mobileThemeMenu ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
             }`}
             style={{ transformOrigin: 'top center' }}
           >

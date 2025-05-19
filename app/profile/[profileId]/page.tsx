@@ -33,7 +33,7 @@ export default function ProfilePage() {
       setLoading(true);
       try {
         const res = await getUserProfileAndTests(profileId);
-        console.log(res)
+
         if (res?.success) {
           setProfile(res.user);
           setMyTests(res.testSeries || []);

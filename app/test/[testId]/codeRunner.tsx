@@ -41,7 +41,6 @@ export const CodeRunner = ({
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const editorValue = code;
-console.log(language)
   const handleRunCode = async () => {
     if (!code) {
       toast.error("Please enter code!");
@@ -68,8 +67,7 @@ console.log(language)
         }
       );
 
-      // Handle both stdout and stderr
-      console.log(res)
+
       let result = "";
       if (res.data.stdout) {
         result = res.data.stdout;

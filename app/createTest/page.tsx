@@ -123,7 +123,7 @@ export default function CreateTestSeries() {
       setTestSeriesData({ ...testSeriesData, description: formatted });
       
     } catch (error) {
-      console.error('Error generating description:', error);
+      if(error)
       toast.error("Failed generating AI Content");
     }
     finally{
@@ -217,7 +217,7 @@ export default function CreateTestSeries() {
     } 
   }
   catch (error) {
-    console.error('Error adding question:', error);
+    if(error)
     toast.error('Failed to add question');
   } }
   
@@ -253,7 +253,7 @@ export default function CreateTestSeries() {
         });
       }
     } catch (error) {
-      console.error('Error deleting question:', error);
+      if(error)
       toast.error('Failed to delete question');
     }
   };
@@ -293,7 +293,7 @@ export default function CreateTestSeries() {
       Respond with plain text only — do not wrap the response in any object or extra formatting.`
     );
     
-    console.log(res);
+
     
     if (res.error || !res.response) {
       toast.error("Failed generating AI Content");
@@ -398,7 +398,7 @@ export default function CreateTestSeries() {
       toast.success("Options generated successfully!");
       
     } catch (error) {
-      console.error("Option generation error:", error);
+      if(error)
       toast.error("Failed to generate options. Please try again.");
     } finally {
       setIsGeneratingAI(false);
@@ -441,7 +441,7 @@ export default function CreateTestSeries() {
         toast.error('Failed to upload image');
       }
     } catch (error) {
-      console.error('Error uploading file:', error);
+      if(error)
       toast.error('Error uploading image');
     } finally {
       setIsGeneratingAI(false);
@@ -520,7 +520,7 @@ export default function CreateTestSeries() {
 
   
 
-  const getYouTubeEmbedUrl = (url: string | undefined): string => {
+  const getYouTubeEmbedUrl = (url: string | undefined): string | undefined => {
     if (!url) return '';
 
     try {
@@ -545,7 +545,7 @@ export default function CreateTestSeries() {
       // Return original URL if not a YouTube URL
       return url;
     } catch (error) {
-      console.error('Error processing YouTube URL:', error);
+      if(error)
       return url;
     }
   };
@@ -581,7 +581,7 @@ export default function CreateTestSeries() {
       toast.success('Solution generated successfully!');
       
     } catch (error) {
-      console.error(error)
+    if(error)
       toast.error("Failed generating AI Content");
     } finally {
       setIsGeneratingAI(false);
@@ -592,7 +592,7 @@ export default function CreateTestSeries() {
   const hangleGetMyTest = async(testId:string)=>{
     try {
       const res = await getMyTest(testId)
-      console.log(res)
+   
       if(!res.success){
         toast.error(res.message)
       } 
@@ -601,7 +601,7 @@ export default function CreateTestSeries() {
         setQuestions(res.testSeries.questions)
       }
     } catch (error) {
-      console.log(error)
+     if(error)
       toast.error("some error accred while fetching test")
     }
   }

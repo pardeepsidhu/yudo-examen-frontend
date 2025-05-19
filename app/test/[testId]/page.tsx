@@ -57,8 +57,7 @@ export default function TestPage() {
         throw new Error("Test ID not found in URL parameters");
       }
       const response = await getAttendTest(params.testId as string);
-      console.log("home");
-      console.log(response.data);
+    
       if (!response || !response.success) {
         throw new Error(response?.message || "Failed to load test");
       }
@@ -209,7 +208,7 @@ export default function TestPage() {
 
       if (femaleVoice) {
         utterance.voice = femaleVoice;
-        console.log("Using voice:", femaleVoice.name);
+       
       }
 
       utterance.onend = () => setIsSpeaking(false);
@@ -266,7 +265,7 @@ export default function TestPage() {
           return;
         }
       }
-      console.log(translatedText);
+    
       if (type === "des") {
         setTranslatedDesctription(translatedText);
       } else {
@@ -358,7 +357,7 @@ export default function TestPage() {
   const questionAttemptsMap = new Map(
     questionsAttended.map((qa) => [qa.question._id, qa])
   );
-console.log(currentQuestion)
+
   return (
     <div
       className="min-h-screen w-full flex flex-col bg-gradient-to-br"

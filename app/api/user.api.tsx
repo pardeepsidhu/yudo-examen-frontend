@@ -17,7 +17,7 @@ export const signup =async(email:string,password:string)=>{
         })
         return await res.json()
     } catch (error) {
-        console.log(error)
+        if(error)
         return {error :"some error accured while signup"}
     }
 }
@@ -36,7 +36,7 @@ export const signin =async(email:string,password:string)=>{
         
         return await res.json()
     } catch (error) {
-        console.log(error)
+        if(error)
         return {error :"some error accured while signin"}
     }
 }
@@ -54,7 +54,7 @@ export const otpVerify =async(email:string,otp:string)=>{
         
         return await res.json()
     } catch (error) {
-        console.log(error)
+        if(error)
         return {error :"some error accured while signin"}
     }
 }
@@ -62,7 +62,7 @@ export const otpVerify =async(email:string,otp:string)=>{
 
 export const googleLogin =async(token:string)=>{
     try { 
-      console.log("this is token "+token)
+     
         const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/user/google`,{
             method:"post",
             headers:{
@@ -73,7 +73,7 @@ export const googleLogin =async(token:string)=>{
         
         return await res.json()
     } catch (error) {
-        console.log(error)
+        if(error)
         return {error :"some error accured while signin"}
     }
 }
@@ -90,7 +90,7 @@ export const sendResetPassLink =async(email:string)=>{
         })
         return await res.json()
     } catch (error) {
-        console.log(error)
+        if(error)
         return {error :"some error accured while signin"}
     }
 }
@@ -110,7 +110,7 @@ export const getMyProfile = async () => {
         });
         return await res.json();
     } catch (error) {
-        console.log(error);
+        if(error)
         return { error: "Some error occurred while fetching profile" };
     }
 };
@@ -134,7 +134,7 @@ export const updateProfile = async (data: { name?: string; profile?: string }) =
         });
         return await res.json();
     } catch (error) {
-        console.log(error);
+       if(error)
         return { error: "Some error occurred while updating profile" };
     }
 };
@@ -153,7 +153,7 @@ export const getUserProfileAndTests = async (id:string) => {
         });
         return await res.json();
     } catch (error) {
-        console.log(error);
+        if(error)
         return { error: "Some error occurred while fetching user" };
     }
 };
@@ -170,7 +170,7 @@ export const resetPassword = async (token: string, password: string) => {
         });
         return await res.json();
     } catch (error) {
-        console.log(error);
+        if(error)
         return { error: "Some error occurred while resetting password" };
     }
 }
