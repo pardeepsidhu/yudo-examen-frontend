@@ -200,7 +200,7 @@ export default function ProfilePage() {
         <div className="flex items-center justify-between mb-8">
           <div className="flex gap-3 bg-white rounded-full p-1 shadow-sm border" style={{ borderColor: `${theme.primary}20` }}>
             <button
-              className={`px-6 py-2 rounded-full font-semibold transition-all text-base flex items-center gap-2`}
+              className={`px-6  text-sm sm:test-md py-2 rounded-full font-semibold transition-all text-base flex items-center gap-2`}
               style={{
                 background: 'created' === 'created' ? theme.primary : 'transparent',
                 color: 'created' === 'created' ? 'white' : 'gray',
@@ -210,7 +210,7 @@ export default function ProfilePage() {
               <BookOpen className="h-5 w-5" /> Created Tests
             </button>
             <button
-              className={`px-6 py-2 rounded-full font-semibold transition-all text-base flex items-center gap-2`}
+              className={`px-6 py-2  text-sm sm:test-md rounded-full font-semibold transition-all text-base flex items-center gap-2`}
               style={{
                 background: 'attended' === 'attended' ? theme.secondary : 'transparent',
                 color: 'attended' === 'attended' ? 'white' : 'gray',

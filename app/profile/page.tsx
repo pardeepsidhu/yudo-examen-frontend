@@ -439,7 +439,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         <div className="flex items-center justify-between mb-8">
           <div className="flex gap-3 bg-white rounded-full p-1 shadow-sm border" style={{ borderColor: `${theme.primary}20` }}>
             <button
-              className={`px-6 py-2 rounded-full font-semibold transition-all text-base flex items-center gap-2`}
+              className={`px-6 py-2 text-sm sm:test-md rounded-full font-semibold transition-all text-base flex items-center gap-2`}
               style={{
                 background: activeTab === 'created' ? theme.primary : 'transparent',
                 color: activeTab === 'created' ? 'white' : 'gray',
@@ -449,7 +449,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
               <BookOpen className="h-5 w-5" /> My Tests
             </button>
             <button
-              className={`px-6 py-2 rounded-full font-semibold transition-all text-base flex items-center gap-2`}
+              className={`px-6 py-2 text-sm sm:test-md  rounded-full font-semibold transition-all text-base flex items-center gap-2`}
               style={{
                 background: activeTab === 'attended' ? theme.secondary : 'transparent',
                 color: activeTab === 'attended' ? 'white' : 'gray',
