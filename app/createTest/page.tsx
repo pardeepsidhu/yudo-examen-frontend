@@ -175,7 +175,7 @@ export default function CreateTestSeries() {
       }
       else{
         toast.success('Question added successfully!');
-       await getMyTest(testId)
+       await hangleGetMyTest(testId);
     setCurrentQuestion({
           _id: `question_${Date.now()}`,
       title: '',
