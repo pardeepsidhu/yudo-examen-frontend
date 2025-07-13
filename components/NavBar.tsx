@@ -80,10 +80,11 @@ export function NavBar() {
       <Link href="/" className="flex items-center gap-3 select-none group">
         <div className="relative h-12 w-12 sm:h-14 sm:w-14 rounded-full overflow-hidden shadow-lg border-4 border-white group-hover:scale-105 transition-transform duration-200">
           <Image
-            src="/Logo.png"
+            src="/fav.png"
             alt="Yudo Examen"
             fill
-            className="object-contain"
+            className={`object-contain bg p-1`}
+            style={{background:theme.primary}}
             priority
             sizes="56px"
           />
@@ -94,6 +95,7 @@ export function NavBar() {
           className="text-xl sm:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-400 bg-clip-text text-transparent transition-all duration-200 group-hover:drop-shadow-lg"
           style={{
             letterSpacing: '0.03em',
+            color:theme.primary
           }}
         >
           Yudo Examen

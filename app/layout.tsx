@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     siteName: "Yudo Examen",
     images: [
       {
-        url: "/Logo.png",
+        url: "/fav.png",
         width: 1200,
         height: 630,
         alt: "Yudo Examen – AI Powered Online Learning Platform",
@@ -38,9 +38,9 @@ export const metadata: Metadata = {
   },
  
   icons: {
-    icon: "/Logo.png",
-    shortcut: "/Logo.png",
-    apple: "/Logo.png",
+    icon: "/fav.png",
+    shortcut: "/fav.png",
+    apple: "/fav.png",
   }
 };
 
