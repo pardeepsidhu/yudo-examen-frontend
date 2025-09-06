@@ -7,7 +7,7 @@ export const genereateContent = async (prompt:string) => {
         },
         body: JSON.stringify({prompt})
       });
-  
+  // 
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.message || "Failed to generete AI content");

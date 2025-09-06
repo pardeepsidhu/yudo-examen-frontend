@@ -57,7 +57,7 @@ export default function TestPage() {
         throw new Error("Test ID not found in URL parameters");
       }
       const response = await getAttendTest(params.testId as string);
-    
+      console.log("attended test",response)
       if (!response || !response.success) {
         throw new Error(response?.message || "Failed to load test");
       }
