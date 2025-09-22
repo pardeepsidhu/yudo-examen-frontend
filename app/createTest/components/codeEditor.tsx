@@ -266,6 +266,7 @@ const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
               className="px-3 sm:px-3 py-2 rounded-sm sm:rounded-sm border border-gray-200 text-sm sm:text-base text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="javascript">JavaScript</option>
+               <option value="typescript">TypeScript</option>
               <option value="python">Python</option>
               <option value="java">Java</option>
               <option value="c_cpp">C++</option>
