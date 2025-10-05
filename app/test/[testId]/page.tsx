@@ -779,15 +779,38 @@ export default function TestPage() {
                                         </div>
                                       </div>
 
-                                      <textarea
-                                        value={
-                                          translatedDescription ||
-                                          currentQuestion.description
-                                        }
-                                        readOnly={true}
-                                        placeholder="Enter your text here..."
-                                        className="w-full p-3 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-32"
-                                      />
+                                   <div
+  className="
+    w-full
+    bg-white
+    border border-gray-200
+    rounded-xl
+    p-4
+    text-gray-700
+    text-sm
+    leading-relaxed
+    shadow-sm
+    hover:shadow-md
+    transition-all
+    duration-200
+    min-h-[8rem]  // replaces min-h-32 for a cleaner look
+    max-h-64
+    overflow-y-auto
+    resize-none
+    cursor-default
+  "
+>
+  {translatedDescription || currentQuestion.description ? (
+    <p className="whitespace-pre-wrap">
+      {translatedDescription || currentQuestion.description}
+    </p>
+  ) : (
+    <p className="text-gray-400 italic">
+      No Description Provicded...
+    </p>
+  )}
+</div>
+
                                     </div>
                                   </TabsContent>
                                   <TabsContent value="Solution">
@@ -880,18 +903,38 @@ export default function TestPage() {
                                       </div>
                                     </div>
 
-                                    <Textarea
-                                      id="q-description"
-                                      name="description"
-                                      placeholder="Optional description or context for the question"
-                                      value={
-                                        translatedSolution ||
-                                        currentQuestion.solution
-                                      }
-                                      readOnly={true}
-                                      rows={5}
-                                      className="max-h-100"
-                                    />
+                            <div
+  id="q-description"
+  className="
+    w-full
+    bg-white
+    border border-gray-200
+    rounded-xl
+    p-4
+    text-sm
+    text-gray-700
+    leading-relaxed
+    shadow-sm
+    hover:shadow-md
+    transition-all
+    duration-200
+    max-h-56
+    overflow-y-auto
+  "
+>
+  {translatedSolution || currentQuestion.solution ? (
+    <p className="whitespace-pre-wrap">
+      {translatedSolution || currentQuestion.solution}
+    </p>
+  ) : (
+    <p className="text-gray-400 italic">
+      Optional description or context for the question
+    </p>
+  )}
+</div>
+
+
+
                                   </TabsContent>
                                   <TabsContent value="Media">
                                     <div className="space-y-2"></div>
