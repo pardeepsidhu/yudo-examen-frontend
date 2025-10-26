@@ -5,6 +5,9 @@ import { ThemeProvider } from "./context/theme.context";
 import { Toaster } from 'react-hot-toast';
 import { NavBar } from "@/components/NavBar";
 
+import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
+        
+
 export const metadata: Metadata = {
   title: "Yudo Examen | AI Powered Learning Platform",
   description: "Yudo Examen is an AI-powered online exam and quiz platform. Create, attend, and analyze tests with instant feedback, rich media, multilingual support, and smart analytics for students and educators.",
@@ -54,11 +57,13 @@ export default function RootLayout({
       <body
        
       >
+         <PrimeReactProvider>
         <Toaster />
         <ThemeProvider>
           <NavBar />
         {children}
         </ThemeProvider>
+        </PrimeReactProvider>
       </body>
     </html>
   );

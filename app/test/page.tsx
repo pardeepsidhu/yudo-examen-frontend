@@ -192,7 +192,7 @@ export default function ExplorePage() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="group hidden sm:flex items-center gap-2.5 px-5 py-3 rounded-md sm:rounded-2xl bg-white shadow-lg hover:shadow-xl border border-indigo-100 hover:border-indigo-300 transition-all duration-300 hover:scale-105 cursor-pointer"
+                    className="group hidden sm:flex items-center gap-2.5 px-5 py-3 rounded-md  bg-white shadow-lg hover:shadow-xl border border-indigo-100 hover:border-indigo-300 transition-all duration-300 hover:scale-105 cursor-pointer"
                   >
                     <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-100 to-indigo-200 group-hover:from-indigo-200 group-hover:to-indigo-300 transition-all">
                       <Award className="h-5 w-5 text-indigo-600" />
@@ -207,7 +207,7 @@ export default function ExplorePage() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="group flex items-center gap-2.5 px-5 py-3 rounded-md sm:rounded-2xl bg-white shadow-lg hover:shadow-xl border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:scale-105 cursor-pointer"
+                    className="group flex items-center gap-2.5 px-5 py-3 rounded-md  bg-white shadow-lg hover:shadow-xl border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:scale-105 cursor-pointer"
                   >
                     <div className="p-2 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all">
                       <Users className="h-5 w-5 text-blue-600" />
@@ -222,7 +222,7 @@ export default function ExplorePage() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="group flex items-center gap-2.5 px-5 py-3 rounded-md sm:rounded-2xl bg-white shadow-lg hover:shadow-xl border border-sky-100 hover:border-sky-300 transition-all duration-300 hover:scale-105 cursor-pointer"
+                    className="group flex items-center gap-2.5 px-5 py-1 rounded-md  bg-white shadow-lg hover:shadow-xl border border-sky-100 hover:border-sky-300 transition-all duration-300 hover:scale-105 cursor-pointer"
                   >
                     <div className="p-2 rounded-lg bg-gradient-to-br from-sky-100 to-sky-200 group-hover:from-sky-200 group-hover:to-sky-300 transition-all">
                       <Sparkles className="h-5 w-5 text-sky-600" />
@@ -236,9 +236,9 @@ export default function ExplorePage() {
               </div>
 
               {/* Enhanced Search and Filter Section */}
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full lg:w-auto lg:min-w-[400px]">
+              <div className="flex flex-row sm:flex-row gap-1 sm:gap-2 sm:gap-4 w-full lg:w-auto lg:min-w-[400px]">
                 {/* Search Input */}
-                <div className="relative flex-1 w-full">
+                <div className="relative flex-5 sm:flex-1 w-full">
                   <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
                     <Search className="h-5 w-5" />
                   </div>
@@ -272,7 +272,7 @@ export default function ExplorePage() {
                 </div>
 
                 {/* Filter Button */}
-                <div className="relative w-full sm:w-auto">
+                <div className="relative w-full flex-1 sm:w-auto">
                   <button
                     onClick={() => setIsFilterOpen(!isFilterOpen)}
                     className="relative flex items-center justify-end gap-2 sm:gap-3 px-4 sm:px-7 h-12 sm:h-14 w-full sm:w-auto bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 text-white rounded-md sm:rounded-2xl shadow-xl hover:shadow-2xl hover:from-indigo-700 hover:via-blue-700 hover:to-sky-600 transition-all duration-300 font-bold text-sm sm:text-base group overflow-hidden"
@@ -458,7 +458,7 @@ export default function ExplorePage() {
             next={() => fetchTestSeries(page)}
             hasMore={hasMore}
             loader={
-              <div className="flex justify-center py-12">
+              <div className="flex justify-center py-4 sm:py-12">
                 <div className="flex items-center gap-3 px-6 py-4 rounded-md sm:rounded-2xl bg-white shadow-lg border border-indigo-100">
                   <Loader2 className="h-6 w-6 animate-spin text-indigo-600" />
                   <span className="text-gray-700 font-medium">Loading more amazing tests...</span>
@@ -466,7 +466,7 @@ export default function ExplorePage() {
               </div>
             }
             endMessage={
-              <div className="text-center py-12">
+              <div className="text-center py-4 sm:py-12">
                 {testSeries.length > 0 ? (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -480,7 +480,7 @@ export default function ExplorePage() {
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="space-y-4 py-12"
+                    className="space-y-4 py-4 sm:py-12"
                   >
                     <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-indigo-100 to-blue-100 flex items-center justify-center">
                       <Search className="h-10 w-10 text-indigo-400" />
@@ -504,7 +504,7 @@ export default function ExplorePage() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ delay: index * 0.05, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
                   >
-                    <Card className="group relative rounded-md  h-full hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 border-0 bg-white sm:rounded-2xl overflow-hidden">
+                    <Card className="group relative rounded-md  h-full hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 border-0 bg-white sm:rounded-2xl overflow-hidden gap-0 sm:gap-3">
                       {/* Animated gradient border on hover */}
                       <div className="absolute inset-0 rounded-md sm:rounded-2xl bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 -z-10 blur-xl" />
 
@@ -535,10 +535,7 @@ export default function ExplorePage() {
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: index * 0.1 + 0.2 }}
                           >
-                            {/* <div className="px-4 py-2 rounded-full bg-white/95 backdrop-blur-md flex items-center gap-2 shadow-lg ring-2 ring-white/20 group-hover:scale-110 transition-transform duration-300">
-                <Eye className="h-4 w-4 text-indigo-600" />
-                <span className="text-sm font-bold text-gray-800">{series.views.toLocaleString()}</span>
-              </div> */}
+                         
                           </motion.div>
 
                           {/* Category Badge - Top Left */}
@@ -616,9 +613,10 @@ export default function ExplorePage() {
 
                       <CardContent className="space-y-3 sm:space-y-4  px-6 pb-6">
                         <Link href={`/test/${series._id}`}>
-                          <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed group-hover:text-gray-700 transition-colors">
-                            {series.description}
-                          </p>
+                         <div
+  className="text-sm text-gray-600  leading-relaxed group-hover:text-gray-700 transition-colors h-50 overflow-hidden"
+  dangerouslySetInnerHTML={{ __html: series.description }}
+/>
 
                           {/* Tags Section */}
                           <div className="flex flex-wrap gap-2 pt-3 pb-2">

@@ -43,17 +43,17 @@ export function NavBar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-500 ${
-          scrolled ? 'pt-2 pb-0' : 'pb-0 pt-2'
+        className={`fixed top-0 px-2 left-0 right-0 z-50 w-full transition-all duration-500 ${
+          scrolled ? 'pt-2 pb-2' : 'pb-2 pt-2'
         }`}
       >
         {/* Glass morphism container */}
         <div
           className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-500 ${
             scrolled ? 'bg-white/90 backdrop-blur-xl shadow-2xl' : 'bg-white/70 backdrop-blur-md shadow-lg'
-          } rounded-2xl border border-indigo-100/50`}
+          } rounded-sm sm:rounded-md border border-indigo-100/50`}
         >
-          <div className="flex items-center justify-between h-16 sm:h-18">
+          <div className="flex items-center justify-between h-14 sm:h-18">
             {/* Animated gradient line on top */}
             <div className="absolute top-0 left-0 right-0 h-0.5 overflow-hidden rounded-t-2xl">
               <div className="w-full h-full bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500 animate-shimmer" />
@@ -157,17 +157,17 @@ export function NavBar() {
 
         {/* Mobile Menu Dropdown */}
         <div
-          className={`md:hidden absolute top-full left-0 right-0 mt-3 mx-4 transition-all duration-500 ${
+          className={`md:hidden absolute top-full left-0 right-0 mt-0 sm:mt-3 mx-2 sm:mx-4 transition-all duration-500 ${
             menuOpen
               ? 'opacity-100 translate-y-0 pointer-events-auto'
               : 'opacity-0 -translate-y-4 pointer-events-none'
           }`}
         >
-          <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-indigo-100/50 overflow-hidden">
+          <div className="bg-white/95 backdrop-blur-xl rounded-sm shadow-2xl border border-indigo-100/50 overflow-hidden">
             {/* Decorative gradient top */}
             <div className="h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
             
-            <div className="py-4">
+            <div className="py-4 rouned-sm!">
               {navLinks.map((link, index) => (
                 <Link
                   key={link.href}
