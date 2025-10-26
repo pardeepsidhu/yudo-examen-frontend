@@ -792,7 +792,7 @@ export default function CreateTestSeries() {
       <select
         id="category"
         name="category"
-        className="w-full h-10 rounded-lg border-2 border-indigo-100 bg-white px-3 pr-6 py-2 text-sm font-medium text-gray-700 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 focus:outline-none transition-all"
+        className="w-full h-10 rounded-lg border-2 border-indigo-100 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 focus:outline-none transition-all"
         value={testSeriesData.category}
         onChange={handleTestSeriesChange}
       >
