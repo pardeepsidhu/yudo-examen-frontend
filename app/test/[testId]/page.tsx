@@ -552,9 +552,9 @@ export default function TestPage() {
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col bg-gradient-to-br"
+      className="min-h-screen w-full flex flex-col bg-gradient-to-br py-2"
       style={{
-        background: `linear-gradient(135deg, ${theme.neutral} 0%, ${theme.tertiary} 100%)`,
+        background: ``,
         fontFamily: "Inter, system-ui, sans-serif",
       }}
     >
@@ -566,44 +566,97 @@ export default function TestPage() {
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList
-              className="grid w-full grid-cols-2 rounded-lg shadow-sm h-auto"
-              style={{
-                background: theme.neutral,
-                border: `1px solid ${theme.primary}22`,
-                minHeight: 44,
-              }}
-            >
-              <TabsTrigger
-                value="details"
-                className="flex items-center gap-2 text-xs sm:text-sm font-semibold py-2 px-1 rounded-md transition-all focus-visible:ring-2"
-                style={{
-                  color: activeTab === "details" ? theme.primary : `${theme.primary}88`,
-                  background: activeTab === "details" ? theme.tertiary : "transparent",
-                  border: activeTab === "details" ? `1.5px solid ${theme.primary}` : "none",
-                  fontWeight: 600,
-                }}
-              >
-                <Info className="h-4 w-4" />
-                <span className="hidden xs:inline">Test Details</span>
-                <span className="inline xs:hidden">Details</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="attend"
-                className="flex items-center gap-2 text-xs sm:text-sm font-semibold py-2 px-1 rounded-md transition-all focus-visible:ring-2"
-                style={{
-                  color: activeTab === "attend" ? theme.primary : `${theme.primary}88`,
-                  background: activeTab === "attend" ? theme.tertiary : "transparent",
-                  border: activeTab === "attend" ? `1.5px solid ${theme.primary}` : "none",
-                  fontWeight: 600,
-                }}
-              >
-                <PlayCircle className="h-4 w-4" />
-                <span className="hidden xs:inline">Attend Test</span>
-                <span className="inline xs:hidden">Attend</span>
-              </TabsTrigger>
-            </TabsList>
+            <TabsList className="grid w-full grid-cols-2 rounded-2xl shadow-xl p-1.5 gap-2 h-auto bg-gradient-to-br from-indigo-50 to-blue-50 border-2 border-indigo-100">
+  <TabsTrigger
+    value="details"
+    className="relative flex items-center justify-center gap-2.5 text-sm sm:text-base font-bold py-3.5 px-4 rounded-xl transition-all duration-300 group overflow-hidden"
+    style={{
+      color: activeTab === "details" ? "#ffffff" : "#6366f1",
+    }}
+  >
+    {/* Active background gradient */}
+    {activeTab === "details" && (
+      <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 transition-all duration-300" />
+    )}
+    
+    {/* Hover background for inactive state */}
+    {activeTab !== "details" && (
+      <div className="absolute inset-0 bg-gradient-to-r from-indigo-100 to-blue-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    )}
+    
+    {/* Shine effect on active */}
+    {activeTab === "details" && (
+      <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700" />
+    )}
+    
+    {/* Icon container with animation */}
+    <div className={`relative z-10 p-1.5 rounded-lg transition-all duration-300 ${
+      activeTab === "details" 
+        ? "bg-white/20" 
+        : "bg-indigo-100 group-hover:bg-indigo-200"
+    }`}>
+      <Info className={`h-4 w-4 sm:h-5 sm:w-5 transition-all duration-300 ${
+        activeTab === "details" 
+          ? "text-white" 
+          : "text-indigo-600 group-hover:scale-110"
+      }`} />
+    </div>
+    
+    {/* Text */}
+    <span className="relative z-10 hidden xs:inline">Test Details</span>
+    <span className="relative z-10 inline xs:hidden">Details</span>
+    
+    {/* Active indicator dot */}
+    {activeTab === "details" && (
+      <div className="absolute top-2 right-2 w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
+    )}
+  </TabsTrigger>
 
+  <TabsTrigger
+    value="attend"
+    className="relative flex items-center justify-center gap-2.5 text-sm sm:text-base font-bold py-3.5 px-4 rounded-xl transition-all duration-300 group overflow-hidden"
+    style={{
+      color: activeTab === "attend" ? "#ffffff" : "#6366f1",
+    }}
+  >
+    {/* Active background gradient */}
+    {activeTab === "attend" && (
+      <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 transition-all duration-300" />
+    )}
+    
+    {/* Hover background for inactive state */}
+    {activeTab !== "attend" && (
+      <div className="absolute inset-0 bg-gradient-to-r from-indigo-100 to-blue-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+    )}
+    
+    {/* Shine effect on active */}
+    {activeTab === "attend" && (
+      <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700" />
+    )}
+    
+    {/* Icon container with animation */}
+    <div className={`relative z-10 p-1.5 rounded-lg transition-all duration-300 ${
+      activeTab === "attend" 
+        ? "bg-white/20" 
+        : "bg-indigo-100 group-hover:bg-indigo-200"
+    }`}>
+      <PlayCircle className={`h-4 w-4 sm:h-5 sm:w-5 transition-all duration-300 ${
+        activeTab === "attend" 
+          ? "text-white" 
+          : "text-indigo-600 group-hover:scale-110"
+      }`} />
+    </div>
+    
+    {/* Text */}
+    <span className="relative z-10 hidden xs:inline">Attend Test</span>
+    <span className="relative z-10 inline xs:hidden">Attend</span>
+    
+    {/* Active indicator dot */}
+    {activeTab === "attend" && (
+      <div className="absolute top-2 right-2 w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
+    )}
+  </TabsTrigger>
+</TabsList>
             <TabsContent value="details" className="m-0 mt-4">
               <TestDetails testData={testData} />
             </TabsContent>

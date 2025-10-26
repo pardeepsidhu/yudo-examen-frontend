@@ -44,7 +44,7 @@ export function NavBar() {
     <>
       <nav
         className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-500 ${
-          scrolled ? 'py-2' : 'py-3'
+          scrolled ? 'pt-2 pb-0' : 'pb-0 pt-2'
         }`}
       >
         {/* Glass morphism container */}
@@ -201,7 +201,7 @@ export function NavBar() {
       </nav>
       
       {/* Spacer */}
-      <div className={`transition-all duration-500 ${scrolled ? 'h-20' : 'h-24'}`} />
+      <div className={`transition-all duration-500 ${scrolled ? 'h-20' : 'h-17'}`} />
 
       <style jsx>{`
         @keyframes shimmer {

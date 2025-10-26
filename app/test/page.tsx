@@ -144,295 +144,313 @@ export default function ExplorePage() {
         <div className="absolute bottom-20 left-1/3 w-80 h-80 bg-sky-200/20 rounded-full blur-3xl animate-blob animation-delay-4000" />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="space-y-8">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-12">
+        <div className="space-y-4 sm:space-y-8">
           {/* Enhanced Header with Stats */}
           <motion.div
-  variants={headerVariants}
-  initial="hidden"
-  animate="visible"
-  transition={{ duration: 0.6 }}
-  className="space-y-8"
->
-  <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-8">
-    <div className="space-y-4">
-      <div className="flex items-center gap-4">
-        {/* Animated Icon Badge */}
-        <motion.div 
-          className="relative p-3 rounded-2xl bg-gradient-to-br from-indigo-500 via-blue-600 to-sky-500 shadow-2xl"
-          animate={{ 
-            boxShadow: [
-              "0 10px 40px rgba(99, 102, 241, 0.3)",
-              "0 15px 50px rgba(59, 130, 246, 0.4)",
-              "0 10px 40px rgba(99, 102, 241, 0.3)"
-            ]
-          }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <TrendingUp className="h-7 w-7 text-white" />
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full border-2 border-white animate-pulse" />
-        </motion.div>
-        
-        <div>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent leading-tight">
-            Explore Test Series
-          </h1>
-          <div className="h-1.5 w-32 bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 rounded-full mt-2" />
-        </div>
-      </div>
-      
-      <p className="text-gray-600 text-lg lg:text-xl flex items-center gap-2 font-medium">
-        <Sparkles className="h-6 w-6 text-indigo-500 animate-pulse" />
-        Discover curated collections designed to accelerate your learning
-      </p>
-
-      {/* Enhanced Stats Pills */}
-      <div className="flex flex-wrap gap-3 mt-6">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="group flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-white shadow-lg hover:shadow-xl border border-indigo-100 hover:border-indigo-300 transition-all duration-300 hover:scale-105 cursor-pointer"
-        >
-          <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-100 to-indigo-200 group-hover:from-indigo-200 group-hover:to-indigo-300 transition-all">
-            <Award className="h-5 w-5 text-indigo-600" />
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 font-medium">Available Tests</p>
-            <p className="text-base font-bold text-gray-800">{testSeries.length}+</p>
-          </div>
-        </motion.div>
-        
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3 }}
-          className="group flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-white shadow-lg hover:shadow-xl border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:scale-105 cursor-pointer"
-        >
-          <div className="p-2 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all">
-            <Users className="h-5 w-5 text-blue-600" />
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 font-medium">Community</p>
-            <p className="text-base font-bold text-gray-800">Active</p>
-          </div>
-        </motion.div>
-        
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.4 }}
-          className="group flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-white shadow-lg hover:shadow-xl border border-sky-100 hover:border-sky-300 transition-all duration-300 hover:scale-105 cursor-pointer"
-        >
-          <div className="p-2 rounded-lg bg-gradient-to-br from-sky-100 to-sky-200 group-hover:from-sky-200 group-hover:to-sky-300 transition-all">
-            <Sparkles className="h-5 w-5 text-sky-600" />
-          </div>
-          <div>
-            <p className="text-xs text-gray-500 font-medium">Technology</p>
-            <p className="text-base font-bold text-gray-800">AI-Powered</p>
-          </div>
-        </motion.div>
-      </div>
-    </div>
-
-    {/* Enhanced Search and Filter Section */}
-    <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto lg:min-w-[400px]">
-      <div className="relative flex-1">
-        <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
-          <Search className="h-5 w-5" />
-        </div>
-        <Input
-          placeholder="Search test series..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="pl-12 pr-12 h-14 bg-white shadow-xl border-2 border-indigo-100 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 transition-all duration-300 rounded-2xl text-base font-medium placeholder:text-gray-400 hover:shadow-2xl"
-        />
-        {search && (
-          <button
-            onClick={() => setSearch('')}
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 transition-all duration-200 hover:scale-110 hover:rotate-90"
+            variants={headerVariants}
+            initial="hidden"
+            animate="visible"
+            transition={{ duration: 0.6 }}
+            className="space-y-8"
           >
-            <X className="h-5 w-5" />
-          </button>
-        )}
-        
-        {/* Search suggestions indicator */}
-        {search && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="absolute left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-lg border border-gray-100 p-2 z-40"
-          >
-            <p className="text-xs text-gray-500 px-3 py-1">
-              Searching for: <span className="font-semibold text-indigo-600">{search}</span>
-            </p>
-          </motion.div>
-        )}
-      </div>
-
-      <div className="relative">
-        <button
-          onClick={() => setIsFilterOpen(!isFilterOpen)}
-          className="relative flex items-center justify-center gap-3 px-7 h-14 bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 text-white rounded-2xl shadow-xl hover:shadow-2xl hover:from-indigo-700 hover:via-blue-700 hover:to-sky-600 transition-all duration-300 font-bold text-base group overflow-hidden"
-        >
-          {/* Animated shine effect */}
-          <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-          
-          <Filter className="h-5 w-5 relative z-10" />
-          <span className="relative z-10">Filters</span>
-          {selectedCategory && (
-            <span className="relative z-10 px-2 py-0.5 bg-white/20 rounded-full text-xs font-bold">1</span>
-          )}
-          <ChevronDown className={`h-5 w-5 transition-transform duration-300 relative z-10 ${isFilterOpen ? 'rotate-180' : ''}`} />
-        </button>
-
-        <AnimatePresence>
-          {isFilterOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -10, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.95 }}
-              transition={{ type: "spring", duration: 0.3 }}
-              className="absolute right-0 mt-4 w-96 bg-white rounded-3xl shadow-2xl z-50 border border-gray-100 overflow-hidden"
-            >
-              {/* Gradient Header */}
-              <div className="relative bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 px-6 py-5 overflow-hidden">
-                <div className="absolute inset-0 opacity-20">
-                  <div className="absolute top-0 left-0 w-40 h-40 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-                  <div className="absolute bottom-0 right-0 w-40 h-40 bg-white rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
-                </div>
-                <div className="relative flex items-center justify-between">
-                  <h3 className="font-black text-white text-xl flex items-center gap-3">
-                    <div className="p-2 bg-white/20 rounded-xl backdrop-blur-sm">
-                      <Filter className="h-5 w-5" />
-                    </div>
-                    Filter Categories
-                  </h3>
-                  <button
-                    onClick={() => setIsFilterOpen(false)}
-                    className="text-white/80 hover:text-white transition-all duration-200 hover:rotate-90 hover:scale-110"
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-1 sm:gap-8">
+              <div className="space-y-4">
+                <div className="flex items-center gap-4">
+                  {/* Animated Icon Badge */}
+                  <motion.div
+                    className="relative p-3 rounded-md sm:rounded-2xl bg-gradient-to-br from-indigo-500 via-blue-600 to-sky-500 shadow-2xl"
+                    animate={{
+                      boxShadow: [
+                        "0 10px 40px rgba(99, 102, 241, 0.3)",
+                        "0 15px 50px rgba(59, 130, 246, 0.4)",
+                        "0 10px 40px rgba(99, 102, 241, 0.3)"
+                      ]
+                    }}
+                    transition={{ duration: 2, repeat: Infinity }}
                   >
-                    <X className="h-6 w-6" />
-                  </button>
+                    <TrendingUp className="h-5 sm:h-7 w-5 sm:w-7 text-white" />
+                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full border-2 border-white animate-pulse" />
+                  </motion.div>
+
+                  <div>
+                    <h1 className="text-2xl sm:text-5xl lg:text-6xl font-black bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent leading-tight">
+                      Explore Test Series
+                    </h1>
+                    <div className="h-1.5 w-32 bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 rounded-full mt-2" />
+                  </div>
                 </div>
-              </div>
-              
-              {/* Categories List */}
-              <div className="p-5 max-h-[500px] overflow-y-auto custom-scrollbar">
-                <button
-                  onClick={() => {
-                    setSelectedCategory('');
-                    setIsFilterOpen(false);
-                  }}
-                  className={`w-full text-left px-5 py-4 rounded-2xl mb-3 transition-all duration-300 font-semibold flex items-center justify-between group ${
-                    selectedCategory === ''
-                      ? 'bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500 text-white shadow-lg scale-[1.02]'
-                      : 'hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 text-gray-700 hover:scale-[1.02]'
-                  }`}
-                >
-                  <span className="flex items-center gap-3">
-                    <div className={`w-2 h-2 rounded-full ${selectedCategory === '' ? 'bg-white' : 'bg-indigo-400'}`} />
-                    All Categories
-                  </span>
-                  {selectedCategory === '' && (
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  )}
-                </button>
-                
-                {categories.map((category, index) => (
-                  <motion.button
-                    key={category}
+
+                <p className="text-gray-600 text-sm lg:text-xl flex items-center gap-2 font-medium">
+                  <Sparkles className="h-6 w-6 text-indigo-500 animate-pulse" />
+                  Discover curated collections designed to accelerate your learning
+                </p>
+
+                {/* Enhanced Stats Pills */}
+                <div className="hidden sm:flex flex-wrap gap-1 sm:gap-3 mt-4 sm:mt-6">
+                  <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.03 }}
-                    onClick={() => {
-                      setSelectedCategory(category);
-                      setIsFilterOpen(false);
-                    }}
-                    className={`w-full text-left px-5 py-4 rounded-2xl mb-3 transition-all duration-300 font-semibold flex items-center justify-between group ${
-                      selectedCategory === category
-                        ? 'bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500 text-white shadow-lg scale-[1.02]'
-                        : 'hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 text-gray-700 hover:scale-[1.02]'
-                    }`}
+                    transition={{ delay: 0.2 }}
+                    className="group hidden sm:flex items-center gap-2.5 px-5 py-3 rounded-md sm:rounded-2xl bg-white shadow-lg hover:shadow-xl border border-indigo-100 hover:border-indigo-300 transition-all duration-300 hover:scale-105 cursor-pointer"
                   >
-                    <span className="flex items-center gap-3">
-                      <div className={`w-2 h-2 rounded-full ${selectedCategory === category ? 'bg-white' : 'bg-indigo-400'}`} />
-                      {category}
-                    </span>
-                    {selectedCategory === category && (
-                      <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                      </svg>
-                    )}
-                  </motion.button>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    </div>
-  </div>
+                    <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-100 to-indigo-200 group-hover:from-indigo-200 group-hover:to-indigo-300 transition-all">
+                      <Award className="h-5 w-5 text-indigo-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 font-medium">Available Tests</p>
+                      <p className="text-base font-bold text-gray-800">{testSeries.length}+</p>
+                    </div>
+                  </motion.div>
 
-  {/* Enhanced Active Filters */}
-  {(selectedCategory || debouncedSearch) && (
-    <motion.div
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: 'auto' }}
-      exit={{ opacity: 0, height: 0 }}
-      className="flex flex-wrap items-center gap-4 p-5 bg-gradient-to-r from-indigo-50 via-blue-50 to-sky-50 rounded-2xl border border-indigo-100"
-    >
-      <span className="text-gray-700 font-bold flex items-center gap-2 text-base">
-        <div className="p-1.5 bg-indigo-100 rounded-lg">
-          <Filter className="h-4 w-4 text-indigo-600" />
-        </div>
-        Active Filters:
-      </span>
-      
-      {selectedCategory && (
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          exit={{ scale: 0 }}
-        >
-          <Badge className="flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-blue-500 text-white border-0 hover:from-indigo-600 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl text-sm font-bold rounded-xl">
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
-            </svg>
-            {selectedCategory}
-            <button 
-              onClick={() => setSelectedCategory('')} 
-              className="hover:text-red-200 transition-all duration-200 hover:scale-125 hover:rotate-90"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </Badge>
-        </motion.div>
-      )}
-      
-      {debouncedSearch && (
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          exit={{ scale: 0 }}
-        >
-          <Badge className="flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-sky-500 text-white border-0 hover:from-blue-600 hover:to-sky-600 transition-all shadow-lg hover:shadow-xl text-sm font-bold rounded-xl">
-            <Search className="w-4 h-4" />
-            Search: {debouncedSearch}
-            <button 
-              onClick={() => setSearch('')} 
-              className="hover:text-red-200 transition-all duration-200 hover:scale-125 hover:rotate-90"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </Badge>
-        </motion.div>
-      )}
-    </motion.div>
-  )}
-</motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.3 }}
+                    className="group flex items-center gap-2.5 px-5 py-3 rounded-md sm:rounded-2xl bg-white shadow-lg hover:shadow-xl border border-blue-100 hover:border-blue-300 transition-all duration-300 hover:scale-105 cursor-pointer"
+                  >
+                    <div className="p-2 rounded-lg bg-gradient-to-br from-blue-100 to-blue-200 group-hover:from-blue-200 group-hover:to-blue-300 transition-all">
+                      <Users className="h-5 w-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 font-medium">Community</p>
+                      <p className="text-base font-bold text-gray-800">Active</p>
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="group flex items-center gap-2.5 px-5 py-3 rounded-md sm:rounded-2xl bg-white shadow-lg hover:shadow-xl border border-sky-100 hover:border-sky-300 transition-all duration-300 hover:scale-105 cursor-pointer"
+                  >
+                    <div className="p-2 rounded-lg bg-gradient-to-br from-sky-100 to-sky-200 group-hover:from-sky-200 group-hover:to-sky-300 transition-all">
+                      <Sparkles className="h-5 w-5 text-sky-600" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-500 font-medium">Technology</p>
+                      <p className="text-base font-bold text-gray-800">AI-Powered</p>
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Enhanced Search and Filter Section */}
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full lg:w-auto lg:min-w-[400px]">
+                {/* Search Input */}
+                <div className="relative flex-1 w-full">
+                  <div className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                    <Search className="h-5 w-5" />
+                  </div>
+                  <Input
+                    placeholder="Search test series..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="pl-12 pr-12 h-12 sm:h-14 bg-white shadow-xl border-2 border-indigo-100 focus:border-indigo-400 focus:ring-4 focus:ring-indigo-100 transition-all duration-300 rounded-md sm:rounded-2xl text-sm sm:text-base font-medium placeholder:text-gray-400 hover:shadow-2xl w-full"
+                  />
+                  {search && (
+                    <button
+                      onClick={() => setSearch('')}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500 transition-all duration-200 hover:scale-110 hover:rotate-90"
+                    >
+                      <X className="h-5 w-5" />
+                    </button>
+                  )}
+
+                  {/* Search suggestions indicator */}
+                  {search && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="absolute left-0 right-0 top-full mt-2 bg-white rounded-xl shadow-lg border border-gray-100 p-2 z-40"
+                    >
+                      <p className="text-xs text-gray-500 px-3 py-1">
+                        Searching for: <span className="font-semibold text-indigo-600">{search}</span>
+                      </p>
+                    </motion.div>
+                  )}
+                </div>
+
+                {/* Filter Button */}
+                <div className="relative w-full sm:w-auto">
+                  <button
+                    onClick={() => setIsFilterOpen(!isFilterOpen)}
+                    className="relative flex items-center justify-end gap-2 sm:gap-3 px-4 sm:px-7 h-12 sm:h-14 w-full sm:w-auto bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 text-white rounded-md sm:rounded-2xl shadow-xl hover:shadow-2xl hover:from-indigo-700 hover:via-blue-700 hover:to-sky-600 transition-all duration-300 font-bold text-sm sm:text-base group overflow-hidden"
+                  >
+                    {/* Animated shine effect */}
+                    <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+
+                    <Filter className="h-5 w-5 relative z-10" />
+                    <span className="relative z-10 ">Filters</span>
+                    {selectedCategory && (
+                      <span className="relative z-10 px-2 py-0.5 bg-white/20 rounded-full text-xs font-bold">1</span>
+                    )}
+                    <ChevronDown
+                      className={`h-5 w-5 transition-transform duration-300 relative z-10 ${isFilterOpen ? 'rotate-180' : ''
+                        }`}
+                    />
+                  </button>
+
+                  <AnimatePresence>
+                    {isFilterOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                        transition={{ type: 'spring', duration: 0.3 }}
+                        className="absolute right-0  mt-3 w-full sm:w-96 bg-white rounded-md sm:rounded-2xl shadow-2xl z-50 border border-gray-100 overflow-hidden"
+                      >
+                        {/* Gradient Header */}
+                        <div className="relative bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 px-4 sm:px-6 py-4 sm:py-5 overflow-hidden">
+                          <div className="absolute inset-0 opacity-20">
+                            <div className="absolute top-0 left-0 w-32 sm:w-40 h-32 sm:h-40 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+                            <div className="absolute bottom-0 right-0 w-32 sm:w-40 h-32 sm:h-40 bg-white rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+                          </div>
+                          <div className="relative flex items-center justify-between">
+                            <h3 className="font-black text-white text-lg sm:text-xl flex items-center gap-3">
+                              <div className="p-2 bg-white/20 rounded-xl backdrop-blur-sm">
+                                <Filter className="h-5 w-5" />
+                              </div>
+                              Filter Categories
+                            </h3>
+                            <button
+                              onClick={() => setIsFilterOpen(false)}
+                              className="text-white/80 hover:text-white transition-all duration-200 hover:rotate-90 hover:scale-110"
+                            >
+                              <X className="h-5 sm:h-6 w-5 sm:w-6" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Categories List */}
+                        <div className="p-4 sm:p-5 max-h-[400px] sm:max-h-[500px] overflow-y-auto custom-scrollbar">
+                          <button
+                            onClick={() => {
+                              setSelectedCategory('');
+                              setIsFilterOpen(false);
+                            }}
+                            className={`w-full text-left px-4 sm:px-5 py-3 sm:py-4 rounded-md sm:rounded-2xl mb-2 sm:mb-3 transition-all duration-300 font-semibold flex items-center justify-between group ${selectedCategory === ''
+                                ? 'bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500 text-white shadow-lg scale-[1.02]'
+                                : 'hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 text-gray-700 hover:scale-[1.02]'
+                              }`}
+                          >
+                            <span className="flex items-center gap-3">
+                              <div
+                                className={`w-2 h-2 rounded-full ${selectedCategory === '' ? 'bg-white' : 'bg-indigo-400'
+                                  }`}
+                              />
+                              All Categories
+                            </span>
+                            {selectedCategory === '' && (
+                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            )}
+                          </button>
+
+                          {categories.map((category, index) => (
+                            <motion.button
+                              key={category}
+                              initial={{ opacity: 0, x: -20 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: index * 0.03 }}
+                              onClick={() => {
+                                setSelectedCategory(category);
+                                setIsFilterOpen(false);
+                              }}
+                              className={`w-full text-left px-4 sm:px-5 py-3 sm:py-4 rounded-md sm:rounded-2xl mb-2 sm:mb-3 transition-all duration-300 font-semibold flex items-center justify-between group ${selectedCategory === category
+                                  ? 'bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500 text-white shadow-lg scale-[1.02]'
+                                  : 'hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 text-gray-700 hover:scale-[1.02]'
+                                }`}
+                            >
+                              <span className="flex items-center gap-3">
+                                <div
+                                  className={`w-2 h-2 rounded-full ${selectedCategory === category ? 'bg-white rounded-md' : 'bg-indigo-400'
+                                    }`}
+                                />
+                                {category}
+                              </span>
+                              {selectedCategory === category && (
+                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                  <path
+                                    fillRule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clipRule="evenodd"
+                                  />
+                                </svg>
+                              )}
+                            </motion.button>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
+
+            </div>
+
+            {/* Enhanced Active Filters */}
+            {(selectedCategory || debouncedSearch) && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="flex flex-wrap items-center gap-4 p-5 bg-gradient-to-r from-indigo-50 via-blue-50 to-sky-50 rounded-md sm:rounded-2xl border border-indigo-100"
+              >
+                <span className="text-gray-700 font-bold flex items-center gap-2 text-base">
+                  <div className="p-1.5 bg-indigo-100 rounded-lg">
+                    <Filter className="h-4 w-4 text-indigo-600" />
+                  </div>
+                  Active Filters:
+                </span>
+
+                {selectedCategory && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                  >
+                    <Badge className="flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-r from-indigo-500 to-blue-500 text-white border-0 hover:from-indigo-600 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl text-sm font-bold rounded-xl">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                      </svg>
+                      {selectedCategory}
+                      <button
+                        onClick={() => setSelectedCategory('')}
+                        className="hover:text-red-200 transition-all duration-200 hover:scale-125 hover:rotate-90"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </Badge>
+                  </motion.div>
+                )}
+
+                {debouncedSearch && (
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                  >
+                    <Badge className="flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-r from-blue-500 to-sky-500 text-white border-0 hover:from-blue-600 hover:to-sky-600 transition-all shadow-lg hover:shadow-xl text-sm font-bold rounded-xl">
+                      <Search className="w-4 h-4" />
+                      Search: {debouncedSearch}
+                      <button
+                        onClick={() => setSearch('')}
+                        className="hover:text-red-200 transition-all duration-200 hover:scale-125 hover:rotate-90"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </Badge>
+                  </motion.div>
+                )}
+              </motion.div>
+            )}
+          </motion.div>
 
           {/* Test Series Grid */}
           <InfiniteScroll
@@ -441,7 +459,7 @@ export default function ExplorePage() {
             hasMore={hasMore}
             loader={
               <div className="flex justify-center py-12">
-                <div className="flex items-center gap-3 px-6 py-4 rounded-2xl bg-white shadow-lg border border-indigo-100">
+                <div className="flex items-center gap-3 px-6 py-4 rounded-md sm:rounded-2xl bg-white shadow-lg border border-indigo-100">
                   <Loader2 className="h-6 w-6 animate-spin text-indigo-600" />
                   <span className="text-gray-700 font-medium">Loading more amazing tests...</span>
                 </div>
@@ -453,7 +471,7 @@ export default function ExplorePage() {
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-gradient-to-r from-indigo-50 to-blue-50 border-2 border-indigo-200"
+                    className="inline-flex items-center gap-3 px-6 py-4 rounded-md sm:rounded-2xl bg-gradient-to-r from-indigo-50 to-blue-50 border-2 border-indigo-200"
                   >
                     <Award className="h-6 w-6 text-indigo-600" />
                     <span className="text-gray-700 font-semibold">You've seen all available test series!</span>
@@ -475,7 +493,7 @@ export default function ExplorePage() {
             }
             scrollThreshold="90%"
           >
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
               <AnimatePresence>
                 {testSeries.map((series, index) => (
                   <motion.div
@@ -486,9 +504,9 @@ export default function ExplorePage() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     transition={{ delay: index * 0.05, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
                   >
-                    <Card className="group relative h-full hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 border-0 bg-white rounded-3xl overflow-hidden">
+                    <Card className="group relative rounded-md  h-full hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-3 border-0 bg-white sm:rounded-2xl overflow-hidden">
                       {/* Animated gradient border on hover */}
-                      <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 -z-10 blur-xl" />
+                      <div className="absolute inset-0 rounded-md sm:rounded-2xl bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 opacity-0 group-hover:opacity-10 transition-opacity duration-500 -z-10 blur-xl" />
 
                       <Link href={`/test/${series._id}`} className="block">
                         <div className="relative h-56 w-full overflow-hidden">
@@ -589,21 +607,21 @@ export default function ExplorePage() {
                           )}
                         </div>
 
-                        <CardHeader className="pb-3 pt-6 px-6">
+                        <CardHeader className="s pt-3 sm:pt-6 px-6">
                           <CardTitle className="line-clamp-2 text-xl font-extrabold text-gray-900 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-indigo-600 group-hover:to-blue-600 transition-all duration-300 leading-tight">
                             {series.title}
                           </CardTitle>
                         </CardHeader>
                       </Link>
 
-                      <CardContent className="space-y-5 px-6 pb-6">
+                      <CardContent className="space-y-3 sm:space-y-4  px-6 pb-6">
                         <Link href={`/test/${series._id}`}>
                           <p className="text-sm text-gray-600 line-clamp-2 leading-relaxed group-hover:text-gray-700 transition-colors">
                             {series.description}
                           </p>
 
                           {/* Tags Section */}
-                          <div className="flex flex-wrap gap-2 pt-3">
+                          <div className="flex flex-wrap gap-2 pt-3 pb-2">
                             {series.tags.slice(0, 3).map((tag, tagIndex) => (
                               <motion.div
                                 key={tag}
@@ -676,7 +694,7 @@ export default function ExplorePage() {
                             <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
                               <path fillRule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clipRule="evenodd" />
                             </svg>
-                            <span className="font-semibold">{series.likes?.length || 0}</span>
+                            {/* <span className="font-semibold">{series.likes?.length || 0}</span> */}
                           </div>
                           <div className="flex items-center gap-1">
                             <svg className="w-4 h-4 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
