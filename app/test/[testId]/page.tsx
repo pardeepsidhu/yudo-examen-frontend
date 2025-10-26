@@ -57,7 +57,7 @@ export default function TestPage() {
         throw new Error("Test ID not found in URL parameters");
       }
       const response = await getAttendTest(params.testId as string);
-    
+
       if (!response || !response.success) {
         throw new Error(response?.message || "Failed to load test");
       }
@@ -208,7 +208,7 @@ export default function TestPage() {
 
       if (femaleVoice) {
         utterance.voice = femaleVoice;
-       
+
       }
 
       utterance.onend = () => setIsSpeaking(false);
@@ -265,7 +265,7 @@ export default function TestPage() {
           return;
         }
       }
-    
+
       if (type === "des") {
         setTranslatedDesctription(translatedText);
       } else {
@@ -288,55 +288,247 @@ export default function TestPage() {
     return chunks;
   }
 
+  // Loading State
   if (loading) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-        <div className="flex flex-col items-center space-y-4">
-          <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          <p className="text-lg font-medium text-gray-600 dark:text-gray-300">
-            Loading test...
-          </p>
+      <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-blue-50 relative overflow-hidden">
+        {/* Animated background blobs */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-20 left-20 w-72 h-72 bg-indigo-200/20 rounded-full blur-3xl animate-blob" />
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl animate-blob animation-delay-2000" />
         </div>
+
+        <div className="relative z-10 flex flex-col items-center space-y-6">
+          {/* Animated loader container */}
+          <div className="relative">
+            {/* Outer spinning ring */}
+            <div className="absolute inset-0 rounded-full border-4 border-indigo-200/30 animate-ping" />
+
+            {/* Main loader */}
+            <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-2xl">
+              <Loader2 className="h-10 w-10 animate-spin text-white" />
+            </div>
+
+            {/* Glow effect */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 blur-xl opacity-50 animate-pulse" />
+          </div>
+
+          {/* Loading text with animation */}
+          <div className="text-center space-y-2">
+            <p className="text-xl font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent">
+              Loading test...
+            </p>
+            <div className="flex items-center justify-center gap-1">
+              <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" />
+              <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce animation-delay-200" />
+              <span className="w-2 h-2 bg-sky-500 rounded-full animate-bounce animation-delay-400" />
+            </div>
+          </div>
+        </div>
+
+        <style jsx>{`
+        @keyframes blob {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+          50% { transform: translate(30px, -30px) scale(1.1); opacity: 0.3; }
+        }
+        .animate-blob { animation: blob 7s ease-in-out infinite; }
+        .animation-delay-200 { animation-delay: 0.2s; }
+        .animation-delay-400 { animation-delay: 0.4s; }
+        .animation-delay-2000 { animation-delay: 2s; }
+      `}</style>
       </div>
     );
   }
 
+  // Error State
   if (error) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4">
-        <Alert variant="destructive" className="max-w-md">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
+      <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-blue-50 p-4 relative overflow-hidden">
+        {/* Animated background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-red-200/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-200/10 rounded-full blur-3xl animate-pulse animation-delay-1000" />
+        </div>
+
+        <div className="relative z-10 max-w-md w-full">
+          <Alert className="border-0 bg-white/90 backdrop-blur-xl shadow-2xl rounded-2xl overflow-hidden flex justify-center flex justify-center">
+            {/* Gradient top border */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 via-orange-500 to-red-500" />
+
+            <div className="p-6 space-y-4">
+              {/* Error icon with animation */}
+              <div className="flex items-center justify-center">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-red-500/20 rounded-full blur-xl animate-pulse" />
+                  <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-red-500 to-orange-600 flex items-center justify-center shadow-lg">
+                    <AlertCircle className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Error content */}
+              <div className="text-center space-y-2">
+                <h3 className="text-xl font-bold text-gray-900">Oops! Something went wrong</h3>
+                <AlertDescription className="text-base text-gray-600 leading-relaxed">
+                  {error}
+                </AlertDescription>
+              </div>
+
+              {/* Action button */}
+              <button
+                onClick={() => window.location.reload()}
+                className="w-full px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] flex items-center justify-center gap-2"
+              >
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                Try Again
+              </button>
+            </div>
+          </Alert>
+        </div>
+
+        <style jsx>{`
+        .animation-delay-1000 { animation-delay: 1s; }
+      `}</style>
       </div>
     );
   }
 
-  // Enhanced null checks before rendering content
+  // No Test Data State
   if (!testData) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4">
-        <Alert className="max-w-md">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            No test data available. Please try again later.
-          </AlertDescription>
-        </Alert>
+      <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-blue-50 p-4 relative overflow-hidden">
+        {/* Animated background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-20 left-20 w-72 h-72 bg-gray-200/20 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-20 right-20 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl animate-pulse animation-delay-1000" />
+        </div>
+
+        <div className="relative z-10 max-w-md w-full">
+          <Alert className="border-0 bg-white/90 backdrop-blur-xl shadow-2xl rounded-2xl overflow-hidden flex justify-center">
+            {/* Gradient top border */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
+
+            <div className="p-6 space-y-4">
+              {/* Info icon */}
+              <div className="flex items-center justify-center">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-indigo-500/20 rounded-full blur-xl animate-pulse" />
+                  <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-lg">
+                    <AlertCircle className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="text-center space-y-2">
+                <h3 className="text-xl font-bold text-gray-900">No Test Data Available</h3>
+                <AlertDescription className="text-base text-gray-600 leading-relaxed">
+                  No test data available. Please try again later.
+                </AlertDescription>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => window.history.back()}
+                  className="flex-1 px-6 py-3 rounded-xl font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all duration-300 hover:scale-[1.02]"
+                >
+                  Go Back
+                </button>
+                <button
+                  onClick={() => window.location.reload()}
+                  className="flex-1 px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02]"
+                >
+                  Refresh
+                </button>
+              </div>
+            </div>
+          </Alert>
+        </div>
+
+        <style jsx>{`
+        .animation-delay-1000 { animation-delay: 1s; }
+      `}</style>
       </div>
     );
   }
 
-  // Handle case where questions array might be missing or empty
-  const questions = testData.test?.questions || [];
+  // No Questions State
+  const questions = testData?.test?.questions || [];
   if (questions.length === 0) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4">
-        <Alert className="max-w-md">
-          <Info className="h-4 w-4" />
-          <AlertDescription>
-            This test doesn&apos;t have any questions yet.
-          </AlertDescription>
-        </Alert>
+      <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-blue-50 p-4 relative overflow-hidden">
+        {/* Animated background */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/4 right-1/4 w-80 h-80 bg-yellow-200/20 rounded-full blur-3xl animate-blob" />
+          <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl animate-blob animation-delay-2000" />
+        </div>
+
+        <div className="relative z-10 max-w-md w-full">
+          <Alert className="border-0 bg-white/90 backdrop-blur-xl shadow-2xl rounded-2xl overflow-hidden flex justify-center">
+            {/* Gradient top border */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400" />
+
+            <div className="p-6 space-y-4">
+              {/* Warning icon with animation */}
+              <div className="flex items-center justify-center">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-yellow-500/20 rounded-full blur-xl animate-pulse" />
+                  <div className="relative w-16 h-16 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-lg">
+                    <Info className="h-8 w-8 text-white" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="text-center space-y-2">
+                <h3 className="text-xl font-bold text-gray-900">No Questions Yet</h3>
+                <AlertDescription className="text-base text-gray-600 leading-relaxed">
+                  This test doesn&apos;t have any questions yet. Please check back later or contact the test creator.
+                </AlertDescription>
+              </div>
+
+              {/* Info cards */}
+              <div className="grid grid-cols-2 gap-3 mt-4">
+                <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100">
+                  <p className="text-xs text-gray-500 font-medium">Test Status</p>
+                  <p className="text-sm font-bold text-indigo-600">Empty</p>
+                </div>
+                <div className="p-3 rounded-xl bg-gradient-to-br from-yellow-50 to-orange-50 border border-yellow-100">
+                  <p className="text-xs text-gray-500 font-medium">Questions</p>
+                  <p className="text-sm font-bold text-orange-600">0</p>
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex gap-3 mt-4">
+                <button
+                  onClick={() => window.history.back()}
+                  className="flex-1 px-6 py-3 rounded-xl font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all duration-300 hover:scale-[1.02]"
+                >
+                  Go Back
+                </button>
+                <button
+                  onClick={() => window.location.href = '/test'}
+                  className="flex-1 px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02]"
+                >
+                  Browse Tests
+                </button>
+              </div>
+            </div>
+          </Alert>
+        </div>
+
+        <style jsx>{`
+        @keyframes blob {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+          50% { transform: translate(30px, -30px) scale(1.1); opacity: 0.3; }
+        }
+        .animate-blob { animation: blob 7s ease-in-out infinite; }
+        .animation-delay-2000 { animation-delay: 2s; }
+      `}</style>
       </div>
     );
   }
@@ -443,13 +635,13 @@ export default function TestPage() {
                             className={cn(
                               "h-8 w-8 p-0 rounded-full text-xs font-bold",
                               isAnswered &&
-                                isCorrect &&
-                                "bg-green-500 hover:bg-green-600 text-white border-none",
+                              isCorrect &&
+                              "bg-green-500 hover:bg-green-600 text-white border-none",
                               isAnswered &&
-                                !isCorrect &&
-                                "bg-red-500 hover:bg-red-600 text-white border-none",
+                              !isCorrect &&
+                              "bg-red-500 hover:bg-red-600 text-white border-none",
                               currentQuestionIndex === index &&
-                                `border-2 border-[${theme.primary}]`
+                              `border-2 border-[${theme.primary}]`
                             )}
                             style={{
                               color:
@@ -465,7 +657,7 @@ export default function TestPage() {
                                   ? theme.primary
                                   : "",
                             }}
-                            onClick={() =>{ setCurrentQuestionIndex(index); setTranslatedDesctription(""); setTranslatedSolution("");}}
+                            onClick={() => { setCurrentQuestionIndex(index); setTranslatedDesctription(""); setTranslatedSolution(""); }}
                           >
                             {index + 1}
                           </Button>
@@ -552,11 +744,10 @@ export default function TestPage() {
                                           <TabsTrigger
                                             key={tab}
                                             value={tab}
-                                            className={`rounded-md text-[11px] xs:text-xs sm:text-sm font-semibold py-1 px-1 transition-all focus-visible:ring-2 ${
-                                              isDisabled
-                                                ? "cursor-not-allowed opacity-60"
-                                                : ""
-                                            }`}
+                                            className={`rounded-md text-[11px] xs:text-xs sm:text-sm font-semibold py-1 px-1 transition-all focus-visible:ring-2 ${isDisabled
+                                              ? "cursor-not-allowed opacity-60"
+                                              : ""
+                                              }`}
                                             style={{
                                               color: isActive
                                                 ? theme.primary
@@ -584,8 +775,8 @@ export default function TestPage() {
 
                                   <TabsContent value="Answer">
                                     {currentQuestion.options &&
-                                    Array.isArray(currentQuestion.options) &&
-                                    currentQuestion.options.length > 0 ? (
+                                      Array.isArray(currentQuestion.options) &&
+                                      currentQuestion.options.length > 0 ? (
                                       <RadioGroup
                                         value=""
                                         onValueChange={handleOptionSelect}
@@ -614,8 +805,8 @@ export default function TestPage() {
                                                 isCorrect
                                                   ? "border-green-500 bg-gradient-to-r from-green-50 to-green-100 dark:from-green-900/30 dark:to-green-800/30"
                                                   : isIncorrect
-                                                  ? "border-red-500 bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/30 dark:to-red-800/30"
-                                                  : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-primary/60"
+                                                    ? "border-red-500 bg-gradient-to-r from-red-50 to-red-100 dark:from-red-900/30 dark:to-red-800/30"
+                                                    : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-primary/60"
                                               )}
                                               style={{
                                                 boxShadow:
@@ -638,8 +829,8 @@ export default function TestPage() {
                                                   isCorrect
                                                     ? "text-green-700 dark:text-green-300"
                                                     : isIncorrect
-                                                    ? "text-red-700 dark:text-red-300"
-                                                    : "text-gray-900 dark:text-gray-100 group-hover:text-primary"
+                                                      ? "text-red-700 dark:text-red-300"
+                                                      : "text-gray-900 dark:text-gray-100 group-hover:text-primary"
                                                 )}
                                                 style={{
                                                   letterSpacing: "0.01em",
@@ -695,15 +886,14 @@ export default function TestPage() {
                                           onClick={() =>
                                             handleTextToSpeech(
                                               translatedDescription ||
-                                                currentQuestion.description ||
-                                                ""
+                                              currentQuestion.description ||
+                                              ""
                                             )
                                           }
                                         >
                                           <Volume2
-                                            className={`h-4 w-4 ${
-                                              isSpeaking ? "text-blue-500" : ""
-                                            }`}
+                                            className={`h-4 w-4 ${isSpeaking ? "text-blue-500" : ""
+                                              }`}
                                           />
                                           <span className="hidden sm:inline">
                                             Text to Speech
@@ -740,15 +930,14 @@ export default function TestPage() {
                                               ].map((lang) => (
                                                 <button
                                                   key={lang}
-                                                  className={`w-full text-left px-3 py-2 text-sm rounded-md ${
-                                                    selectedTranslation === lang
-                                                      ? "bg-blue-50 text-blue-600"
-                                                      : "text-gray-700 hover:bg-gray-50"
-                                                  }`}
+                                                  className={`w-full text-left px-3 py-2 text-sm rounded-md ${selectedTranslation === lang
+                                                    ? "bg-blue-50 text-blue-600"
+                                                    : "text-gray-700 hover:bg-gray-50"
+                                                    }`}
                                                   onClick={async () => {
                                                     await translateText(
                                                       currentQuestion.description ||
-                                                        "",
+                                                      "",
                                                       "des",
                                                       lang
                                                     );
@@ -762,16 +951,16 @@ export default function TestPage() {
                                                   {lang === "en"
                                                     ? "English"
                                                     : lang === "es"
-                                                    ? "Spanish"
-                                                    : lang === "fr"
-                                                    ? "French"
-                                                    : lang === "de"
-                                                    ? "German"
-                                                    : lang === "zh"
-                                                    ? "Chinese"
-                                                    : lang === "ja"
-                                                    ? "Japanese"
-                                                    : lang}
+                                                      ? "Spanish"
+                                                      : lang === "fr"
+                                                        ? "French"
+                                                        : lang === "de"
+                                                          ? "German"
+                                                          : lang === "zh"
+                                                            ? "Chinese"
+                                                            : lang === "ja"
+                                                              ? "Japanese"
+                                                              : lang}
                                                 </button>
                                               ))}
                                             </div>
@@ -779,8 +968,8 @@ export default function TestPage() {
                                         </div>
                                       </div>
 
-                                   <div
-  className="
+                                      <div
+                                        className="
     w-full
     bg-white
     border border-gray-200
@@ -799,17 +988,17 @@ export default function TestPage() {
     resize-none
     cursor-default
   "
->
-  {translatedDescription || currentQuestion.description ? (
-    <p className="whitespace-pre-wrap">
-      {translatedDescription || currentQuestion.description}
-    </p>
-  ) : (
-    <p className="text-gray-400 italic">
-      No Description Provicded...
-    </p>
-  )}
-</div>
+                                      >
+                                        {translatedDescription || currentQuestion.description ? (
+                                          <p className="whitespace-pre-wrap">
+                                            {translatedDescription || currentQuestion.description}
+                                          </p>
+                                        ) : (
+                                          <p className="text-gray-400 italic">
+                                            No Description Provicded...
+                                          </p>
+                                        )}
+                                      </div>
 
                                     </div>
                                   </TabsContent>
@@ -821,15 +1010,14 @@ export default function TestPage() {
                                         onClick={() =>
                                           handleTextToSpeech(
                                             translatedSolution ||
-                                              currentQuestion.solution ||
-                                              ""
+                                            currentQuestion.solution ||
+                                            ""
                                           )
                                         }
                                       >
                                         <Volume2
-                                          className={`h-4 w-4 ${
-                                            isSpeaking ? "text-blue-500" : ""
-                                          }`}
+                                          className={`h-4 w-4 ${isSpeaking ? "text-blue-500" : ""
+                                            }`}
                                         />
                                         <span className="hidden sm:inline">
                                           Text to Speech
@@ -866,15 +1054,14 @@ export default function TestPage() {
                                             ].map((lang) => (
                                               <button
                                                 key={lang}
-                                                className={`w-full text-left px-3 py-2 text-sm rounded-md ${
-                                                  selectedTranslation === lang
-                                                    ? "bg-blue-50 text-blue-600"
-                                                    : "text-gray-700 hover:bg-gray-50"
-                                                }`}
+                                                className={`w-full text-left px-3 py-2 text-sm rounded-md ${selectedTranslation === lang
+                                                  ? "bg-blue-50 text-blue-600"
+                                                  : "text-gray-700 hover:bg-gray-50"
+                                                  }`}
                                                 onClick={async () => {
                                                   await translateText(
                                                     currentQuestion.solution ||
-                                                      "",
+                                                    "",
                                                     "sol",
                                                     lang
                                                   );
@@ -886,16 +1073,16 @@ export default function TestPage() {
                                                 {lang === "en"
                                                   ? "English"
                                                   : lang === "es"
-                                                  ? "Spanish"
-                                                  : lang === "fr"
-                                                  ? "French"
-                                                  : lang === "de"
-                                                  ? "German"
-                                                  : lang === "zh"
-                                                  ? "Chinese"
-                                                  : lang === "ja"
-                                                  ? "Japanese"
-                                                  : lang}
+                                                    ? "Spanish"
+                                                    : lang === "fr"
+                                                      ? "French"
+                                                      : lang === "de"
+                                                        ? "German"
+                                                        : lang === "zh"
+                                                          ? "Chinese"
+                                                          : lang === "ja"
+                                                            ? "Japanese"
+                                                            : lang}
                                               </button>
                                             ))}
                                           </div>
@@ -903,9 +1090,9 @@ export default function TestPage() {
                                       </div>
                                     </div>
 
-                            <div
-  id="q-description"
-  className="
+                                    <div
+                                      id="q-description"
+                                      className="
     w-full
     bg-white
     border border-gray-200
@@ -921,17 +1108,17 @@ export default function TestPage() {
     max-h-56
     overflow-y-auto
   "
->
-  {translatedSolution || currentQuestion.solution ? (
-    <p className="whitespace-pre-wrap">
-      {translatedSolution || currentQuestion.solution}
-    </p>
-  ) : (
-    <p className="text-gray-400 italic">
-      Optional description or context for the question
-    </p>
-  )}
-</div>
+                                    >
+                                      {translatedSolution || currentQuestion.solution ? (
+                                        <p className="whitespace-pre-wrap">
+                                          {translatedSolution || currentQuestion.solution}
+                                        </p>
+                                      ) : (
+                                        <p className="text-gray-400 italic">
+                                          Optional description or context for the question
+                                        </p>
+                                      )}
+                                    </div>
 
 
 
@@ -1343,8 +1530,8 @@ export default function TestPage() {
                                         code={currentQuestion.code}
                                         language={
                                           currentQuestion.codeLang || ""
-                                            // ? "java"
-                                            // : ""
+                                          // ? "java"
+                                          // : ""
                                         }
                                       />
                                     )}

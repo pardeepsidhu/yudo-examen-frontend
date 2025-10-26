@@ -2,54 +2,34 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useTheme } from '@/app/context/theme.context';
-import { ChevronDown, X } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { X, Sparkles, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export function NavBar() {
-  const { theme, updateTheme, colorPalettes } = useTheme();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [themeMenu, setThemeMenu] = useState(false);
-  const [desktopThemeMenu, setDesktopThemeMenu] = useState(false);
-  const [mobileThemeMenu, setMobileThemeMenu] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const themeMenuRef = useRef<HTMLDivElement>(null);
-  const desktopThemeMenuRef = useRef<HTMLDivElement>(null);
-  const mobileThemeMenuRef = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
 
-  // Check login status on mount
   useEffect(() => {
     setIsLoggedIn(typeof window !== 'undefined' && !!localStorage.getItem('user'));
   }, []);
 
-  // Close menus on window resize
   useEffect(() => {
-    if (menuOpen || themeMenu) {
-      const close = () => {
-        setMenuOpen(false);
-        setThemeMenu(false);
-      };
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (menuOpen) {
+      const close = () => setMenuOpen(false);
       window.addEventListener('resize', close);
       return () => window.removeEventListener('resize', close);
     }
-  }, [menuOpen, themeMenu]);
+  }, [menuOpen]);
 
-  // Hide theme menu if click outside
-  useEffect(() => {
-    if (!themeMenu) return;
-    function handleClick(e: MouseEvent) {
-      if (
-        themeMenuRef.current &&
-        !themeMenuRef.current.contains(e.target as Node)
-      ) {
-        setThemeMenu(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, [themeMenu]);
-
-  // Navigation links
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
@@ -60,225 +40,178 @@ export function NavBar() {
       : { href: '/login', label: 'Login' },
   ];
 
-  // Handler for theme change
-  const handleThemeChange = (paletteName: string) => {
-    updateTheme(paletteName);
-    setThemeMenu(false);
-    setMenuOpen(false);
-  };
-
   return (
-    <nav
-      className="relative z-30 w-full flex items-center justify-between px-4 sm:px-10 py-2 shadow-md"
-      style={{
-        background: `linear-gradient(90deg, ${theme.primary}11 0%, ${theme.secondary}11 100%)`,
-        borderBottom: `2px solid ${theme.primary}22`,
-        minHeight: 56,
-      }}
-    >
-      {/* Logo */}
-      <Link href="/" className="flex items-center gap-3 select-none group">
-        <div className="relative h-12 w-12 sm:h-14 sm:w-14 rounded-full overflow-hidden shadow-lg border-4 border-white group-hover:scale-105 transition-transform duration-200">
-          <Image
-            src="/fav.png"
-            alt="Yudo Examen"
-            fill
-            className={`object-contain bg p-1`}
-            style={{background:theme.primary}}
-            priority
-            sizes="56px"
-          />
-        </div>
-
-        
-        <span
-          className="text-xl sm:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-400 bg-clip-text text-transparent transition-all duration-200 group-hover:drop-shadow-lg"
-          style={{
-            letterSpacing: '0.03em',
-            color:theme.primary
-          }}
-        >
-          Yudo Examen
-        </span>
-      </Link>
-
-      {/* Desktop Menu */}
-      <div className="hidden md:flex items-center gap-2 lg:gap-5">
-        {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className="relative font-semibold px-3 py-1.5 rounded-xl transition-all duration-200"
-            style={{
-              color: theme.primary,
-              background: 'transparent',
-              border: `1.5px solid transparent`,
-            }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.background = `${theme.primary}11`;
-              (e.currentTarget as HTMLElement).style.borderColor = theme.primary + '33';
-              (e.currentTarget as HTMLElement).style.color = theme.secondary;
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.background = 'transparent';
-              (e.currentTarget as HTMLElement).style.borderColor = 'transparent';
-              (e.currentTarget as HTMLElement).style.color = theme.primary;
-            }}
-          >
-            {link.label}
-            <span className="absolute left-1/2 -bottom-1 w-0 h-0.5 bg-gradient-to-r from-indigo-400 to-blue-400 rounded-full transition-all duration-300 group-hover:w-3/4" />
-          </Link>
-        ))}
-        {/* Theme Palette Dropdown */}
-        <div className="relative ml-2" ref={desktopThemeMenuRef}>
-          <button
-            aria-label="Change Theme"
-            onClick={() => setDesktopThemeMenu((v) => !v)}
-            className="px-3 py-1.5 rounded-xl shadow border transition-all flex items-center gap-2 font-semibold"
-            style={{
-              background: theme.white,
-              color: theme.primary,
-              borderColor: theme.primary + '33',
-            }}
-          >
-            Theme
-            <ChevronDown className="h-4 w-4" />
-          </button>
-          <div
-            className={`absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 z-50 transition-all duration-200 ${
-              desktopThemeMenu ? 'opacity-100 scale-100 pointer-events-auto animate-fade-in' : 'opacity-0 scale-95 pointer-events-none'
-            }`}
-            style={{ transformOrigin: 'top right' }}
-          >
-            <ul className="py-2">
-              {colorPalettes.map((palette) => (
-                <li key={palette.name}>
-                  <button
-                    className="w-full flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-indigo-50 transition-colors"
-                    style={{
-                      color: palette.primary,
-                      fontWeight: palette.name === theme.name ? 700 : 500,
-                      background: palette.name === theme.name ? `${palette.primary}11` : undefined,
-                    }}
-                    onClick={() => {
-                      handleThemeChange(palette.name);
-                      setDesktopThemeMenu(false);
-                    }}
-                  >
-                    <span
-                      className="inline-block w-4 h-4 rounded-full border"
-                      style={{
-                        background: palette.primary,
-                        borderColor: palette.secondary,
-                      }}
-                    ></span>
-                    {palette.name}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu Button */}
-      <button
-        className="md:hidden flex items-center justify-center p-2 rounded-lg hover:bg-indigo-50 transition"
-        onClick={() => setMenuOpen((v) => !v)}
-        aria-label={menuOpen ? "Close Menu" : "Open Menu"}
-        style={{
-          color: theme.primary,
-        }}
-      >
-        {menuOpen ? (
-          <X className="h-8 w-8 transition-transform duration-200 rotate-90" />
-        ) : (
-          <svg width="32" height="32" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M6 10h20M6 16h20M6 22h20" />
-          </svg>
-        )}
-      </button>
-
-      {/* Mobile Menu */}
-      <div
-        className={`absolute top-full left-0 w-full bg-white shadow-lg rounded-b-2xl flex flex-col items-center py-3 gap-2 md:hidden z-40 border-t border-blue-100 transition-all duration-300 ${
-          menuOpen
-            ? 'opacity-100 translate-y-0 pointer-events-auto'
-            : 'opacity-0 -translate-y-4 pointer-events-none'
+    <>
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-500 ${
+          scrolled ? 'py-2' : 'py-3'
         }`}
-        style={{ minHeight: menuOpen ? 180 : 0 }}
       >
-        {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className="font-semibold text-base px-4 py-2 rounded-xl w-4/5 text-center transition-all"
-            style={{
-              color: theme.primary,
-              background: `${theme.primary}08`,
-            }}
-            onClick={() => setMenuOpen(false)}
-          >
-            {link.label}
-          </Link>
-        ))}
-        {/* Theme Palette Dropdown for Mobile */}
-        <div className="relative w-full flex flex-col items-center" ref={mobileThemeMenuRef}>
-          <button
-            aria-label="Change Theme"
-            onClick={() => setMobileThemeMenu((v) => !v)}
-            className="mt-2 px-4 py-2 rounded-xl shadow border transition-all flex items-center gap-2 font-semibold"
-            style={{
-              background: theme.white,
-              color: theme.primary,
-              borderColor: theme.primary + '33',
-            }}
-          >
-            Theme
-            <ChevronDown className="h-4 w-4" />
-          </button>
-          <div
-            className={`absolute left-1/2 -translate-x-1/2 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 z-50 transition-all duration-200 ${
-              mobileThemeMenu ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'
-            }`}
-            style={{ transformOrigin: 'top center' }}
-          >
-            <ul className="py-2">
-              {colorPalettes.map((palette) => (
-                <li key={palette.name}>
-                  <button
-                    className="w-full flex items-center gap-2 px-4 py-2 rounded-lg hover:bg-indigo-50 transition-colors"
-                    style={{
-                      color: palette.primary,
-                      fontWeight: palette.name === theme.name ? 700 : 500,
-                      background: palette.name === theme.name ? `${palette.primary}11` : undefined,
-                    }}
-                    onClick={() => handleThemeChange(palette.name)}
-                  >
-                    <span
-                      className="inline-block w-4 h-4 rounded-full border"
-                      style={{
-                        background: palette.primary,
-                        borderColor: palette.secondary,
-                      }}
-                    ></span>
-                    {palette.name}
-                  </button>
-                </li>
+        {/* Glass morphism container */}
+        <div
+          className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-500 ${
+            scrolled ? 'bg-white/90 backdrop-blur-xl shadow-2xl' : 'bg-white/70 backdrop-blur-md shadow-lg'
+          } rounded-2xl border border-indigo-100/50`}
+        >
+          <div className="flex items-center justify-between h-16 sm:h-18">
+            {/* Animated gradient line on top */}
+            <div className="absolute top-0 left-0 right-0 h-0.5 overflow-hidden rounded-t-2xl">
+              <div className="w-full h-full bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500 animate-shimmer" />
+            </div>
+
+            {/* Logo */}
+            <Link href="/" className="relative flex items-center gap-3 select-none group z-10">
+              <div className="relative">
+                {/* Glow effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full blur-md opacity-0 group-hover:opacity-50 transition-opacity duration-500" />
+                
+                {/* Logo container */}
+                <div className="relative h-11 w-11 sm:h-12 sm:w-12 rounded-full overflow-hidden shadow-lg ring-2 ring-indigo-200/50 group-hover:ring-4 group-hover:ring-indigo-300/70 transition-all duration-500 group-hover:scale-110 group-hover:rotate-12">
+                  <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-blue-600" />
+                  <Image
+                    src="/fav.png"
+                    alt="Yudo Examen"
+                    fill
+                    className="object-contain p-1.5 relative z-10"
+                    priority
+                    sizes="48px"
+                  />
+                  {/* Shine overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                </div>
+                
+                {/* Sparkle effect */}
+                <Sparkles className="absolute -top-1 -right-1 h-4 w-4 text-yellow-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse" />
+              </div>
+
+              <div className="flex flex-col">
+                <span className="text-xl sm:text-2xl font-black tracking-tight bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent group-hover:from-indigo-500 group-hover:via-blue-500 group-hover:to-sky-400 transition-all duration-500">
+                  Yudo Examen
+                </span>
+                <span className="hidden sm:block text-[9px] font-bold text-indigo-500/70 -mt-1 tracking-[0.2em] uppercase">
+                  AI Learning
+                </span>
+              </div>
+            </Link>
+
+            {/* Desktop Menu */}
+            <div className="hidden md:flex items-center gap-1">
+              {navLinks.map((link, index) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="relative font-semibold text-sm lg:text-base px-4 py-2.5 rounded-xl transition-all duration-300 group"
+                  style={{
+                    color: '#4f46e5',
+                  }}
+                >
+                  {/* Hover background */}
+                  <span className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl scale-95 group-hover:scale-100" />
+                  
+                  {/* Text */}
+                  <span className="relative z-10 group-hover:text-indigo-700 transition-colors duration-200">
+                    {link.label}
+                  </span>
+                  
+                  {/* Animated underline */}
+                  <span className="absolute left-1/2 -translate-x-1/2 bottom-1 w-0 h-0.5 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500 rounded-full group-hover:w-4/5 transition-all duration-300" />
+                </Link>
               ))}
-            </ul>
+              
+              {/* Premium CTA Button */}
+              <Link
+                href="/createTest"
+                className="ml-3 relative px-6 py-2.5 rounded-xl font-bold text-sm lg:text-base text-white overflow-hidden group transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-indigo-200/50"
+              >
+                {/* Animated gradient background */}
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 transition-all duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                
+                {/* Shine effect */}
+                <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700" />
+                
+                <span className="relative z-10 flex items-center gap-2">
+                  Create Test
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+                </span>
+              </Link>
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              className="md:hidden relative flex items-center justify-center p-2.5 rounded-xl transition-all duration-300 group"
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label={menuOpen ? "Close Menu" : "Open Menu"}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              {menuOpen ? (
+                <X className="h-6 w-6 text-indigo-600 transition-all duration-300 rotate-90 relative z-10" />
+              ) : (
+                <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-indigo-600 relative z-10">
+                  <path d="M4 8h16M4 16h16" strokeLinecap="round" />
+                </svg>
+              )}
+            </button>
           </div>
         </div>
-      </div>
+
+        {/* Mobile Menu Dropdown */}
+        <div
+          className={`md:hidden absolute top-full left-0 right-0 mt-3 mx-4 transition-all duration-500 ${
+            menuOpen
+              ? 'opacity-100 translate-y-0 pointer-events-auto'
+              : 'opacity-0 -translate-y-4 pointer-events-none'
+          }`}
+        >
+          <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-2xl border border-indigo-100/50 overflow-hidden">
+            {/* Decorative gradient top */}
+            <div className="h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
+            
+            <div className="py-4">
+              {navLinks.map((link, index) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="relative font-semibold text-base px-6 py-3.5 mx-3 mb-2 rounded-xl flex items-center justify-between transition-all duration-300 group overflow-hidden"
+                  style={{
+                    color: '#4f46e5',
+                  }}
+                  onClick={() => setMenuOpen(false)}
+                >
+                  <span className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+                  <span className="relative z-10 group-hover:text-indigo-700 transition-colors duration-200">{link.label}</span>
+                  <ChevronRight className="relative z-10 w-4 h-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" />
+                </Link>
+              ))}
+              
+              {/* Mobile CTA */}
+              <Link
+                href="/createTest"
+                className="mx-3 mt-4 relative px-6 py-3.5 rounded-xl font-bold text-base text-white overflow-hidden group transition-all duration-300 hover:scale-[1.02] shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                onClick={() => setMenuOpen(false)}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500" />
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <span className="relative z-10">Create Test</span>
+                <ChevronRight className="relative z-10 w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </nav>
+      
+      {/* Spacer */}
+      <div className={`transition-all duration-500 ${scrolled ? 'h-20' : 'h-24'}`} />
+
       <style jsx>{`
-        @keyframes fade-in {
-          from { opacity: 0; transform: translateY(-10px);}
-          to { opacity: 1; transform: translateY(0);}
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(200%); }
         }
-        .animate-fade-in {
-          animation: fade-in 0.2s cubic-bezier(.4,0,.2,1);
+        .animate-shimmer {
+          animation: shimmer 3s ease-in-out infinite;
         }
       `}</style>
-    </nav>
+    </>
   );
 }
