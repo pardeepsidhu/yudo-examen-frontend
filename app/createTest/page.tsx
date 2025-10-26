@@ -3,6 +3,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { Plus, Trash2, Upload, Film, Link, Wand2, FileImage, FileVideo, Save, XCircle, PlayCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import { useTheme } from '../context/theme.context';
 import { cn } from '@/lib/utils';
+import ReactQuill from 'react-quill';
 
 // Shadcn UI components
 import { Button } from '@/components/ui/button';
@@ -792,7 +793,7 @@ export default function CreateTestSeries() {
       <select
         id="category"
         name="category"
-        className="w-full h-10 rounded-lg border-2 border-indigo-100 bg-white px-3 py-2 text-sm font-medium text-gray-700 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 focus:outline-none transition-all"
+        className="w-full h-10 rounded-lg border-2 border-indigo-100 bg-white px-3 pr-6 py-2 text-sm font-medium text-gray-700 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 focus:outline-none transition-all"
         value={testSeriesData.category}
         onChange={handleTestSeriesChange}
       >
