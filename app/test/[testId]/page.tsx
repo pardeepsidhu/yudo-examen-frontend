@@ -30,7 +30,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TestDetails from "./testDetails";
 import { useTheme } from "@/app/context/theme.context";
-import { Textarea } from "@/components/ui/textarea";
 import { CodeRunner } from "./codeRunner";
 import { TestAttempt as TestAttempt2 } from "./testDetails";
 import { flushSync } from "react-dom";
@@ -564,12 +563,12 @@ export default function TestPage() {
           <Tabs
             value={activeTab}
             onValueChange={setActiveTab}
-            className="w-full"
+            className="w-full gap-0.5"
           >
-            <TabsList className="grid w-full grid-cols-2 rounded-2xl shadow-xl p-1.5 gap-2 h-auto bg-gradient-to-br from-indigo-50 to-blue-50 border-2 border-indigo-100">
+            <TabsList className="grid w-full grid-cols-2 rounded-2xl shadow-xl p-1 gap-2 h-auto bg-gradient-to-br from-indigo-50 to-blue-50 border-2 border-indigo-100">
   <TabsTrigger
     value="details"
-    className="relative flex items-center justify-center gap-2.5 text-sm sm:text-base font-bold py-3.5 px-4 rounded-xl transition-all duration-300 group overflow-hidden"
+    className="relative flex items-center justify-center gap-2.5 text-sm sm:text-base font-bold py-2.5 px-4 rounded-xl transition-all duration-300 group overflow-hidden"
     style={{
       color: activeTab === "details" ? "#ffffff" : "#6366f1",
     }}
@@ -614,7 +613,7 @@ export default function TestPage() {
 
   <TabsTrigger
     value="attend"
-    className="relative flex items-center justify-center gap-2.5 text-sm sm:text-base font-bold py-3.5 px-4 rounded-xl transition-all duration-300 group overflow-hidden"
+    className="relative flex items-center justify-center gap-2.5 text-sm sm:text-base font-bold py-2.5 px-4 rounded-xl transition-all duration-300 group overflow-hidden"
     style={{
       color: activeTab === "attend" ? "#ffffff" : "#6366f1",
     }}

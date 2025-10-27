@@ -1,12 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTheme } from '../context/theme.context';
 import { getAllTestSeries } from '../api/test.api';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Search, Loader2, Filter, ChevronDown, X, Eye, Clock, TrendingUp, Award, Users, Sparkles } from 'lucide-react';
+import { Search, Loader2, Filter, ChevronDown, X, Clock, TrendingUp, Award, Users, Sparkles } from 'lucide-react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
@@ -32,7 +31,7 @@ interface TestSeries {
 }
 
 export default function ExplorePage() {
-  const { theme } = useTheme();
+ 
   const [testSeries, setTestSeries] = useState<TestSeries[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -474,7 +473,7 @@ export default function ExplorePage() {
                     className="inline-flex items-center gap-3 px-6 py-4 rounded-md sm:rounded-2xl bg-gradient-to-r from-indigo-50 to-blue-50 border-2 border-indigo-200"
                   >
                     <Award className="h-6 w-6 text-indigo-600" />
-                    <span className="text-gray-700 font-semibold">You've seen all available test series!</span>
+                    <span className="text-gray-700 font-semibold">You&lsquo;ve seen all available test series!</span>
                   </motion.div>
                 ) : (
                   <motion.div
