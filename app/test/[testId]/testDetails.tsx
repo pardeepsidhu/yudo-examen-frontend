@@ -5,20 +5,16 @@ import {
   Calendar,
   Trophy,
   Users,
-  ThumbsUp,
-  BarChart2,
   Image as ImageIcon,
   CheckCircle,
   Clock3,
   Award,
   Target,
   TrendingUp,
-  Sparkle,
   Sparkles,
 } from 'lucide-react';
-import { useTheme } from '@/app/context/theme.context';
+
 import { Badge } from "@/components/ui/badge";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
@@ -93,7 +89,6 @@ export interface TestAttempt {
 
 
 const TestDetails = ({ testData }: { testData: TestAttempt }) => {
-  const { theme } = useTheme();
   const [progressValue, setProgressValue] = useState(0);
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -144,32 +139,7 @@ const TestDetails = ({ testData }: { testData: TestAttempt }) => {
   const getUserInitial = (user: User) => (user?.name || user?.email || "U").charAt(0).toUpperCase();
   const getUserProfile = (user: User) => user?.profile || user?.profilePicture || "";
 
-  const stats = [
-    {
-      icon: <Trophy className="h-4 w-4" />,
-      label: "Correct Answers",
-      value: progressData.correctAnswers,
-      color: theme.primary,
-    },
-    {
-      icon: <Users className="h-4 w-4" />,
-      label: "Total Questions",
-      value: progressData.totalQuestions,
-      color: theme.primary,
-    },
-    {
-      icon: <CheckCircle className="h-4 w-4" />,
-      label: "Answered",
-      value: progressData.answeredQuestions,
-      color: theme.primary,
-    },
-    {
-      icon: <BarChart2 className="h-4 w-4" />,
-      label: "Completion",
-      value: `${progressValue}%`,
-      color: theme.primary,
-    },
-  ];
+  
 
   const handleImageError = () => setImageError(true);
 
@@ -382,9 +352,10 @@ const TestDetails = ({ testData }: { testData: TestAttempt }) => {
             <BookOpen className="h-5 w-5" />
             Test Description
           </h3>
-          <p className="text-gray-700 text-sm sm:text-md leading-relaxed whitespace-pre-wrap max-h-[300px] overflow-auto custom-scrollbar">
-            {testData?.test?.description || "No description provided."}
-          </p>
+           <div
+  className="text-sm text-gray-600  leading-relaxed group-hover:text-gray-700 transition-colors h-50 sm:h-75 overflow-y-scroll"
+  dangerouslySetInnerHTML={{ __html: testData?.test?.description as TrustedHTML}}
+/>
         </div>
       </CardContent>
 

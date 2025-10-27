@@ -1,5 +1,6 @@
 export const genereateContent = async (prompt:string) => {
     try {
+      
       const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/v1/ai/generete`, {
         method: "post",
         headers: {
