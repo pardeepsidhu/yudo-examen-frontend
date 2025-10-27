@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import { LoginStaticSide } from './staticSide';
+import { Variants } from "framer-motion";
 
 // Shadcn UI components
 import { Button } from "@/components/ui/button";
@@ -373,14 +374,14 @@ const handleresetPasword = async (e: React.FormEvent<HTMLFormElement>) => {
     }
   };
   
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: { 
-      y: 0, 
-      opacity: 1,
-      transition: { type: 'spring', stiffness: 100 }
-    }
-  };
+ const itemVariants: Variants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: { type: "spring", stiffness: 100 },
+  },
+}
 
   // Render alert if present
   

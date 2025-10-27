@@ -3,7 +3,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { Plus, Trash2, Upload, Film, Link, Wand2, FileImage, FileVideo, Save, XCircle, PlayCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import { useTheme } from '../context/theme.context';
 import { cn } from '@/lib/utils';
-import ReactQuill from 'react-quill';
+
 
 // Shadcn UI components
 import { Button } from '@/components/ui/button';
@@ -760,7 +760,7 @@ Respond exactly in the requested format — no extra text, no JSON, only the HTM
                       onTextChange={(e) => {
                         setTestSeriesData((prev) => ({
                           ...prev,
-                          description: e.htmlValue, // ✅ correct property for HTML content
+                          description: e.htmlValue || "", // ✅ correct property for HTML content
                         }));
                       }}
                       style={{ height: "250px" }}
