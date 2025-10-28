@@ -147,6 +147,9 @@ export const CodeEditor = ({currentQuestion,setCurrentQuestion}:{currentQuestion
         .replace(/\\\\/g, '\\') // Replace \\ with actual backslashes
         .trim(); // Remove extra whitespace
 
+        if(code && code[0] ===`"`) code = code.replace(`"`,"")
+        if(code && code[code.length-1] ===`"`) code = code.replace(`"`,"")
+
       if (code && code.length > 0) {
         // Update the current question with the generated code
         if (currentQuestion && setCurrentQuestion) {

@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect, Suspense } from 'react';
-import { Plus, Trash2, Image as ImageIcon, Upload, Film, Link, Wand2, FileImage, FileVideo, Save, XCircle, PlayCircle, AlertCircle, RefreshCw, Settings, Eye } from 'lucide-react';
+import { Plus, Trash2, Image as ImageIcon, Upload, Film, Link, Wand2, FileImage, FileVideo, Save, XCircle, PlayCircle, AlertCircle, RefreshCw, Settings, Eye, PlusIcon } from 'lucide-react';
 import { useTheme } from '../context/theme.context';
 import { cn } from '@/lib/utils';
 
@@ -588,13 +588,23 @@ Respond only in HTML format — no JSON or extra wrapping.
 
     try {
       const res: { response: string; error?: boolean } = await genereateContent(
-        `Generate a concise and engaging HTML-formatted solution for a question titled "<strong style='color:#2563eb;'>${currentQuestion.title} ${currentQuestion.description}</strong>".  
-The solution should highlight the impoetnt points and very attractive good look and knowlwdge full format. 
+        `
+  
+Generate a concise and engaging HTML-formatted solution for a question titled "<strong style='color:#2563eb;'>${currentQuestion.title} ${currentQuestion.description}</strong>".  
+
+The solution should highlight the <b style='color:#1e40af;'>key concepts</b>, <b style='color:#047857;'>approach/methodology</b>, <b style='color:#92400e;'>important points</b>, and <b style='color:#dc2626;'>final answer</b>.  
+
+Explain what the question asks, how to solve it, and the reasoning behind the solution.  
 You can use multiple colors for emphasis and readability.  
-Keep it  clear, and in simple languae.  
+Keep it clear, well-structured, and in simple language.  
+
+**Special formatting requirement:** If the solution contains programming code, you MUST use this exact format:  
+<div class="ql-code-block-container" spellcheck="false"><div class="ql-code-block">first line of code</div><div class="ql-code-block">second line of code</div><div class="ql-code-block"><br></div></div>
+
 Use clean HTML tags such as <p>, <b>, <i>, <br>, <ul>, <li>, and <strong> for structure and formatting.  
 Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML code block.
 `
+        
       );
 
       if (res.error || !res.response) {
@@ -636,6 +646,8 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
         toast.error("some error accred while fetching test")
     }
   }
+
+  console.log("soluntions",currentQuestion)
 
   useEffect(() => {
     if (testId) {
@@ -1896,8 +1908,6 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                         }
                       </div>
                     </div>
-
-
                   </TabsContent>
 
                   <TabsContent value="preview" className="space-y-4 mt-0">
@@ -2006,9 +2016,9 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
 
                   <div className="relative z-10 flex items-center justify-center gap-2 text-white">
                     <div className="p-1 rounded-md bg-white/20">
-                      <Save className="h-4 w-4" />
+                      <PlusIcon className="h-4 w-4" />
                     </div>
-                    <span>Save Test Series</span>
+                    <span>Add Current Question</span>
                   </div>
                 </Button>
           </div>
