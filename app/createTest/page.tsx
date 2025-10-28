@@ -1610,305 +1610,364 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                   </TabsContent>
 
 
-                  <TabsContent value="media" className="space-y-6 mt-0">
-                    {/* Image Section */}
-                    <div className="space-y-3 pb-4 border-b border-gray-200">
-                      <div className="flex justify-between items-center">
-                        <Label className="text-base font-medium">Image</Label>
+                 <TabsContent value="media"  className="space-y-6 mt-0">
+  {/* Image Section */}
+  <div className="relative overflow-hidden rounded-xl bg-white/90 backdrop-blur-xl shadow-xl border border-indigo-100">
+    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
+    
+    <div className="p-5 space-y-4">
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 shadow-lg">
+            <FileImage className="h-5 w-5 text-white" />
+          </div>
+          <h3 className="text-lg font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent">
+            Question Image
+          </h3>
+        </div>
 
-                        {!currentQuestion.image ? (
-                          <div className="flex gap-2">
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="text-xs flex items-center gap-1 h-8 px-2"
-                                    onClick={() => {
-                                      const input = document.createElement('input');
-                                      input.type = 'file';
-                                      input.accept = 'image/*';
-                                      input.onchange = (e) => {
-                                        const event = e as unknown as React.ChangeEvent<HTMLInputElement>;
-                                        handleFileUpload(event, false);
-                                      };
-                                      input.click();
-                                    }}
-                                  >
-                                    <Upload className="h-3 w-3" /> Upload
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p>Upload an image for this question</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
+        {!currentQuestion.image ? (
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              className="relative h-9 px-4 text-sm font-semibold border-2 border-indigo-200 hover:border-indigo-400 rounded-lg overflow-hidden group transition-all hover:scale-105"
+              onClick={() => {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = 'image/*';
+                input.onchange = (e) => {
+                  const event = e as unknown as React.ChangeEvent<HTMLInputElement>;
+                  handleFileUpload(event, false);
+                };
+                input.click();
+              }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative z-10 flex items-center gap-2">
+                <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                  <Upload className="h-3.5 w-3.5 text-indigo-600" />
+                </div>
+                <span className="text-indigo-600">Upload</span>
+              </div>
+            </Button>
 
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  className="text-xs flex items-center gap-1 h-8 px-2"
-                                >
-                                  <Link className="h-3 w-3" /> Use Link
-                                </Button>
-                              </DialogTrigger>
-                              <DialogContent className="sm:max-w-md">
-                                <DialogHeader>
-                                  <DialogTitle>Add Image URL</DialogTitle>
-                                </DialogHeader>
-                                <div className="space-y-4 py-4">
-                                  <div className="space-y-2">
-                                    <Label>Image URL</Label>
-                                    <Input
-                                      placeholder="https://example.com/image.jpg"
-                                      id="link-input"
-                                    />
-                                  </div>
-                                </div>
-                                <DialogFooter>
-                                  <Button
-                                    onClick={() => {
-                                      const input = document.getElementById('link-input') as HTMLInputElement;
-                                      handleLinkSubmit(input.value);
-                                    }}
-                                    style={{ backgroundColor: theme.primary }}
-                                  >
-                                    Add Image
-                                  </Button>
-                                </DialogFooter>
-                              </DialogContent>
-                            </Dialog>
-                          </div>
-                        ) : (
-                          <Button
-                            size="sm"
-                            variant="destructive"
-                            className="text-xs h-8"
-                            onClick={() => removeMedia('image')}
-                          >
-                            <Trash2 className="h-3 w-3 mr-1" /> Remove
-                          </Button>
-                        )}
-                      </div>
-
-                      {currentQuestion.image ? (
-                        <div className="mt-2">
-                          <Image
-                            src={currentQuestion.image}
-                            alt="Question image"
-                            width={800}
-                            height={320}
-                            className="w-full h-70 sm:h-95 rounded-md object-cover"
-                            style={{ objectFit: 'cover' }}
-                            priority
-                          />
-                        </div>
-                      ) : (
-                        <div
-                          className="relative w-full h-70 sm:h-95 bg-gray-100 rounded-md flex flex-col items-center justify-center cursor-pointer group hover:bg-gray-200 border border-dashed border-gray-300"
-                          onClick={() => {
-                            const input = document.createElement('input');
-                            input.type = 'file';
-                            input.accept = 'image/*';
-                            input.onchange = (e) => {
-                              const event = e as unknown as React.ChangeEvent<HTMLInputElement>;
-                              handleFileUpload(event, false);
-                            };
-                            input.click();
-                          }}
-                        >
-                          <FileImage className="h-8 w-8 text-gray-400 mb-2" />
-                          <p className="text-sm text-gray-500">Add Image</p>
-                          <p className="text-xs text-gray-400 mt-1">Click to upload or paste link</p>
-                          <div className="absolute bottom-0 left-0 right-0 h-6 bg-blue-600 flex items-center justify-center">
-                            <p className="text-white text-xs font-medium">Image</p>
-                          </div>
-                        </div>
-                      )}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="relative h-9 px-4 text-sm font-semibold border-2 border-indigo-200 hover:border-indigo-400 rounded-lg overflow-hidden group transition-all hover:scale-105"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative z-10 flex items-center gap-2">
+                    <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                      <Link className="h-3.5 w-3.5 text-indigo-600" />
                     </div>
+                    <span className="text-indigo-600">Use Link</span>
+                  </div>
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-md">
+                <DialogHeader>
+                  <DialogTitle className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+                    Add Image URL
+                  </DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label className="text-sm font-bold text-gray-700">Image URL</Label>
+                    <Input
+                      placeholder="https://example.com/image.jpg"
+                      id="link-input"
+                      className="h-10 border-2 border-indigo-100 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 rounded-lg transition-all"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button
+                    onClick={() => {
+                      const input = document.getElementById('link-input') as HTMLInputElement;
+                      handleLinkSubmit(input.value);
+                    }}
+                    className="bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                  >
+                    Add Image
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        ) : (
+          <Button
+            size="sm"
+            onClick={() => removeMedia('image')}
+            className="h-9 px-4 text-sm font-semibold bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:shadow-lg transition-all hover:scale-105 flex items-center gap-2"
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+            Remove
+          </Button>
+        )}
+      </div>
 
-                    {/* Video Section */}
-                    <div className="space-y-3 py-4 border-b border-gray-200">
-                      <div className="flex justify-between items-center">
-                        <Label className="text-base font-medium">Video</Label>
+      {currentQuestion.image ? (
+        <div className="relative rounded-lg overflow-hidden shadow-xl group">
+          <Image
+            src={currentQuestion.image}
+            alt="Question image"
+            width={800}
+            height={320}
+            className="w-full h-70 sm:h-95 rounded-lg object-cover transition-transform duration-300 group-hover:scale-105"
+            style={{ objectFit: 'cover' }}
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="absolute bottom-2 left-2 right-2 bg-white/90 backdrop-blur-md rounded-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+            <p className="text-xs font-semibold text-gray-700 flex items-center gap-2">
+              <svg className="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Image uploaded successfully
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div
+          className="relative w-full h-70 sm:h-95 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg flex flex-col items-center justify-center cursor-pointer group hover:border-indigo-400 transition-all border-2 border-dashed border-indigo-200"
+          onClick={() => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = (e) => {
+              const event = e as unknown as React.ChangeEvent<HTMLInputElement>;
+              handleFileUpload(event, false);
+            };
+            input.click();
+          }}
+        >
+          <div className="p-3 rounded-full bg-white shadow-lg mb-3 group-hover:scale-110 transition-transform">
+            <FileImage className="h-10 w-10 text-indigo-400" />
+          </div>
+          <p className="text-sm font-semibold text-gray-600 text-center mb-1">Add Question Image</p>
+          <p className="text-xs text-gray-500 text-center">Click to upload or paste link</p>
+        </div>
+      )}
+    </div>
+  </div>
 
-                        {!currentQuestion.video ? (
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="text-xs flex items-center gap-1 h-8 px-2"
-                              >
-                                <Link className="h-3 w-3" /> Add Video Link
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-md">
-                              <DialogHeader>
-                                <DialogTitle>Add Video URL</DialogTitle>
-                              </DialogHeader>
-                              <div className="space-y-4 py-4">
-                                <div className="space-y-2">
-                                  <Label>Video URL</Label>
-                                  <Input
-                                    placeholder="https://youtube.com/watch?v=..."
-                                    id="video-link-input"
-                                  />
-                                </div>
-                              </div>
-                              <DialogFooter>
-                                <Button
-                                  onClick={() => {
-                                    const input = document.getElementById('video-link-input') as HTMLInputElement;
-                                    if (input) {
-                                      handleLinkSubmit(input.value);
-                                    }
-                                  }}
-                                  style={{ backgroundColor: theme.primary }}
-                                >
-                                  Add Video
-                                </Button>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
-                        ) : (
-                          <div className="flex gap-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="text-xs h-8"
-                              onClick={() => handleVideoPreview(currentQuestion.video || '')}
-                            >
-                              <PlayCircle className="h-3 w-3 mr-1" /> Preview
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="destructive"
-                              className="text-xs h-8"
-                              onClick={() => removeMedia('video')}
-                            >
-                              <Trash2 className="h-3 w-3 mr-1" /> Remove
-                            </Button>
-                          </div>
-                        )}
-                      </div>
+  {/* Video Section */}
+  <div className="relative overflow-hidden rounded-xl bg-white/90 backdrop-blur-xl shadow-xl border border-indigo-100">
+    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
+    
+    <div className="p-5 space-y-4">
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 shadow-lg">
+            <Film className="h-5 w-5 text-white" />
+          </div>
+          <h3 className="text-md sm:text-lg font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent">
+            YouTube Video
+          </h3>
+        </div>
 
-                      {currentQuestion.video ? (
-                        <div className="relative w-full h-70 sm:h-95 bg-gray-100 rounded-md overflow-hidden">
-                          <iframe
-                            src={getYouTubeEmbedUrl(currentQuestion.video)}
-                            className="w-full h-full"
-                            allowFullScreen
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          />
-                        </div>
-                      ) : (
-                        <div className="relative w-full h-70 sm:h-95 bg-gray-100 rounded-md flex flex-col items-center justify-center border border-dashed border-gray-300">
-                          <Film className="h-8 w-8 text-gray-400 mb-2" />
-                          <p className="text-sm text-gray-500">Add Video</p>
-                          <p className="text-xs text-gray-400 mt-1">Add a YouTube video link</p>
-                          <div className="absolute bottom-0 left-0 right-0 h-6 bg-red-600 flex items-center justify-center">
-                            <p className="text-white text-xs font-medium">YouTube Video</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+        {!currentQuestion.video ? (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                size="sm"
+                variant="outline"
+                className="relative h-9 px-4 text-sm font-semibold border-2 border-indigo-200 hover:border-indigo-400 rounded-lg overflow-hidden group transition-all hover:scale-105"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative z-10 flex items-center gap-2">
+                  <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                    <Link className="h-3.5 w-3.5 text-indigo-600" />
+                  </div>
+                  <span className="hidden sm:block text-indigo-600">Add Video Link</span>
+                  <span className="sm:hidden text-indigo-600">Link</span>
+                </div>
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+                  Add Video URL
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold text-gray-700">Video URL</Label>
+                  <Input
+                    placeholder="https://youtube.com/watch?v=..."
+                    id="video-link-input"
+                    className="h-10 border-2 border-indigo-100 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 rounded-lg transition-all"
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button
+                  onClick={() => {
+                    const input = document.getElementById('video-link-input') as HTMLInputElement;
+                    if (input) {
+                      handleLinkSubmit(input.value);
+                    }
+                  }}
+                  className="bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                >
+                  Add Video
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        ) : (
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              className="relative h-9 px-4 text-sm font-semibold border-2 border-indigo-200 hover:border-indigo-400 rounded-lg overflow-hidden group transition-all hover:scale-105"
+              onClick={() => handleVideoPreview(currentQuestion.video || '')}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <div className="relative z-10 flex items-center gap-2">
+                <PlayCircle className="h-3.5 w-3.5 text-indigo-600" />
+                <span className="text-indigo-600">Preview</span>
+              </div>
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => removeMedia('video')}
+              className="h-9 px-4 text-sm font-semibold bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:shadow-lg transition-all hover:scale-105 flex items-center gap-2"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+              Remove
+            </Button>
+          </div>
+        )}
+      </div>
 
-                    {/* Shorts Section */}
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <Label className="text-base font-medium">Shorts (max 3)</Label>
+      {currentQuestion.video ? (
+        <div className="relative w-full h-70 sm:h-95 bg-gray-100 rounded-lg overflow-hidden shadow-xl">
+          <iframe
+            src={getYouTubeEmbedUrl(currentQuestion.video)}
+            className="w-full h-full"
+            allowFullScreen
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          />
+        </div>
+      ) : (
+        <div className="relative w-full h-70 sm:h-95 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg flex flex-col items-center justify-center border-2 border-dashed border-indigo-200 hover:border-indigo-400 transition-all">
+          <div className="p-3 rounded-full bg-white shadow-lg mb-3">
+            <Film className="h-10 w-10 text-indigo-400" />
+          </div>
+          <p className="text-sm font-semibold text-gray-600 text-center mb-1">Add YouTube Video</p>
+          <p className="text-xs text-gray-500 text-center">Paste a YouTube video link</p>
+        </div>
+      )}
+    </div>
+  </div>
 
-                        {(!currentQuestion.shorts || currentQuestion.shorts.length < 3) && (
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="text-xs flex items-center gap-1 h-8 px-2"
-                              >
-                                <Link className="h-3 w-3" /> Add Short
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="sm:max-w-md">
-                              <DialogHeader>
-                                <DialogTitle>Add YouTube Short URL</DialogTitle>
-                              </DialogHeader>
-                              <div className="space-y-4 py-4">
-                                <div className="space-y-2">
-                                  <Label>YouTube Short URL</Label>
-                                  <Input
-                                    placeholder="https://youtube.com/shorts/..."
-                                    id="shorts-link-input"
-                                  />
-                                </div>
-                              </div>
-                              <DialogFooter>
-                                <Button
-                                  onClick={() => {
-                                    const input = document.getElementById('shorts-link-input') as HTMLInputElement;
-                                    if (input) {
-                                      handleLinkSubmit(input.value);
-                                    }
-                                  }}
-                                  style={{ backgroundColor: theme.primary }}
-                                >
-                                  Add Short
-                                </Button>
-                              </DialogFooter>
-                            </DialogContent>
-                          </Dialog>
-                        )}
-                      </div>
+  {/* Shorts Section */}
+  <div className="relative overflow-hidden rounded-xl bg-white/90 backdrop-blur-xl shadow-xl border border-indigo-100">
+    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
+    
+    <div className="p-5 space-y-4">
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 shadow-lg">
+            <Film className="h-5 w-5 text-white" />
+          </div>
+          <h3 className="text-md sm:text-lg font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent">
+            YouTube Shorts <span className="text-sm text-gray-500">(max 3)</span>
+          </h3>
+        </div>
 
-                      {/* Shorts display section */}
-                      <div className="grid grid-cols-3 gap-2 mt-2">
-                        {/* Existing shorts */}
-                        {currentQuestion.shorts && currentQuestion.shorts.map((short, index) => (
-                          <div key={index} className="relative">
-                            <iframe
-                              src={getYouTubeEmbedUrl(short)}
-                              className="w-full h-84 rounded-md object-cover border border-gray-200"
-                              allowFullScreen
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            />
-                            <button
-                              className="absolute top-1 right-1 bg-black bg-opacity-50 rounded-full p-1 text-white hover:bg-opacity-70"
-                              onClick={() => removeMedia('shorts', index)}
-                            >
-                              <XCircle className="h-4 w-4" />
-                            </button>
-                          </div>
-                        ))}
+        {(!currentQuestion.shorts || currentQuestion.shorts.length < 3) && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button
+                size="sm"
+                variant="outline"
+                className="relative h-9 px-4 text-sm font-semibold border-2 border-indigo-200 hover:border-indigo-400 rounded-lg overflow-hidden group transition-all hover:scale-105"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="relative z-10 flex items-center gap-2">
+                  <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                    <Link className="h-3.5 w-3.5 text-indigo-600" />
+                  </div>
+                  <span className="hidden sm:block text-indigo-600">Add Short</span>
+                   <span className=" sm:hidden text-indigo-600">Link</span>
+                </div>
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+                  Add YouTube Short URL
+                </DialogTitle>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-bold text-gray-700">YouTube Short URL</Label>
+                  <Input
+                    placeholder="https://youtube.com/shorts/..."
+                    id="shorts-link-input"
+                    className="h-10 border-2 border-indigo-100 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 rounded-lg transition-all"
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <Button
+                  onClick={() => {
+                    const input = document.getElementById('shorts-link-input') as HTMLInputElement;
+                    if (input) {
+                      handleLinkSubmit(input.value);
+                    }
+                  }}
+                  className="bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                >
+                  Add Short
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
 
-                        {/* Empty placeholder slots */}
-                        {(!currentQuestion.shorts || currentQuestion.shorts.length < 3) &&
-                          Array.from({ length: 3 - (currentQuestion.shorts?.length || 0) }).map((_, index) => (
-                            <div
-                              key={`placeholder-${index}`}
-                              className="relative w-full h-84 bg-gray-100 rounded-md flex flex-col items-center justify-center cursor-pointer group hover:bg-gray-200 border border-dashed border-gray-300"
-                              onClick={() => {
-                                const input = document.getElementById('shorts-link-input');
-                                if (input) {
-                                  input.focus();
-                                }
-                              }}
-                            >
-                              <Film className="h-8 w-8 text-gray-400 mb-2" />
-                              <p className="text-sm text-gray-500">Add YouTube Short</p>
-                              <p className="text-xs text-gray-400 mt-1">Click to paste link</p>
-                              <div className="absolute bottom-0 left-0 right-0 h-6 bg-red-600 flex items-center justify-center">
-                                <p className="text-white text-xs font-medium">YouTube Shorts</p>
-                              </div>
-                            </div>
-                          ))
-                        }
-                      </div>
-                    </div>
-                  </TabsContent>
+      <div className="flex sm:grid  flex-wrap grid-cols-3 gap-3">
+        {currentQuestion.shorts && currentQuestion.shorts.map((short, index) => (
+          <div key={index} className="relative rounded-lg overflow-hidden shadow-xl group">
+            <iframe
+              src={getYouTubeEmbedUrl(short)}
+              className="w-full h-84 rounded-lg border-2 border-indigo-100"
+              allowFullScreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            />
+            <button
+              className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 rounded-full p-1.5 text-white shadow-xl transition-all hover:scale-110 opacity-0 group-hover:opacity-100"
+              onClick={() => removeMedia('shorts', index)}
+            >
+              <XCircle className="h-4 w-4" />
+            </button>
+          </div>
+        ))}
+
+        {(!currentQuestion.shorts || currentQuestion.shorts.length < 3) &&
+          Array.from({ length: 3 - (currentQuestion.shorts?.length || 0) }).map((_, index) => (
+            <div
+              key={`placeholder-${index}`}
+              className="relative w-full h-84 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg flex flex-col items-center justify-center cursor-pointer group hover:border-indigo-400 transition-all border-2 border-dashed border-indigo-200"
+            >
+              <div className="p-3 rounded-full bg-white shadow-lg mb-2 group-hover:scale-110 transition-transform">
+                <Film className="h-8 w-8 text-indigo-400" />
+              </div>
+              <p className="text-xs font-semibold text-gray-600 text-center px-2">Add Short</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</TabsContent>
 
                   <TabsContent value="preview" className="space-y-4 mt-0">
                     <div className="space-y-2">
@@ -1972,7 +2031,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                     </div>
 
                     {currentQuestion.shorts && currentQuestion.shorts.length > 0 && (
-                      <div className="grid grid-cols-3 gap-2 mt-2">
+                      <div className="flex flex-wrap grid-cols-3  gap-2 mt-2">
                         {currentQuestion.shorts.map((short, index) => (
                           <div key={index} className="relative">
                             <iframe
