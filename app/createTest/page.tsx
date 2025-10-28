@@ -88,8 +88,7 @@ export default function CreateTestSeries() {
   // UI state
   const [activeTab, setActiveTab] = useState('basic');
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
-  const [isVideoPreviewOpen, setIsVideoPreviewOpen] = useState(false);
-  const [previewVideo, setPreviewVideo] = useState('');
+
 
 
 
@@ -290,7 +289,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
     setIsGeneratingAI(true);
     try {
       const res = await genereateContent(
-       `Generate a concise and visually engaging theoretical description for the following question: "<strong style='color:#2563eb;'>${currentQuestion.title}</strong>".  
+        `Generate a concise and visually engaging theoretical description for the following question: "<strong style='color:#2563eb;'>${currentQuestion.title}</strong>".  
 The description should clearly explain the <b style='color:#1e40af;'>context</b>, <b style='color:#047857;'>what is being asked</b>, and the <b style='color:#92400e;'>background knowledge</b> needed to understand the question.  
 Keep it short (5–8 lines), simple, and easy to read.  
 Do not include any code — write only theory.  
@@ -324,10 +323,10 @@ Respond only in HTML format — no JSON or extra wrapping.
         toast.error("Failed generating AI Content");
       } else {
         const formatted = res.response
-        .replace(/\\n/g, "<br>")
-        .replace(/\\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
-        .replace(`\"\`\`\`html`, "")
-        .replace(`\`\`\`\"`, "")
+          .replace(/\\n/g, "<br>")
+          .replace(/\\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
+          .replace(`\"\`\`\`html`, "")
+          .replace(`\`\`\`\"`, "")
 
         setCurrentQuestion(prev => ({ ...prev, description: formatted }));
         toast.success('Description generated successfully!');
@@ -511,11 +510,6 @@ Respond only in HTML format — no JSON or extra wrapping.
     }
   };
 
-  // Preview video
-  const handleVideoPreview = (url: string) => {
-    setPreviewVideo(url);
-    setIsVideoPreviewOpen(true);
-  };
 
   // Save test series
   const saveTestSeries = async () => {
@@ -604,7 +598,7 @@ Keep it clear, well-structured, and in simple language.
 Use clean HTML tags such as <p>, <b>, <i>, <br>, <ul>, <li>, and <strong> for structure and formatting.  
 Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML code block.
 `
-        
+
       );
 
       if (res.error || !res.response) {
@@ -613,7 +607,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
       }
 
       const formatted = res.response
-      .replace(/\\n/g, "<br>")
+        .replace(/\\n/g, "<br>")
         .replace(/\\t/g, "&nbsp;&nbsp;&nbsp;&nbsp;")
         .replace(`\"\`\`\`html`, "")
         .replace(`\`\`\`\"`, "")
@@ -647,7 +641,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
     }
   }
 
-  console.log("soluntions",currentQuestion)
+  console.log("soluntions", currentQuestion)
 
   useEffect(() => {
     if (testId) {
@@ -1021,7 +1015,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                         className="group relative border-2 border-indigo-100 rounded-lg p-4 bg-gradient-to-br from-white to-indigo-50/30 hover:border-indigo-300 hover:shadow-lg transition-all duration-300 hover:scale-[1.02]"
                       >
                         {/* Action Buttons */}
-                        <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="absolute top-3 right-3 flex gap-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity">
                           <button
                             className="relative overflow-hidden group/edit"
                             onClick={() => editQuestion(question)}
@@ -1555,8 +1549,8 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                             type="button"
                             onClick={() => handleRightAnswerChange(option)}
                             className={`relative mt-2 size-4 rounded-full border-2 ${currentQuestion.rightOption === option
-                                ? "border-indigo-500 ring-2 ring-indigo-300"
-                                : "border-indigo-200"
+                              ? "border-indigo-500 ring-2 ring-indigo-300"
+                              : "border-indigo-200"
                               } transition-all`}
                           >
                             {currentQuestion.rightOption === option && (
@@ -1610,495 +1604,553 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                   </TabsContent>
 
 
-                 <TabsContent value="media"  className="space-y-6 mt-0">
-  {/* Image Section */}
-  <div className="relative overflow-hidden rounded-xl bg-white/90 backdrop-blur-xl shadow-xl border border-indigo-100">
-    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
-    
-    <div className="p-5 space-y-4">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 shadow-lg">
-            <FileImage className="h-5 w-5 text-white" />
-          </div>
-          <h3 className="text-lg font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent">
-            Question Image
-          </h3>
-        </div>
+                  <TabsContent value="media" className="space-y-6 mt-0">
+                    {/* Image Section */}
+                    <div className="relative overflow-hidden rounded-xl bg-white/90 backdrop-blur-xl shadow-xl border border-indigo-100">
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
 
-        {!currentQuestion.image ? (
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              className="relative h-9 px-4 text-sm font-semibold border-2 border-indigo-200 hover:border-indigo-400 rounded-lg overflow-hidden group transition-all hover:scale-105"
-              onClick={() => {
-                const input = document.createElement('input');
-                input.type = 'file';
-                input.accept = 'image/*';
-                input.onchange = (e) => {
-                  const event = e as unknown as React.ChangeEvent<HTMLInputElement>;
-                  handleFileUpload(event, false);
-                };
-                input.click();
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative z-10 flex items-center gap-2">
-                <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
-                  <Upload className="h-3.5 w-3.5 text-indigo-600" />
-                </div>
-                <span className="text-indigo-600">Upload</span>
-              </div>
-            </Button>
+                      <div className="p-5 space-y-4">
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 shadow-lg">
+                              <FileImage className="h-5 w-5 text-white" />
+                            </div>
+                            <h3 className="hidden sm:block text-lg font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent">
+                              Question Image
+                            </h3>
+                            <h3 className=" sm:hidden text-sm font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent">
+                              Image
+                            </h3>
+                          </div>
 
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="relative h-9 px-4 text-sm font-semibold border-2 border-indigo-200 hover:border-indigo-400 rounded-lg overflow-hidden group transition-all hover:scale-105"
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <div className="relative z-10 flex items-center gap-2">
-                    <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
-                      <Link className="h-3.5 w-3.5 text-indigo-600" />
-                    </div>
-                    <span className="text-indigo-600">Use Link</span>
-                  </div>
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md">
-                <DialogHeader>
-                  <DialogTitle className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
-                    Add Image URL
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 py-4">
-                  <div className="space-y-2">
-                    <Label className="text-sm font-bold text-gray-700">Image URL</Label>
-                    <Input
-                      placeholder="https://example.com/image.jpg"
-                      id="link-input"
-                      className="h-10 border-2 border-indigo-100 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 rounded-lg transition-all"
-                    />
-                  </div>
-                </div>
-                <DialogFooter>
-                  <Button
-                    onClick={() => {
-                      const input = document.getElementById('link-input') as HTMLInputElement;
-                      handleLinkSubmit(input.value);
-                    }}
-                    className="bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
-                  >
-                    Add Image
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
-        ) : (
-          <Button
-            size="sm"
-            onClick={() => removeMedia('image')}
-            className="h-9 px-4 text-sm font-semibold bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:shadow-lg transition-all hover:scale-105 flex items-center gap-2"
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-            Remove
-          </Button>
-        )}
-      </div>
+                          {!currentQuestion.image ? (
+                            <div className="flex gap-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="relative h-9 px-2 sm:px-4 text-sm font-semibold border-2 border-indigo-200 hover:border-indigo-400 rounded-lg overflow-hidden group transition-all hover:scale-105"
+                                onClick={() => {
+                                  const input = document.createElement('input');
+                                  input.type = 'file';
+                                  input.accept = 'image/*';
+                                  input.onchange = (e) => {
+                                    const event = e as unknown as React.ChangeEvent<HTMLInputElement>;
+                                    handleFileUpload(event, false);
+                                  };
+                                  input.click();
+                                }}
+                              >
+                                <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                <div className="relative z-10 flex items-center gap-2">
+                                  <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                                    <Upload className="h-3.5 w-3.5 text-indigo-600" />
+                                  </div>
+                                  <span className="text-indigo-600">Upload</span>
+                                </div>
+                              </Button>
 
-      {currentQuestion.image ? (
-        <div className="relative rounded-lg overflow-hidden shadow-xl group">
-          <Image
-            src={currentQuestion.image}
-            alt="Question image"
-            width={800}
-            height={320}
-            className="w-full h-70 sm:h-95 rounded-lg object-cover transition-transform duration-300 group-hover:scale-105"
-            style={{ objectFit: 'cover' }}
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <div className="absolute bottom-2 left-2 right-2 bg-white/90 backdrop-blur-md rounded-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <p className="text-xs font-semibold text-gray-700 flex items-center gap-2">
-              <svg className="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              Image uploaded successfully
-            </p>
-          </div>
-        </div>
-      ) : (
-        <div
-          className="relative w-full h-70 sm:h-95 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg flex flex-col items-center justify-center cursor-pointer group hover:border-indigo-400 transition-all border-2 border-dashed border-indigo-200"
-          onClick={() => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*';
-            input.onchange = (e) => {
-              const event = e as unknown as React.ChangeEvent<HTMLInputElement>;
-              handleFileUpload(event, false);
-            };
-            input.click();
-          }}
-        >
-          <div className="p-3 rounded-full bg-white shadow-lg mb-3 group-hover:scale-110 transition-transform">
-            <FileImage className="h-10 w-10 text-indigo-400" />
-          </div>
-          <p className="text-sm font-semibold text-gray-600 text-center mb-1">Add Question Image</p>
-          <p className="text-xs text-gray-500 text-center">Click to upload or paste link</p>
-        </div>
-      )}
-    </div>
-  </div>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    className="relative h-9 px-2 sm:px-4 text-sm font-semibold border-2 border-indigo-200 hover:border-indigo-400 rounded-lg overflow-hidden group transition-all hover:scale-105"
+                                  >
+                                    <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <div className="relative z-10 flex items-center gap-2">
+                                      <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                                        <Link className="h-3.5 w-3.5 text-indigo-600" />
+                                      </div>
+                                      <span className="hidden sm:block text-indigo-600">Use Link</span>
+                                      <span className="sm:hidden text-indigo-600">Link</span>
+                                    </div>
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="sm:max-w-md">
+                                  <DialogHeader>
+                                    <DialogTitle className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+                                      Add Image URL
+                                    </DialogTitle>
+                                  </DialogHeader>
+                                  <div className="space-y-4 py-4">
+                                    <div className="space-y-2">
+                                      <Label className="text-sm font-bold text-gray-700">Image URL</Label>
+                                      <Input
+                                        placeholder="https://example.com/image.jpg"
+                                        id="link-input"
+                                        className="h-10 border-2 border-indigo-100 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 rounded-lg transition-all"
+                                      />
+                                    </div>
+                                  </div>
+                                  <DialogFooter>
+                                    <Button
+                                      onClick={() => {
+                                        const input = document.getElementById('link-input') as HTMLInputElement;
+                                        handleLinkSubmit(input.value);
+                                      }}
+                                      className="bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                                    >
+                                      Add Image
+                                    </Button>
+                                  </DialogFooter>
+                                </DialogContent>
+                              </Dialog>
+                            </div>
+                          ) : (
+                            <Button
+                              size="sm"
+                              onClick={() => removeMedia('image')}
+                              className="h-9 px-4 text-sm font-semibold bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:shadow-lg transition-all hover:scale-105 flex items-center gap-2"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                              Remove
+                            </Button>
 
-  {/* Video Section */}
-  <div className="relative overflow-hidden rounded-xl bg-white/90 backdrop-blur-xl shadow-xl border border-indigo-100">
-    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
-    
-    <div className="p-5 space-y-4">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 shadow-lg">
-            <Film className="h-5 w-5 text-white" />
-          </div>
-          <h3 className="text-md sm:text-lg font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent">
-            YouTube Video
-          </h3>
-        </div>
-
-        {!currentQuestion.video ? (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                size="sm"
-                variant="outline"
-                className="relative h-9 px-4 text-sm font-semibold border-2 border-indigo-200 hover:border-indigo-400 rounded-lg overflow-hidden group transition-all hover:scale-105"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative z-10 flex items-center gap-2">
-                  <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
-                    <Link className="h-3.5 w-3.5 text-indigo-600" />
-                  </div>
-                  <span className="hidden sm:block text-indigo-600">Add Video Link</span>
-                  <span className="sm:hidden text-indigo-600">Link</span>
-                </div>
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
-                  Add Video URL
-                </DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label className="text-sm font-bold text-gray-700">Video URL</Label>
-                  <Input
-                    placeholder="https://youtube.com/watch?v=..."
-                    id="video-link-input"
-                    className="h-10 border-2 border-indigo-100 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 rounded-lg transition-all"
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button
-                  onClick={() => {
-                    const input = document.getElementById('video-link-input') as HTMLInputElement;
-                    if (input) {
-                      handleLinkSubmit(input.value);
-                    }
-                  }}
-                  className="bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
-                >
-                  Add Video
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        ) : (
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              className="relative h-9 px-4 text-sm font-semibold border-2 border-indigo-200 hover:border-indigo-400 rounded-lg overflow-hidden group transition-all hover:scale-105"
-              onClick={() => handleVideoPreview(currentQuestion.video || '')}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="relative z-10 flex items-center gap-2">
-                <PlayCircle className="h-3.5 w-3.5 text-indigo-600" />
-                <span className="text-indigo-600">Preview</span>
-              </div>
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => removeMedia('video')}
-              className="h-9 px-4 text-sm font-semibold bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:shadow-lg transition-all hover:scale-105 flex items-center gap-2"
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-              Remove
-            </Button>
-          </div>
-        )}
-      </div>
-
-      {currentQuestion.video ? (
-        <div className="relative w-full h-70 sm:h-95 bg-gray-100 rounded-lg overflow-hidden shadow-xl">
-          <iframe
-            src={getYouTubeEmbedUrl(currentQuestion.video)}
-            className="w-full h-full"
-            allowFullScreen
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          />
-        </div>
-      ) : (
-        <div className="relative w-full h-70 sm:h-95 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg flex flex-col items-center justify-center border-2 border-dashed border-indigo-200 hover:border-indigo-400 transition-all">
-          <div className="p-3 rounded-full bg-white shadow-lg mb-3">
-            <Film className="h-10 w-10 text-indigo-400" />
-          </div>
-          <p className="text-sm font-semibold text-gray-600 text-center mb-1">Add YouTube Video</p>
-          <p className="text-xs text-gray-500 text-center">Paste a YouTube video link</p>
-        </div>
-      )}
-    </div>
-  </div>
-
-  {/* Shorts Section */}
-  <div className="relative overflow-hidden rounded-xl bg-white/90 backdrop-blur-xl shadow-xl border border-indigo-100">
-    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
-    
-    <div className="p-5 space-y-4">
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 shadow-lg">
-            <Film className="h-5 w-5 text-white" />
-          </div>
-          <h3 className="text-md sm:text-lg font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent">
-            YouTube Shorts <span className="text-sm text-gray-500">(max 3)</span>
-          </h3>
-        </div>
-
-        {(!currentQuestion.shorts || currentQuestion.shorts.length < 3) && (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                size="sm"
-                variant="outline"
-                className="relative h-9 px-4 text-sm font-semibold border-2 border-indigo-200 hover:border-indigo-400 rounded-lg overflow-hidden group transition-all hover:scale-105"
-              >
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="relative z-10 flex items-center gap-2">
-                  <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
-                    <Link className="h-3.5 w-3.5 text-indigo-600" />
-                  </div>
-                  <span className="hidden sm:block text-indigo-600">Add Short</span>
-                   <span className=" sm:hidden text-indigo-600">Link</span>
-                </div>
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
-                  Add YouTube Short URL
-                </DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label className="text-sm font-bold text-gray-700">YouTube Short URL</Label>
-                  <Input
-                    placeholder="https://youtube.com/shorts/..."
-                    id="shorts-link-input"
-                    className="h-10 border-2 border-indigo-100 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 rounded-lg transition-all"
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button
-                  onClick={() => {
-                    const input = document.getElementById('shorts-link-input') as HTMLInputElement;
-                    if (input) {
-                      handleLinkSubmit(input.value);
-                    }
-                  }}
-                  className="bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
-                >
-                  Add Short
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        )}
-      </div>
-
-      <div className="flex sm:grid  flex-wrap grid-cols-3 gap-3">
-        {currentQuestion.shorts && currentQuestion.shorts.map((short, index) => (
-          <div key={index} className="relative rounded-lg overflow-hidden shadow-xl group">
-            <iframe
-              src={getYouTubeEmbedUrl(short)}
-              className="w-full h-84 rounded-lg border-2 border-indigo-100"
-              allowFullScreen
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            />
-            <button
-              className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 rounded-full p-1.5 text-white shadow-xl transition-all hover:scale-110 opacity-0 group-hover:opacity-100"
-              onClick={() => removeMedia('shorts', index)}
-            >
-              <XCircle className="h-4 w-4" />
-            </button>
-          </div>
-        ))}
-
-        {(!currentQuestion.shorts || currentQuestion.shorts.length < 3) &&
-          Array.from({ length: 3 - (currentQuestion.shorts?.length || 0) }).map((_, index) => (
-            <div
-              key={`placeholder-${index}`}
-              className="relative w-full h-84 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg flex flex-col items-center justify-center cursor-pointer group hover:border-indigo-400 transition-all border-2 border-dashed border-indigo-200"
-            >
-              <div className="p-3 rounded-full bg-white shadow-lg mb-2 group-hover:scale-110 transition-transform">
-                <Film className="h-8 w-8 text-indigo-400" />
-              </div>
-              <p className="text-xs font-semibold text-gray-600 text-center px-2">Add Short</p>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </div>
-</TabsContent>
-
-                  <TabsContent value="preview" className="space-y-4 mt-0">
-                    <div className="space-y-2">
-                      <h3 className="font-medium text-gray-700">{currentQuestion.title}</h3>
-                      <h4 className='text-gray-600' >Description :</h4>
-                      {currentQuestion.description && (
-                        <Textarea
-                          id="q-solution"
-                          name="solution"
-                          disabled={true}
-                          placeholder="Enter detailed solution for this question"
-                          value={currentQuestion.description || ''}
-                          onChange={(e) => setCurrentQuestion(prev => ({ ...prev, solution: e.target.value }))}
-                          rows={8}
-                          className="font-mono text-sm !cursor-pointer"
-
-                        />
-                        // <p className="text-sm text-gray-600"><span className='text-md text-gray-700'>Description : </span> {currentQuestion.description}</p>
-                      )}
-                      <h4 className='text-gray-600'>Solution :</h4>
-                      {currentQuestion.solution && (
-
-                        <Textarea
-                          id="q-solution"
-                          name="solution"
-                          disabled={true}
-                          placeholder="Enter detailed solution for this question"
-                          value={currentQuestion.solution || ''}
-                          onChange={(e) => setCurrentQuestion(prev => ({ ...prev, solution: e.target.value }))}
-                          rows={8}
-                          className="font-mono text-sm !cursor-pointer"
-
-                        />
-                      )}
-                    </div>
-                    <div className='flex  gap-3'>
-                      {currentQuestion.image && (
-                        <div className="w-full">
-                          <Image
-                            src={currentQuestion.image}
-                            alt="Question image"
-                            width={800}
-                            height={240}
-                            className="w-full h-60 rounded-md object-cover"
-                            style={{ objectFit: 'cover' }}
-                            priority
-                          />
+                          )}
                         </div>
-                      )}
 
-                      {currentQuestion.video && (
-                        <div className="w-full">
-                          <iframe
-                            src={getYouTubeEmbedUrl(currentQuestion.video)}
-                            className="w-full h-60  rounded-md"
-                            allowFullScreen
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          />
-                        </div>
-                      )}
+                        {currentQuestion.image ? (
+                          <div className="relative rounded-lg overflow-hidden shadow-xl group">
+                            <Image
+                              src={currentQuestion.image}
+                              alt="Question image"
+                              width={800}
+                              height={320}
+                              className="w-full h-70 sm:h-95 rounded-lg object-cover transition-transform duration-300 group-hover:scale-105"
+                              style={{ objectFit: 'cover' }}
+                              priority
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                            <div className="absolute bottom-2 left-2 right-2 bg-white/90 backdrop-blur-md rounded-lg p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <p className="text-xs font-semibold text-gray-700 flex items-center gap-2">
+                                <svg className="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                </svg>
+                                Image uploaded successfully
+                              </p>
+                            </div>
+                          </div>
+                        ) : (
+                          <div
+                            className="relative w-full h-70 sm:h-95 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg flex flex-col items-center justify-center cursor-pointer group hover:border-indigo-400 transition-all border-2 border-dashed border-indigo-200"
+                            onClick={() => {
+                              const input = document.createElement('input');
+                              input.type = 'file';
+                              input.accept = 'image/*';
+                              input.onchange = (e) => {
+                                const event = e as unknown as React.ChangeEvent<HTMLInputElement>;
+                                handleFileUpload(event, false);
+                              };
+                              input.click();
+                            }}
+                          >
+                            <div className="p-3 rounded-full bg-white shadow-lg mb-3 group-hover:scale-110 transition-transform">
+                              <FileImage className="h-10 w-10 text-indigo-400" />
+                            </div>
+                            <p className="text-sm font-semibold text-gray-600 text-center mb-1">Add Question Image</p>
+                            <p className="text-xs text-gray-500 text-center">Click to upload or paste link</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
 
-                    {currentQuestion.shorts && currentQuestion.shorts.length > 0 && (
-                      <div className="flex flex-wrap grid-cols-3  gap-2 mt-2">
-                        {currentQuestion.shorts.map((short, index) => (
-                          <div key={index} className="relative">
+                    {/* Video Section */}
+                    <div className="relative overflow-hidden rounded-xl bg-white/90 backdrop-blur-xl shadow-xl border border-indigo-100">
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
+
+                      <div className="p-5 space-y-4">
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 shadow-lg">
+                              <Film className="h-5 w-5 text-white" />
+                            </div>
+                            <h3 className="text-md  sm:text-lg font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent">
+                              YouTube Video
+                            </h3>
+                          </div>
+
+                          {!currentQuestion.video ? (
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="relative h-9 px-4 text-sm font-semibold border-2 border-indigo-200 hover:border-indigo-400 rounded-lg overflow-hidden group transition-all hover:scale-105"
+                                >
+                                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                  <div className="relative z-10 flex items-center gap-2">
+                                    <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                                      <Link className="h-3.5 w-3.5 text-indigo-600" />
+                                    </div>
+                                    <span className="hidden sm:block text-indigo-600">Add Video Link</span>
+                                    <span className="sm:hidden text-indigo-600">Link</span>
+                                  </div>
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="sm:max-w-md">
+                                <DialogHeader>
+                                  <DialogTitle className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+                                    Add Video URL
+                                  </DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-4 py-4">
+                                  <div className="space-y-2">
+                                    <Label className="text-sm font-bold text-gray-700">Video URL</Label>
+                                    <Input
+                                      placeholder="https://youtube.com/watch?v=..."
+                                      id="video-link-input"
+                                      className="h-10 border-2 border-indigo-100 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 rounded-lg transition-all"
+                                    />
+                                  </div>
+                                </div>
+                                <DialogFooter>
+                                  <Button
+                                    onClick={() => {
+                                      const input = document.getElementById('video-link-input') as HTMLInputElement;
+                                      if (input) {
+                                        handleLinkSubmit(input.value);
+                                      }
+                                    }}
+                                    className="bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                                  >
+                                    Add Video
+                                  </Button>
+                                </DialogFooter>
+                              </DialogContent>
+                            </Dialog>
+                          ) : (
+                            <div className="flex gap-2">
+                            
+                            
+                             
+                              <Button
+                                size="sm"
+                                onClick={() => removeMedia('video')}
+                                className="flex h-9 px-4 text-sm font-semibold bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:shadow-lg transition-all hover:scale-105 items-center gap-2"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                                Remove
+                              </Button>
+
+                            </div>
+                          )}
+                        </div>
+
+                        {currentQuestion.video ? (
+                          <div className="relative w-full h-70 sm:h-95 bg-gray-100 rounded-lg overflow-hidden shadow-xl">
                             <iframe
-                              src={getYouTubeEmbedUrl(short)}
-                              className="w-full h-40 rounded-md"
+                              src={getYouTubeEmbedUrl(currentQuestion.video)}
+                              className="w-full h-full"
                               allowFullScreen
                               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                             />
                           </div>
-                        ))}
+                        ) : (
+                          <div className="relative w-full h-70 sm:h-95 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg flex flex-col items-center justify-center border-2 border-dashed border-indigo-200 hover:border-indigo-400 transition-all">
+                            <div className="p-3 rounded-full bg-white shadow-lg mb-3">
+                              <Film className="h-10 w-10 text-indigo-400" />
+                            </div>
+                            <p className="text-sm font-semibold text-gray-600 text-center mb-1">Add YouTube Video</p>
+                            <p className="text-xs text-gray-500 text-center">Paste a YouTube video link</p>
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </div>
 
-                    <div className="space-y-2 mt-4">
-                      {currentQuestion.options.map((option, index) => (
-                        <div
-                          key={index}
-                          className={cn(
-                            'p-2 rounded border',
-                            currentQuestion.rightOption === option ? 'bg-green-50 border-green-200' : 'bg-white border-gray-200'
+                    {/* Shorts Section */}
+                    <div className="relative overflow-hidden rounded-xl bg-white/90 backdrop-blur-xl shadow-xl border border-indigo-100">
+                      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
+
+                      <div className="p-5 space-y-4">
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-blue-600 shadow-lg">
+                              <Film className="h-5 w-5 text-white" />
+                            </div>
+                            <h3 className="text-md sm:text-lg font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent">
+                              YouTube Shorts <span className="text-sm text-gray-500">(max 3)</span>
+                            </h3>
+                          </div>
+
+                          {(!currentQuestion.shorts || currentQuestion.shorts.length < 3) && (
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="relative h-9 px-4 text-sm font-semibold border-2 border-indigo-200 hover:border-indigo-400 rounded-lg overflow-hidden group transition-all hover:scale-105"
+                                >
+                                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                  <div className="relative z-10 flex items-center gap-2">
+                                    <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                                      <Link className="h-3.5 w-3.5 text-indigo-600" />
+                                    </div>
+                                    <span className="hidden sm:block text-indigo-600">Add Short</span>
+                                    <span className=" sm:hidden text-indigo-600">Link</span>
+                                  </div>
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="sm:max-w-md">
+                                <DialogHeader>
+                                  <DialogTitle className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-blue-600 bg-clip-text text-transparent">
+                                    Add YouTube Short URL
+                                  </DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-4 py-4">
+                                  <div className="space-y-2">
+                                    <Label className="text-sm font-bold text-gray-700">YouTube Short URL</Label>
+                                    <Input
+                                      placeholder="https://youtube.com/shorts/..."
+                                      id="shorts-link-input"
+                                      className="h-10 border-2 border-indigo-100 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-100 rounded-lg transition-all"
+                                    />
+                                  </div>
+                                </div>
+                                <DialogFooter>
+                                  <Button
+                                    onClick={() => {
+                                      const input = document.getElementById('shorts-link-input') as HTMLInputElement;
+                                      if (input) {
+                                        handleLinkSubmit(input.value);
+                                      }
+                                    }}
+                                    className="bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 text-white shadow-lg hover:shadow-xl transition-all hover:scale-105"
+                                  >
+                                    Add Short
+                                  </Button>
+                                </DialogFooter>
+                              </DialogContent>
+                            </Dialog>
                           )}
-                        >
-                          {option}
                         </div>
-                      ))}
+
+                        <div className="flex sm:grid  flex-wrap grid-cols-3 gap-3">
+                          {currentQuestion.shorts && currentQuestion.shorts.map((short, index) => (
+                            <div key={index} className="relative rounded-lg overflow-hidden shadow-xl group">
+                              <iframe
+                                src={getYouTubeEmbedUrl(short)}
+                                className="w-full h-84 rounded-lg border-2 border-indigo-100"
+                                allowFullScreen
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              />
+                              <button
+                                className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 rounded-full p-1.5 text-white shadow-xl transition-all hover:scale-110 "
+                                onClick={() => removeMedia('shorts', index)}
+                              >
+                                <XCircle className="h-4 w-4" />
+                              </button>
+                            </div>
+                          ))}
+
+                          {(!currentQuestion.shorts || currentQuestion.shorts.length < 3) &&
+                            Array.from({ length: 3 - (currentQuestion.shorts?.length || 0) }).map((_, index) => (
+                              <div
+                                key={`placeholder-${index}`}
+                                className="relative w-full h-84 bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg flex flex-col items-center justify-center cursor-pointer group hover:border-indigo-400 transition-all border-2 border-dashed border-indigo-200"
+                              >
+                                <div className="p-3 rounded-full bg-white shadow-lg mb-2 group-hover:scale-110 transition-transform">
+                                  <Film className="h-8 w-8 text-indigo-400" />
+                                </div>
+                                <p className="text-xs font-semibold text-gray-600 text-center px-2">Add Short</p>
+                              </div>
+                            ))
+                          }
+                        </div>
+                      </div>
                     </div>
                   </TabsContent>
+
+                  <TabsContent value="preview" className="space-y-6 mt-6">
+  {/* Question Title */}
+  <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-4 border-2 border-indigo-100">
+    <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+      <svg className="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      {currentQuestion.title}
+    </h3>
+  </div>
+
+  {/* Description Section */}
+  {currentQuestion.description && (
+    <div className="space-y-2">
+      <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+        <svg className="h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+        </svg>
+        Description
+      </Label>
+      {/* <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-4 border-2 border-indigo-100 max-h-[300px] overflow-y-auto custom-scrollbar"> */}
+        {/* <div
+          className="text-sm text-gray-700 leading-relaxed prose prose-sm max-w-none"
+          dangerouslySetInnerHTML={{ __html: currentQuestion.description as TrustedHTML }}
+        /> */}
+        <Editor readOnly showHeader={false} value={currentQuestion.description || ''}
+        className='bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-2 sm:p-4 border-2 border-indigo-100 max-h-[300px] overflow-y-auto custom-scrollbar'
+        />
+      {/* </div> */}
+    </div>
+  )}
+
+  {/* Solution Section */}
+  {currentQuestion.solution && (
+    <div className="space-y-2">
+      <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+        <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Solution
+      </Label>
+      <Editor readOnly showHeader={false} value={currentQuestion?.solution || ''}
+        className='bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-2 sm:p-4 border-2 border-indigo-100 max-h-[300px] overflow-y-auto custom-scrollbar'
+        />
+    </div>
+  )}
+
+  {/* Media Section */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {currentQuestion.image && (
+      <div className="space-y-2">
+        <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+          <svg className="h-4 w-4 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          Image
+        </Label>
+        <div className="relative rounded-lg overflow-hidden border-2 border-purple-200 shadow-lg group">
+          <Image
+            src={currentQuestion.image}
+            alt="Question image"
+            width={800}
+            height={240}
+            className="w-full h-60 object-cover transition-transform duration-300 group-hover:scale-105"
+            style={{ objectFit: 'cover' }}
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        </div>
+      </div>
+    )}
+
+    {currentQuestion.video && (
+      <div className="space-y-2">
+        <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+          <svg className="h-4 w-4 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          Video
+        </Label>
+        <div className="relative rounded-lg overflow-hidden border-2 border-pink-200 shadow-lg">
+          <iframe
+            src={getYouTubeEmbedUrl(currentQuestion.video)}
+            className="w-full h-60 rounded-lg"
+            allowFullScreen
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          />
+        </div>
+      </div>
+    )}
+  </div>
+
+  {/* Shorts Section */}
+  {currentQuestion.shorts && currentQuestion.shorts.length > 0 && (
+    <div className="space-y-2">
+      <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+        <svg className="h-4 w-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+        </svg>
+        Shorts ({currentQuestion.shorts.length})
+      </Label>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {currentQuestion.shorts.map((short, index) => (
+          <div key={index} className="relative rounded-lg overflow-hidden border-2 border-orange-200 shadow-lg">
+            <iframe
+              src={getYouTubeEmbedUrl(short)}
+              className="w-full h-48 rounded-lg"
+              allowFullScreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            />
+            <div className="absolute top-2 left-2 px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded-md">
+              Short {index + 1}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+
+  {/* Options Section */}
+  <div className="space-y-2">
+    <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+      <svg className="h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+      </svg>
+      Options
+    </Label>
+    <div className="space-y-3">
+      {currentQuestion.options.map((option, index) => (
+        <div
+          key={index}
+          className={cn(
+            'relative p-4 rounded-lg border-2 transition-all duration-200 group',
+            currentQuestion.rightOption === option 
+              ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-300 shadow-md' 
+              : 'bg-white border-indigo-100 hover:border-indigo-200 hover:shadow-sm'
+          )}
+        >
+          <div className="flex items-center gap-3">
+            <div className={cn(
+              'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm',
+              currentQuestion.rightOption === option
+                ? 'bg-green-500 text-white'
+                : 'bg-indigo-100 text-indigo-700 group-hover:bg-indigo-200'
+            )}>
+              {String.fromCharCode(65 + index)}
+            </div>
+            <div className="flex-1 text-sm font-medium text-gray-800">
+              {option}
+            </div>
+            {currentQuestion.rightOption === option && (
+              <div className="flex-shrink-0">
+                <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+
+</TabsContent>
                 </Tabs>
               </CardContent>
             </Card>
 
-           <Button
-                  className="w-full mt-6 h-12 text-base font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] relative overflow-hidden group border-0"
-                  onClick={addQuestion}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <Button
+              className="w-full mt-6 h-12 text-base font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] relative overflow-hidden group border-0"
+              onClick={addQuestion}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500" />
+              <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-400 opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                  {/* Shine effect */}
-                  <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700" />
+              {/* Shine effect */}
+              <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700" />
 
-                  <div className="relative z-10 flex items-center justify-center gap-2 text-white">
-                    <div className="p-1 rounded-md bg-white/20">
-                      <PlusIcon className="h-4 w-4" />
-                    </div>
-                    <span>Add Current Question</span>
-                  </div>
-                </Button>
+              <div className="relative z-10 flex items-center justify-center gap-2 text-white">
+                <div className="p-1 rounded-md bg-white/20">
+                  <PlusIcon className="h-4 w-4" />
+                </div>
+                <span>Add Current Question</span>
+              </div>
+            </Button>
           </div>
         </div>
 
-        {/* Video Preview Dialog */}
-        <Dialog open={isVideoPreviewOpen} onOpenChange={setIsVideoPreviewOpen}>
-          <DialogContent className="sm:max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Video Preview</DialogTitle>
-            </DialogHeader>
-            <div className="mt-4">
-              <video
-                src={previewVideo}
-                className="w-full rounded-md"
-                controls
-                autoPlay
-              />
-            </div>
-          </DialogContent>
-        </Dialog>
+
+        
       </div>
       <style jsx global>{`
     .ql-toolbar {
@@ -2135,6 +2187,41 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
       background: linear-gradient(to bottom, #6366f1, #3b82f6);
     }
 
+      .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #f1f5f9;
+      border-radius: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: linear-gradient(to bottom, #818cf8, #60a5fa);
+      border-radius: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(to bottom, #6366f1, #3b82f6);
+    }
+    .prose h1, .prose h2, .prose h3, .prose h4 {
+      color: #1f2937;
+      font-weight: 700;
+    }
+    .prose p {
+      color: #374151;
+    }
+    .prose ul, .prose ol {
+      color: #374151;
+    }
+    .prose code {
+      background: #e0e7ff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.875rem;
+    }
+    .prose pre {
+      background: #1f2937;
+      border-radius: 8px;
+      padding: 1rem;
+    }
   `}</style>
     </Suspense>
   );
