@@ -458,12 +458,9 @@ export default function ExplorePage() {
             next={() => fetchTestSeries(page)}
             hasMore={hasMore}
             loader={
-              <div className="h-[30vh] w-[100%] flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-blue-50 relative overflow-hidden">
+              <div className="h-[30vh] w-[100%] flex items-center justify-center  relative overflow-hidden">
                 {/* Animated background blobs */}
-                <div className="absolute inset-0 pointer-events-none">
-                  <div className="absolute top-20 left-20 w-72 h-72 bg-indigo-200/20 rounded-full blur-3xl animate-blob" />
-                  <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl animate-blob animation-delay-2000" />
-                </div>
+                
 
                 <div className="relative z-10 flex flex-col items-center space-y-6">
                   {/* Animated loader container */}

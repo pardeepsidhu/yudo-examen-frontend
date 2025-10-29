@@ -43,15 +43,13 @@ export function NavBar() {
   return (
     <>
       <nav
-        className={`fixed top-0 px-2 left-0 right-0 z-50 w-full transition-all duration-500 ${
-          scrolled ? 'pt-2 pb-2' : 'pb-2 pt-2'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-500 `}
       >
         {/* Glass morphism container */}
         <div
           className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 transition-all duration-500 ${
             scrolled ? 'bg-white/90 backdrop-blur-xl shadow-2xl' : 'bg-white/70 backdrop-blur-md shadow-lg'
-          } rounded-sm sm:rounded-md border border-indigo-100/50`}
+          } border border-indigo-100/50`}
         >
           <div className="flex items-center justify-between h-14 sm:h-18">
             {/* Animated gradient line on top */}

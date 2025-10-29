@@ -184,7 +184,7 @@ const TestDetails = ({ testData }: { testData: TestAttempt }) => {
 }
 
   return (
-  <div className="w-full min-h-screen p-2 sm:p-4 md:p-8 bg-gradient-to-br from-indigo-50 via-white to-blue-50 relative overflow-hidden">
+  <div className="w-full min-h-screen  bg-gradient-to-br from-indigo-50 via-white to-blue-50 relative overflow-hidden">
     {/* Animated background blobs */}
     <div className="absolute inset-0 pointer-events-none">
       <div className="absolute top-20 left-20 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl animate-blob" />

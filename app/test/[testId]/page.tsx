@@ -52,6 +52,27 @@ export default function TestPage() {
   const [isAnswering, setIsAnswring] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false)
   const [isFullScreenEditor, setIsFullScreenEditor] = useState(false)
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+
+    const loadVoices = () => {
+      const availableVoices = window.speechSynthesis.getVoices();
+      if (availableVoices.length > 0) {
+        setVoices(availableVoices);
+      }
+    };
+
+    loadVoices(); // Try once immediately
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+
+    // On unmount, cleanup
+    return () => {
+      window.speechSynthesis.onvoiceschanged = null;
+    };
+  }, []);
+
   // const [text, setText] = useState("");
   // setSelectedTranslation("en")
   const fetchTest = useCallback(async () => {
@@ -184,59 +205,127 @@ export default function TestPage() {
     }
   };
 
+  // Put this inside your React component (assumes `selectedTranslation` and `isSpeaking` state exist,
+  // and setIsSpeaking is available from useState).
   const handleTextToSpeech = (textToRead: string) => {
-    if (!("speechSynthesis" in window)) {
+
+    if (voices.length === 0) {
+      alert("Voices are still loading, please try again in a second.");
+      window.speechSynthesis.getVoices(); // trigger load
+      return;
+    }
+
+
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
       console.error("Speech synthesis is not supported in this browser.");
       alert("Text-to-speech is not supported in your browser.");
       return;
     }
 
+    // Cancel currently speaking & toggle off
     if (isSpeaking) {
       window.speechSynthesis.cancel();
       setIsSpeaking(false);
       return;
     }
 
-    const textToSpeak = textToRead || "No text available to speak";
+    const textToSpeak = textToRead?.trim() || "No text available to speak";
 
-    const speak = () => {
-      const voices = window.speechSynthesis.getVoices();
+    // Map short codes (en, hi, etc.) to common BCP-47 tags
+    const langMap: Record<string, string> = {
+      en: "en-US",
+      hi: "hi-IN",
+      es: "es-ES",
+      fr: "fr-FR",
+      de: "de-DE",
+      zh: "zh-CN",
+      ja: "ja-JP",
+    };
+
+    // fallback: if selectedTranslation is already a full tag (en-GB etc.) use it
+    const rawLang = (selectedTranslation || "en").toString();
+    const lang = langMap[rawLang] ?? (rawLang.includes("-") ? rawLang : `${rawLang}-US`);
+
+    // Helper that actually picks a voice and speaks
+    const speakWithVoices = (voices: SpeechSynthesisVoice[]) => {
+      // Choose voice that matches language first
+      let chosen: SpeechSynthesisVoice | undefined = voices.find((v) =>
+        v.lang && v.lang.toLowerCase().startsWith(lang.split("-")[0].toLowerCase())
+      );
+
+      // Try to prefer a female-sounding voice by name heuristics
+      const femaleRegex = /female|woman|girl|samantha|karen|zira|alexa|google.*female/i;
+      const femaleMatching = voices.find((v) => femaleRegex.test(v.name));
+      if (femaleMatching) chosen = femaleMatching;
+
+      // Fallback to first voice if none matched
+      chosen = chosen ?? voices[0];
+
       const utterance = new SpeechSynthesisUtterance(textToSpeak);
-      const lang = selectedTranslation || "en-US";
       utterance.lang = lang;
+      if (chosen) utterance.voice = chosen;
 
-      // Try to pick a sweet female voice
-      const femaleVoice =
-        voices.find(
-          (v) =>
-            v.lang.startsWith(lang) &&
-            /female|woman|samantha|karen|google uk english female/i.test(v.name)
-        ) ||
-        voices.find((v) => /female|woman/i.test(v.name)) ||
-        voices[0];
+      // Optional tuning — remove or adjust as you like:
+      utterance.rate = 1;    // 0.1 - 10
+      utterance.pitch = 1;   // 0 - 2
+      utterance.volume = 1;  // 0 - 1
 
-      if (femaleVoice) {
-        utterance.voice = femaleVoice;
-
-      }
-
-      utterance.onend = () => setIsSpeaking(false);
+      utterance.onend = () => {
+        setIsSpeaking(false);
+      };
       utterance.onerror = (err) => {
         console.error("Speech synthesis error:", err);
         setIsSpeaking(false);
       };
 
+      // Mark speaking and start
       setIsSpeaking(true);
+      // Ensure any existing utterances are cancelled
+      try {
+        window.speechSynthesis.cancel();
+      } catch (e) {
+        /* ignore */
+      }
       window.speechSynthesis.speak(utterance);
     };
 
-    // Ensure voices are loaded
-    if (window.speechSynthesis.getVoices().length === 0) {
-      window.speechSynthesis.onvoiceschanged = speak;
-    } else {
-      speak();
+    // If voices are already present, use them, otherwise wait for voiceschanged
+    const existingVoices = window.speechSynthesis.getVoices();
+    if (existingVoices.length > 0) {
+      speakWithVoices(existingVoices);
+      return;
     }
+
+    // Some browsers (Chrome) load voices asynchronously. Listen cleanly and remove listener after.
+    const onVoicesChanged = () => {
+      const vs = window.speechSynthesis.getVoices();
+      window.speechSynthesis.removeEventListener("voiceschanged", onVoicesChanged);
+      if (vs.length > 0) {
+        speakWithVoices(vs);
+      } else {
+        // fallback: try a small delay then attempt again
+        setTimeout(() => {
+          const retry = window.speechSynthesis.getVoices();
+          if (retry.length > 0) speakWithVoices(retry);
+          else {
+            console.error("No voices available for speechSynthesis.");
+            alert("No speech voices available on this device/browser.");
+          }
+        }, 250);
+      }
+    };
+
+    window.speechSynthesis.addEventListener("voiceschanged", onVoicesChanged);
+    // Some platforms may never fire voiceschanged — attempt a quick fallback
+    setTimeout(() => {
+      const vs = window.speechSynthesis.getVoices();
+      if (vs.length > 0) {
+        window.speechSynthesis.removeEventListener("voiceschanged", onVoicesChanged);
+        speakWithVoices(vs);
+      }
+    }, 350);
   };
+
 
   const translateText = async (
     text: string,
@@ -365,7 +454,7 @@ export default function TestPage() {
         </div>
 
         <div className="relative z-10 max-w-md w-full">
-          <Alert className="border-0 bg-white/90 backdrop-blur-xl shadow-2xl rounded-2xl overflow-hidden flex justify-center flex justify-center">
+          <Alert className="border-0 bg-white/90 backdrop-blur-xl shadow-2xl rounded-sm overflow-hidden flex justify-center flex justify-center">
             {/* Gradient top border */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 via-orange-500 to-red-500" />
 
@@ -391,7 +480,7 @@ export default function TestPage() {
               {/* Action button */}
               <button
                 onClick={() => window.location.reload()}
-                className="w-full px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] flex items-center justify-center gap-2"
+                className="w-full px-6 py-3 rounded-sm font-bold text-white bg-gradient-to-r from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] flex items-center justify-center gap-2"
               >
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -420,7 +509,7 @@ export default function TestPage() {
         </div>
 
         <div className="relative z-10 max-w-md w-full">
-          <Alert className="border-0 bg-white/90 backdrop-blur-xl shadow-2xl rounded-2xl overflow-hidden flex justify-center">
+          <Alert className="border-0 bg-white/90 backdrop-blur-xl shadow-2xl rounded-sm overflow-hidden flex justify-center">
             {/* Gradient top border */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
 
@@ -447,13 +536,13 @@ export default function TestPage() {
               <div className="flex gap-3">
                 <button
                   onClick={() => window.history.back()}
-                  className="flex-1 px-6 py-3 rounded-xl font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all duration-300 hover:scale-[1.02]"
+                  className="flex-1 px-6 py-3 rounded-sm font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all duration-300 hover:scale-[1.02]"
                 >
                   Go Back
                 </button>
                 <button
                   onClick={() => window.location.reload()}
-                  className="flex-1 px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02]"
+                  className="flex-1 px-6 py-3 rounded-sm font-bold text-white bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02]"
                 >
                   Refresh
                 </button>
@@ -481,7 +570,7 @@ export default function TestPage() {
         </div>
 
         <div className="relative z-10 max-w-md w-full">
-          <Alert className="border-0 bg-white/90 backdrop-blur-xl shadow-2xl rounded-2xl overflow-hidden flex justify-center">
+          <Alert className="border-0 bg-white/90 backdrop-blur-xl shadow-2xl rounded-sm overflow-hidden flex justify-center">
             {/* Gradient top border */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-400" />
 
@@ -506,11 +595,11 @@ export default function TestPage() {
 
               {/* Info cards */}
               <div className="grid grid-cols-2 gap-3 mt-4">
-                <div className="p-3 rounded-xl bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100">
+                <div className="p-3 rounded-sm bg-gradient-to-br from-indigo-50 to-blue-50 border border-indigo-100">
                   <p className="text-xs text-gray-500 font-medium">Test Status</p>
                   <p className="text-sm font-bold text-indigo-600">Empty</p>
                 </div>
-                <div className="p-3 rounded-xl bg-gradient-to-br from-yellow-50 to-orange-50 border border-yellow-100">
+                <div className="p-3 rounded-sm bg-gradient-to-br from-yellow-50 to-orange-50 border border-yellow-100">
                   <p className="text-xs text-gray-500 font-medium">Questions</p>
                   <p className="text-sm font-bold text-orange-600">0</p>
                 </div>
@@ -520,13 +609,13 @@ export default function TestPage() {
               <div className="flex gap-3 mt-4">
                 <button
                   onClick={() => window.history.back()}
-                  className="flex-1 px-6 py-3 rounded-xl font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all duration-300 hover:scale-[1.02]"
+                  className="flex-1 px-6 py-3 rounded-sm font-bold text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition-all duration-300 hover:scale-[1.02]"
                 >
                   Go Back
                 </button>
                 <button
                   onClick={() => window.location.href = '/test'}
-                  className="flex-1 px-6 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02]"
+                  className="flex-1 px-6 py-3 rounded-sm font-bold text-white bg-gradient-to-r from-indigo-500 to-blue-600 hover:from-indigo-600 hover:to-blue-700 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02]"
                 >
                   Browse Tests
                 </button>
@@ -580,10 +669,10 @@ export default function TestPage() {
             onValueChange={setActiveTab}
             className="w-full gap-0.5"
           >
-            <TabsList className="grid w-full grid-cols-2 rounded-2xl shadow-xl p-1 gap-2 h-auto bg-gradient-to-br from-indigo-50 to-blue-50 border-2 border-indigo-100">
+            <TabsList className="grid w-full grid-cols-2 rounded-sm shadow-xl p-1 gap-2 h-auto bg-gradient-to-br from-indigo-50 to-blue-50 border-2 border-indigo-100">
               <TabsTrigger
                 value="details"
-                className="relative flex items-center justify-center gap-2.5 text-sm sm:text-base font-bold py-2.5 px-4 rounded-xl transition-all duration-300 group overflow-hidden"
+                className="relative flex items-center justify-center gap-2.5 text-sm sm:text-base font-bold py-2.5 px-4 rounded-sm transition-all duration-300 group overflow-hidden"
                 style={{
                   color: activeTab === "details" ? "#ffffff" : "#6366f1",
                 }}
@@ -626,7 +715,7 @@ export default function TestPage() {
 
               <TabsTrigger
                 value="attend"
-                className="relative flex items-center justify-center gap-2.5 text-sm sm:text-base font-bold py-2.5 px-4 rounded-xl transition-all duration-300 group overflow-hidden"
+                className="relative flex items-center justify-center gap-2.5 text-sm sm:text-base font-bold py-2.5 px-4 rounded-sm transition-all duration-300 group overflow-hidden"
                 style={{
                   color: activeTab === "attend" ? "#ffffff" : "#6366f1",
                 }}
@@ -667,11 +756,11 @@ export default function TestPage() {
                 )}
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="details" className="m-0 mt-4">
+            <TabsContent value="details" className="m-0 mt-1 sm:mt-3">
               <TestDetails testData={testData} />
             </TabsContent>
 
-            <TabsContent value="attend" className="mt-4">
+            <TabsContent value="attend" className="mt-1 sm:mt-3">
               <div className="flex-1 flex flex-col md:flex-row overflow-hidden gap-0 sm:gap-1">
                 {/* Question Navigation */}
                 <div className="w-full md:w-64 border-b md:border-b-0 md:border-r-0 p-3 sm:p-4 mb-3 md:mb-0 relative bg-white/90 backdrop-blur-xl rounded-lg md:rounded-r-none shadow-lg">
@@ -725,7 +814,7 @@ export default function TestPage() {
                             }
                             size="sm"
                             className={cn(
-                              "h-10 w-10 p-0 rounded-xl text-sm font-bold transition-all hover:scale-105 shadow-md hover:shadow-xl",
+                              "h-10 w-10 p-0 rounded-sm text-sm font-bold transition-all hover:scale-105 shadow-md hover:shadow-xl",
                               isAnswered &&
                               isCorrect &&
                               "bg-gradient-to-br from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0",
@@ -784,7 +873,7 @@ export default function TestPage() {
                               transition={{ duration: 0.2 }}
                             >
                               <Card
-                                className="p-0 sm:p-4 md:p-6 space-y-3 sm:space-y-4 md:space-y-6 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl  rounded-sm sm:rounded-md border-blue-200 dark:border-gray-700 border-0! shadow-none sm:border-2!"
+                                className="p-0 sm:p-4 md:p-6 space-y-3 sm:space-y-4 md:space-y-6 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl  rounded-sm sm:rounded-sm border-blue-200 dark:border-gray-700 border-0! shadow-none sm:border-2!"
                               >
                                 {/* Question Title */}
                                 <div className="mb-0">
@@ -863,7 +952,7 @@ export default function TestPage() {
                                             <div
                                               key={index}
                                               className={cn(
-                                                "relative px-4  sm:px-5 py-2 rounded-sm border-2 transition-all duration-300 cursor-pointer overflow-hidden group flex items-center m-0!",
+                                                "relative px-2 sm:px-4  sm:px-5 py-2 rounded-sm border-2 transition-all duration-300 cursor-pointer overflow-hidden group flex items-center m-0!",
                                                 isCorrect
                                                   ? "border-green-400 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-green-800/30  shadow-green-500/20"
                                                   : isIncorrect
@@ -881,7 +970,7 @@ export default function TestPage() {
                                               <RadioGroupItem
                                                 value={option}
                                                 id={`option-${index}`}
-                                              
+
                                                 className="peer sr-only"
                                                 disabled={isAnswered || isAnswering}
                                               />
@@ -902,7 +991,7 @@ export default function TestPage() {
                                                 {/* Letter circle */}
                                                 <span
                                                   className={cn(
-                                                    "flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold mr-3 transition-all",
+                                                    "flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold  transition-all",
                                                     isCorrect
                                                       ? "bg-green-500 text-white"
                                                       : isIncorrect
@@ -914,7 +1003,7 @@ export default function TestPage() {
                                                 </span>
 
                                                 {/* Option text */}
-                                                <span className="flex-1 text-sm sm:text-md">{option}</span>
+                                                <span className="flex-1 text-xs sm:text-md mr-6">{option}</span>
                                               </Label>
 
                                               {/* Spinner when answering */}
@@ -948,7 +1037,7 @@ export default function TestPage() {
 
                                               {/* Icons after answering */}
                                               {isAnswered && !isAnswering && (
-                                                <div className="absolute right-4 sm:right-6 flex items-center">
+                                                <div className="absolute right-2 sm:right-4 flex items-center">
                                                   {option === correctOption ? (
                                                     <div className="relative">
                                                       <CheckCircle2 className="h-6 w-6 sm:h-7 sm:w-7 text-green-500 animate-pulse" />
@@ -977,7 +1066,7 @@ export default function TestPage() {
                                       </RadioGroup>
 
                                     ) : (
-                                      <Alert className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-300 dark:bg-gradient-to-br dark:from-yellow-900/30 dark:to-orange-900/30 dark:border-yellow-600 mt-4 rounded-xl shadow-lg">
+                                      <Alert className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-300 dark:bg-gradient-to-br dark:from-yellow-900/30 dark:to-orange-900/30 dark:border-yellow-600 mt-4 rounded-sm shadow-lg">
                                         <AlertDescription className="flex items-center gap-3">
                                           <div className="p-2 bg-yellow-100 dark:bg-yellow-800 rounded-lg">
                                             <Info className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
@@ -992,14 +1081,19 @@ export default function TestPage() {
                                   <TabsContent value="Description">
                                     <div className="w-full max-w-4xl mx-auto space-y-4">
                                       {/* Controls */}
-                                      <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 p-3 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
-                                        <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                                      <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 p-3 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-sm border border-gray-200 dark:border-gray-700">
+                                        <h3 className="hidden sm:flex text-sm font-bold text-gray-700 dark:text-gray-300  items-center gap-2">
                                           <svg className="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
                                           </svg>
                                           Question Description
                                         </h3>
-
+                                        <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 flex sm:hidden items-center gap-2">
+                                          <svg className="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+                                          </svg>
+                                          Description
+                                        </h3>
                                         <div className="flex flex-wrap items-center gap-2">
                                           <button
                                             className="px-3 py-2 rounded-lg border-2 border-blue-200 dark:border-gray-600 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2 transition-all hover:scale-105 shadow-sm"
@@ -1040,14 +1134,14 @@ export default function TestPage() {
                                                 {isTranslating ? "Translating..." : "Translate"}
                                               </span>
                                               {selectedTranslation !== "en" && !isTranslating && (
-                                                <span className="text-xs font-bold ml-1 bg-blue-500 text-white px-2 py-0.5 rounded-md shadow-sm">
+                                                <span className="text-xs font-bold ml-1 bg-blue-500 text-white px-2 py-0.5 rounded-sm shadow-sm">
                                                   {selectedTranslation.toUpperCase()}
                                                 </span>
                                               )}
                                             </button>
 
                                             {showTranslationOptions && !isTranslating && (
-                                              <div className="absolute right-0 z-50 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-2 border-2 border-blue-200 dark:border-gray-700">
+                                              <div className="absolute right-0 z-50 mt-2 w-56 bg-white dark:bg-gray-800 rounded-sm shadow-2xl p-2 border-2 border-blue-200 dark:border-gray-700 h-75 overflow-y-scroll">
                                                 <div className="mb-2 px-2 py-1 border-b border-gray-200 dark:border-gray-700">
                                                   <p className="text-xs font-bold text-gray-500 dark:text-gray-400">Select Language</p>
                                                 </div>
@@ -1062,7 +1156,7 @@ export default function TestPage() {
                                                 ].map((lang) => (
                                                   <button
                                                     key={lang.code}
-                                                    className={`w-full text-left px-3 py-2.5 text-sm font-semibold rounded-lg flex items-center gap-3 transition-all ${selectedTranslation === lang.code
+                                                    className={`w-full text-left px-3 py-2.5 text-sm font-semibold rounded-sm flex items-center gap-3 transition-all ${selectedTranslation === lang.code
                                                       ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-md"
                                                       : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                                                       }`}
@@ -1092,7 +1186,7 @@ export default function TestPage() {
                                       </div>
 
                                       {/* Editor Container */}
-                                      <div className="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-xl border-2 border-blue-200 dark:border-gray-700 shadow-xl overflow-hidden">
+                                      <div className="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-sm border-2 border-blue-200 dark:border-gray-700 shadow-xl overflow-hidden">
                                         {isTranslating && (
                                           <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center">
                                             <div className="flex flex-col items-center gap-3">
@@ -1128,9 +1222,9 @@ export default function TestPage() {
                                     </div>
                                   </TabsContent>
                                   <TabsContent value="Solution">
-                                    <div className="w-full max-w-4xl mx-auto space-y-4">
+                                    <div className="w-full max-w-4xl mx-auto space-y-4 overflow-hidden">
                                       {/* Controls */}
-                                      <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 p-3 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
+                                      <div className="flex flex-wrap items-center justify-between gap-2 sm:gap-3 p-3 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-sm border border-gray-200 dark:border-gray-700">
                                         <h3 className="text-sm font-bold text-gray-700 dark:text-gray-300 flex items-center gap-2">
                                           <svg className="h-4 w-4 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -1178,14 +1272,15 @@ export default function TestPage() {
                                                 {isTranslating ? "Translating..." : "Translate"}
                                               </span>
                                               {selectedTranslation !== "en" && !isTranslating && (
-                                                <span className="text-xs font-bold ml-1 bg-blue-500 text-white px-2 py-0.5 rounded-md shadow-sm">
+                                                <span className="text-xs font-bold ml-1 bg-blue-500 text-white px-2 py-0.5 rounded-sm shadow-sm">
                                                   {selectedTranslation.toUpperCase()}
                                                 </span>
                                               )}
                                             </button>
 
                                             {showTranslationOptions && !isTranslating && (
-                                              <div className="absolute right-0 z-50 mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-2xl p-2 border-2 border-blue-200 dark:border-gray-700">
+                                              <div className="absolute right-0 z-50 mt-2 w-56 bg-white dark:bg-gray-800 rounded-sm shadow-2xl p-2 border-2 border-blue-200 dark:border-gray-700 h-75 overflow-y-scroll">
+
                                                 <div className="mb-2 px-2 py-1 border-b border-gray-200 dark:border-gray-700">
                                                   <p className="text-xs font-bold text-gray-500 dark:text-gray-400">Select Language</p>
                                                 </div>
@@ -1200,7 +1295,7 @@ export default function TestPage() {
                                                 ].map((lang) => (
                                                   <button
                                                     key={lang.code}
-                                                    className={`w-full text-left px-3 py-2.5 text-sm font-semibold rounded-lg flex items-center gap-3 transition-all ${selectedTranslation === lang.code
+                                                    className={`w-full text-left px-3 py-2.5 text-sm font-semibold rounded-sm flex items-center gap-3 transition-all ${selectedTranslation === lang.code
                                                       ? "bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-md"
                                                       : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
                                                       }`}
@@ -1230,7 +1325,8 @@ export default function TestPage() {
                                       </div>
 
                                       {/* Editor Container */}
-                                      <div className="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-xl border-2 border-blue-200 dark:border-gray-700 shadow-xl overflow-hidden">
+                                      <div className="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl rounded-sm border-2 border-blue-200 dark:border-gray-700 shadow-xl overflow-hidden">
+
                                         {isTranslating && (
                                           <div className="absolute inset-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm z-50 flex items-center justify-center">
                                             <div className="flex flex-col items-center gap-3">
@@ -1269,7 +1365,7 @@ export default function TestPage() {
                                   <TabsContent value="Media">
                                     <div className="w-full max-w-4xl mx-auto space-y-4">
                                       {/* Header */}
-                                      <div className="flex items-center gap-3 p-3 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
+                                      <div className="flex items-center gap-3 p-3 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 rounded-sm border border-gray-200 dark:border-gray-700">
                                         <div className="p-2 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg">
                                           <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
@@ -1283,7 +1379,7 @@ export default function TestPage() {
                                       {/* Main Image and Video */}
                                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {currentQuestion.image && (
-                                          <div className="relative group overflow-hidden rounded-xl border-2 border-blue-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all">
+                                          <div className="relative group overflow-hidden rounded-sm border-2 border-blue-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all">
                                             <div className="absolute top-3 right-3 z-10 flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
                                               <button
                                                 className="p-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg text-white hover:from-blue-600 hover:to-blue-700 shadow-lg transition-all hover:scale-110"
@@ -1338,7 +1434,7 @@ export default function TestPage() {
                                                   img.style.maxWidth = "95vw";
                                                   img.style.maxHeight = "95vh";
                                                   img.style.objectFit = "contain";
-                                                  img.style.borderRadius = "12px";
+                                                  img.style.borderRadius = "0px";
                                                   img.style.boxShadow = "0 25px 50px -12px rgba(0, 0, 0, 0.5)";
 
                                                   imgWrapper.appendChild(img);
@@ -1432,7 +1528,7 @@ export default function TestPage() {
                                                 img.style.maxWidth = "95vw";
                                                 img.style.maxHeight = "95vh";
                                                 img.style.objectFit = "contain";
-                                                img.style.borderRadius = "12px";
+                                                img.style.borderRadius = "0px";
                                                 img.style.boxShadow = "0 25px 50px -12px rgba(0, 0, 0, 0.5)";
 
                                                 imgWrapper.appendChild(img);
@@ -1471,7 +1567,7 @@ export default function TestPage() {
                                         )}
 
                                         {currentQuestion.video && (
-                                          <div className="relative group overflow-hidden rounded-xl border-2 border-blue-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all">
+                                          <div className="relative group overflow-hidden rounded-sm border-2 border-blue-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all">
                                             <div className="absolute top-3 right-3 z-10 flex gap-2 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all duration-300">
                                               <button
                                                 className="p-2 bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg text-white hover:from-blue-600 hover:to-blue-700 shadow-lg transition-all hover:scale-110"
@@ -1503,69 +1599,98 @@ export default function TestPage() {
                                                 className="p-2 bg-gradient-to-br from-red-500 to-red-600 rounded-lg text-white hover:from-red-600 hover:to-red-700 shadow-lg transition-all hover:scale-110"
                                                 onClick={() => {
                                                   const elem = document.createElement("div");
-                                                  elem.style.position = "fixed";
-                                                  elem.style.top = "0";
-                                                  elem.style.left = "0";
-                                                  elem.style.width = "100vw";
-                                                  elem.style.height = "100vh";
-                                                  elem.style.backgroundColor = "rgba(0,0,0,0.95)";
-                                                  elem.style.zIndex = "9999";
-                                                  elem.style.display = "flex";
-                                                  elem.style.justifyContent = "center";
-                                                  elem.style.alignItems = "center";
-                                                  elem.style.overflow = "auto";
-                                                  elem.style.backdropFilter = "blur(10px)";
-                                                  //  elem.style.translate = "auto";
+                                                  Object.assign(elem.style, {
+                                                    position: "fixed",
+                                                    top: "0",
+                                                    left: "0",
+                                                    width: "100vw",
+                                                    height: "100vh",
+                                                    backgroundColor: "rgba(0,0,0,0.95)",
+                                                    zIndex: "9999",
+                                                    display: "flex",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    overflow: "hidden",
+                                                    backdropFilter: "blur(10px)",
+                                                  });
 
-                                                  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+                                                  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                                                    navigator.userAgent
+                                                  );
+
+                                                  // ✅ Full-feature embed URL with all control options
+                                                  const videoUrl = `${getYouTubeEmbedUrl(currentQuestion.video)}?controls=1&fs=1&enablejsapi=1&rel=0&iv_load_policy=1&showinfo=1`;
+
                                                   const iframe = document.createElement("iframe");
-                                                  iframe.src = getYouTubeEmbedUrl(currentQuestion.video);
+                                                  iframe.src = videoUrl;
                                                   iframe.style.border = "none";
-                                                  iframe.style.borderRadius = "12px";
-                                                  iframe.style.boxShadow = "0 25px 50px -12px rgba(0, 0, 0, 0.5)";
                                                   iframe.allowFullscreen = true;
+                                                  iframe.setAttribute(
+                                                    "allow",
+                                                    "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+                                                  );
+
                                                   if (isMobile) {
-                                                    iframe.style.width = "100vw";
-                                                    iframe.style.height = "100vw";
-                                                    iframe.style.maxWidth = "100vw";
-                                                    iframe.style.maxHeight = "100vh";
-                                                    elem.style.alignItems = "flex-start";
-                                                    elem.style.justifyContent = "center";
+                                                    // Landscape fullscreen simulation for mobile
+                                                    Object.assign(iframe.style, {
+                                                      width: "100vh",
+                                                      height: "100vw",
+                                                      transform: "rotate(90deg)",
+                                                      transformOrigin: "center center",
+                                                      position: "absolute",
+                                                      top: "50%",
+                                                      left: "50%",
+                                                      translate: "-50% -50%",
+                                                    });
                                                   } else {
-                                                    iframe.style.width = "100vw";
-                                                    iframe.style.height = "100vh";
-                                                    iframe.style.maxWidth = "1400px";
-                                                    iframe.style.maxHeight = "100vh";
+                                                    Object.assign(iframe.style, {
+                                                      width: "100vw",
+                                                      height: "100vh",
+                                                      maxWidth: "1400px",
+                                                      maxHeight: "100vh",
+                                                    });
                                                   }
 
                                                   elem.appendChild(iframe);
 
+                                                  // Close button
                                                   const closeBtn = document.createElement("button");
                                                   closeBtn.innerHTML = "✕";
-                                                  closeBtn.style.position = "absolute";
-                                                  closeBtn.style.top = "20px";
-                                                  closeBtn.style.right = "20px";
-                                                  closeBtn.style.fontSize = "32px";
-                                                  closeBtn.style.fontWeight = "bold";
-                                                  closeBtn.style.color = "white";
-                                                  closeBtn.style.background = "rgba(239, 68, 68, 0.9)";
-                                                  closeBtn.style.border = "none";
-                                                  closeBtn.style.borderRadius = "50%";
-                                                  closeBtn.style.width = "48px";
-                                                  closeBtn.style.height = "48px";
-                                                  closeBtn.style.cursor = "pointer";
-                                                  closeBtn.style.display = "flex";
-                                                  closeBtn.style.alignItems = "center";
-                                                  closeBtn.style.justifyContent = "center";
-                                                  closeBtn.style.boxShadow = "0 10px 25px rgba(0, 0, 0, 0.3)";
+                                                  Object.assign(closeBtn.style, {
+                                                    position: "absolute",
+                                                    top: "20px",
+                                                    right: "20px",
+                                                    fontSize: "32px",
+                                                    fontWeight: "bold",
+                                                    color: "white",
+                                                    background: "rgba(239, 68, 68, 0.9)",
+                                                    border: "none",
+                                                    borderRadius: "50%",
+                                                    width: "48px",
+                                                    height: "48px",
+                                                    cursor: "pointer",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    boxShadow: "0 10px 25px rgba(0, 0, 0, 0.3)",
+                                                  });
                                                   closeBtn.onclick = (e) => {
                                                     e.stopPropagation();
                                                     document.body.removeChild(elem);
+                                                    if (screen.orientation?.unlock) screen.orientation.unlock();
                                                   };
 
                                                   elem.appendChild(closeBtn);
                                                   document.body.appendChild(elem);
+
+                                                  // Try locking to landscape mode (Android Chrome supports)
+                                                  if (isMobile && screen.orientation?.lock) {
+                                                    screen.orientation.lock("landscape").catch(() => { });
+                                                  }
                                                 }}
+
+
+
                                                 title="Fullscreen video"
                                               >
                                                 <svg
@@ -1594,9 +1719,10 @@ export default function TestPage() {
 
                                             <div className="aspect-w-16 aspect-h-9 w-full overflow-hidden bg-black">
                                               <iframe
-                                                src={getYouTubeEmbedUrl(`${getYouTubeEmbedUrl(currentQuestion.video)}?controls=1`)}
+                                                src={getYouTubeEmbedUrl(`${getYouTubeEmbedUrl(currentQuestion.video)}`)}
                                                 className="w-full h-64 sm:h-80 "
                                                 allowFullScreen
+                                              
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                 style={{ aspectRatio: "16/9" }}
                                               />
@@ -1621,7 +1747,7 @@ export default function TestPage() {
                                             {currentQuestion.shorts.map((short, index) => (
                                               <div
                                                 key={index}
-                                                className="relative group overflow-hidden rounded-xl border-2 border-blue-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all"
+                                                className="relative group overflow-hidden rounded-sm border-2 border-blue-200 dark:border-gray-700 shadow-lg hover:shadow-2xl transition-all"
                                               >
                                                 <div className="absolute top-2 right-2 z-10 flex gap-1.5 opacity-100  sm:opacity-0 group-hover:opacity-100 transition-all duration-300">
                                                   <button
@@ -1668,7 +1794,7 @@ export default function TestPage() {
                                                       const iframe = document.createElement("iframe");
                                                       iframe.src = getYouTubeEmbedUrl(short);
                                                       iframe.style.border = "none";
-                                                      iframe.style.borderRadius = "12px";
+                                                      iframe.style.borderRadius = "0px";
                                                       iframe.style.boxShadow = "0 25px 50px -12px rgba(0, 0, 0, 0.5)";
                                                       iframe.allowFullscreen = true;
                                                       if (isMobile) {
@@ -1680,9 +1806,9 @@ export default function TestPage() {
                                                         elem.style.justifyContent = "center";
                                                       } else {
                                                         iframe.style.width = "50vh";
-                                                        iframe.style.height = "97.89vh";
+                                                        iframe.style.height = "100vh";
                                                         iframe.style.maxWidth = "500px";
-                                                        iframe.style.maxHeight = "90vh";
+                                                        iframe.style.maxHeight = "100vh";
                                                       }
 
                                                       elem.appendChild(iframe);
@@ -1732,14 +1858,14 @@ export default function TestPage() {
                                                 </div>
 
                                                 {/* Short badge */}
-                                                <div className="absolute top-2 left-2 z-10 px-2 py-1 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-md shadow-lg">
+                                                <div className="absolute top-2 left-2 z-10 px-2 py-1 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold rounded-sm shadow-lg">
                                                   #{index + 1}
                                                 </div>
 
                                                 <div className="aspect-w-9 aspect-h-16 w-full overflow-hidden bg-black">
                                                   <iframe
                                                     src={getYouTubeEmbedUrl(short)}
-                                                    className="w-full h-56"
+                                                    className="w-full h-70"
                                                     allowFullScreen
                                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                     style={{ aspectRatio: "9/16" }}
@@ -1820,6 +1946,20 @@ export default function TestPage() {
           </Tabs>
         </div>
       </div>
+      <style jsx global>{`
+  .ql-editor, .editor-content {
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+
+  .ql-container {
+    max-width: 100% !important;
+  }
+`}</style>
+
     </div>
   );
 }
