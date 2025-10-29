@@ -51,6 +51,7 @@ export default function TestPage() {
   const [translatedSolution, setTranslatedSolution] = useState("");
   const [isAnswering, setIsAnswring] = useState(false);
   const [isTranslating, setIsTranslating] = useState(false)
+  const [isFullScreenEditor, setIsFullScreenEditor] = useState(false)
   // const [text, setText] = useState("");
   // setSelectedTranslation("en")
   const fetchTest = useCallback(async () => {
@@ -671,7 +672,7 @@ export default function TestPage() {
             </TabsContent>
 
             <TabsContent value="attend" className="mt-4">
-              <div className="flex-1 flex flex-col md:flex-row overflow-hidden gap-2">
+              <div className="flex-1 flex flex-col md:flex-row overflow-hidden gap-0 sm:gap-1">
                 {/* Question Navigation */}
                 <div className="w-full md:w-64 border-b md:border-b-0 md:border-r-0 p-3 sm:p-4 mb-3 md:mb-0 relative bg-white/90 backdrop-blur-xl rounded-lg md:rounded-r-none shadow-lg">
                   {/* Gradient top border */}
@@ -783,7 +784,7 @@ export default function TestPage() {
                               transition={{ duration: 0.2 }}
                             >
                               <Card
-                                className="p-2 sm:p-4 md:p-6 space-y-3 sm:space-y-4 md:space-y-6 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl shadow-2xl rounded-xl border-2 border-blue-200 dark:border-gray-700"
+                                className="p-0 sm:p-4 md:p-6 space-y-3 sm:space-y-4 md:space-y-6 bg-white/90 dark:bg-gray-800/90 backdrop-blur-xl  rounded-sm sm:rounded-md border-blue-200 dark:border-gray-700 border-0! shadow-none sm:border-2!"
                               >
                                 {/* Question Title */}
                                 <div className="mb-0">
@@ -798,7 +799,7 @@ export default function TestPage() {
                                 </div>
                                 <Tabs defaultValue="Answer" className="">
                                   <TabsList
-                                    className="grid w-full grid-cols-5 mb-2 sm:mb-3 gap-1 p-1 rounded-lg shadow-md h-auto bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 border border-blue-200 dark:border-gray-700"
+                                    className="grid w-full grid-cols-5 mb-2 sm:mb-3 gap-1 p-1 rounded-sm shadow-md h-auto bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-gray-900 border border-blue-200 dark:border-gray-700"
                                   >
                                     {["Answer", "Description", "Solution", "Media", "Code"].map(
                                       (tab) => {
@@ -817,7 +818,7 @@ export default function TestPage() {
                                             key={tab}
                                             value={tab}
                                             className={cn(
-                                              "rounded-lg text-[11px] xs:text-xs sm:text-sm font-bold py-2 px-2 transition-all focus-visible:ring-2",
+                                              "rounded-sm text-[11px] xs:text-xs sm:text-sm font-bold py-2 px-2 transition-all focus-visible:ring-2",
                                               isDisabled && "cursor-not-allowed opacity-50",
                                               isActive && "bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg border-2 border-blue-400",
                                               !isActive && !isDisabled && "text-gray-600 dark:text-gray-300 hover:bg-white/60 dark:hover:bg-gray-700/60 hover:text-blue-600"
@@ -855,7 +856,6 @@ export default function TestPage() {
                                             currentQuestionId && questionAttemptsMap.has(currentQuestionId);
                                           const correctOption = currentQuestion.rightOption;
 
-                                          // Determine option state
                                           const isCorrect = isSelected && option === correctOption;
                                           const isIncorrect = isSelected && option !== correctOption;
 
@@ -863,31 +863,34 @@ export default function TestPage() {
                                             <div
                                               key={index}
                                               className={cn(
-                                                "relative flex items-center group transition-all duration-300 rounded-xl border-2 px-4 py-4 sm:px-5 sm:py-5 cursor-pointer overflow-hidden",
+                                                "relative px-4  sm:px-5 py-2 rounded-sm border-2 transition-all duration-300 cursor-pointer overflow-hidden group flex items-center m-0!",
                                                 isCorrect
-                                                  ? "border-green-500 bg-gradient-to-br from-green-50 via-green-100 to-emerald-50 dark:from-green-900/40 dark:to-green-800/40 shadow-lg shadow-green-500/20"
+                                                  ? "border-green-400 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/30 dark:to-green-800/30  shadow-green-500/20"
                                                   : isIncorrect
-                                                    ? "border-red-500 bg-gradient-to-br from-red-50 via-red-100 to-red-50 dark:from-red-900/40 dark:to-red-800/40 shadow-lg shadow-red-500/20"
-                                                    : "border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:border-blue-400 hover:shadow-xl hover:scale-[1.02]",
+                                                    ? "border-red-400 bg-gradient-to-r from-red-50 to-rose-50 dark:from-red-900/30 dark:to-red-800/30  shadow-red-500/20"
+                                                    : "border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/80 hover:border-blue-300  hover:scale-[1.01] backdrop-blur-sm",
                                                 isAnswering && "opacity-60 cursor-not-allowed pointer-events-none"
                                               )}
                                             >
-                                              {/* Gradient overlay on hover */}
+                                              {/* Subtle hover gradient */}
                                               {!isAnswered && !isAnswering && (
                                                 <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/5 to-blue-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                               )}
 
+                                              {/* Hidden Radio */}
                                               <RadioGroupItem
                                                 value={option}
                                                 id={`option-${index}`}
+                                              
                                                 className="peer sr-only"
                                                 disabled={isAnswered || isAnswering}
                                               />
 
+                                              {/* Option label */}
                                               <Label
                                                 htmlFor={`option-${index}`}
                                                 className={cn(
-                                                  "relative z-10 flex-1 font-semibold transition-all duration-300 text-base sm:text-lg cursor-pointer",
+                                                  "relative z-10 flex-1 flex items-center font-semibold text-base sm:text-lg transition-all duration-300 cursor-pointer",
                                                   isCorrect
                                                     ? "text-green-700 dark:text-green-300"
                                                     : isIncorrect
@@ -896,31 +899,54 @@ export default function TestPage() {
                                                   isAnswering && "text-gray-500"
                                                 )}
                                               >
-                                                {/* Option letter badge */}
-                                                <span className={cn(
-                                                  "inline-flex items-center justify-center w-7 h-7 rounded-lg mr-3 text-sm font-bold transition-all",
-                                                  isCorrect
-                                                    ? "bg-green-500 text-white"
-                                                    : isIncorrect
-                                                      ? "bg-red-500 text-white"
-                                                      : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 group-hover:bg-blue-100 dark:group-hover:bg-blue-900 group-hover:text-blue-600 dark:group-hover:text-blue-400"
-                                                )}>
+                                                {/* Letter circle */}
+                                                <span
+                                                  className={cn(
+                                                    "flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold mr-3 transition-all",
+                                                    isCorrect
+                                                      ? "bg-green-500 text-white"
+                                                      : isIncorrect
+                                                        ? "bg-red-500 text-white"
+                                                        : "bg-indigo-100 dark:bg-gray-700 text-indigo-700 dark:text-gray-300 group-hover:bg-blue-100 dark:group-hover:bg-blue-900 group-hover:text-blue-600 dark:group-hover:text-blue-400"
+                                                  )}
+                                                >
                                                   {String.fromCharCode(65 + index)}
                                                 </span>
-                                                {option}
+
+                                                {/* Option text */}
+                                                <span className="flex-1 text-sm sm:text-md">{option}</span>
                                               </Label>
 
-                                              {/* Loading spinner when answering */}
+                                              {/* Spinner when answering */}
                                               {isAnswering && (
                                                 <div className="absolute right-4 sm:right-6 flex items-center">
-                                                  <svg className="animate-spin h-5 w-5 sm:h-6 sm:w-6 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                  <svg
+                                                    className="animate-spin h-5 w-5 sm:h-6 sm:w-6 text-blue-500"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none"
+                                                    viewBox="0 0 24 24"
+                                                  >
+                                                    <circle
+                                                      className="opacity-25"
+                                                      cx="12"
+                                                      cy="12"
+                                                      r="10"
+                                                      stroke="currentColor"
+                                                      strokeWidth="4"
+                                                    ></circle>
+                                                    <path
+                                                      className="opacity-75"
+                                                      fill="currentColor"
+                                                      d="M4 12a8 8 0 018-8V0C5.373 0 
+                0 5.373 0 12h4zm2 
+                5.291A7.962 7.962 0 014 12H0c0 
+                3.042 1.135 5.824 3 7.938l3-2.647z"
+                                                    ></path>
                                                   </svg>
                                                 </div>
                                               )}
 
-                                              {/* Result icons when answered */}
+                                              {/* Icons after answering */}
                                               {isAnswered && !isAnswering && (
                                                 <div className="absolute right-4 sm:right-6 flex items-center">
                                                   {option === correctOption ? (
@@ -937,7 +963,7 @@ export default function TestPage() {
                                                 </div>
                                               )}
 
-                                              {/* Hover indicator when not answered */}
+                                              {/* Hover indicator */}
                                               {!isAnswered && !isAnswering && (
                                                 <div className="absolute right-4 sm:right-6 opacity-0 group-hover:opacity-100 transition-all duration-300 transform group-hover:scale-110">
                                                   <div className="w-5 h-5 rounded-full border-2 border-blue-500 flex items-center justify-center">
@@ -949,6 +975,7 @@ export default function TestPage() {
                                           );
                                         })}
                                       </RadioGroup>
+
                                     ) : (
                                       <Alert className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-300 dark:bg-gradient-to-br dark:from-yellow-900/30 dark:to-orange-900/30 dark:border-yellow-600 mt-4 rounded-xl shadow-lg">
                                         <AlertDescription className="flex items-center gap-3">
@@ -1223,6 +1250,7 @@ export default function TestPage() {
                                             value={translatedSolution || currentQuestion?.solution || ''}
                                             style={{ height: "300px" }}
                                           />
+
                                         ) : (
                                           <div className="flex flex-col items-center justify-center h-64 text-center p-6">
                                             <div className="p-4 bg-gray-100 dark:bg-gray-700 rounded-full mb-4">
@@ -1566,7 +1594,7 @@ export default function TestPage() {
 
                                             <div className="aspect-w-16 aspect-h-9 w-full overflow-hidden bg-black">
                                               <iframe
-                                                src={getYouTubeEmbedUrl(currentQuestion.video)}
+                                                src={getYouTubeEmbedUrl(`${getYouTubeEmbedUrl(currentQuestion.video)}?controls=1`)}
                                                 className="w-full h-64 sm:h-80 "
                                                 allowFullScreen
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -1652,7 +1680,7 @@ export default function TestPage() {
                                                         elem.style.justifyContent = "center";
                                                       } else {
                                                         iframe.style.width = "50vh";
-                                                        iframe.style.height = "88.89vh";
+                                                        iframe.style.height = "97.89vh";
                                                         iframe.style.maxWidth = "500px";
                                                         iframe.style.maxHeight = "90vh";
                                                       }
@@ -1724,18 +1752,30 @@ export default function TestPage() {
                                       )}
                                     </div>
                                   </TabsContent>
-                                  <TabsContent value="Code">
-                                    {currentQuestion.code && (
-                                      <CodeRunner
-                                        code={currentQuestion.code}
-                                        language={
-                                          currentQuestion.codeLang || ""
-                                          // ? "java"
-                                          // : ""
-                                        }
-                                      />
+                                  <>
+                                    <TabsContent className="border-none" value="Code">
+                                      {currentQuestion.code && (
+                                        <CodeRunner
+                                          code={currentQuestion.code}
+                                          language={currentQuestion.codeLang || ""}
+                                        // isFullScreenEditor={isFullScreenEditor}
+                                        // setIsFullScreenEditor={setIsFullScreenEditor}
+                                        />
+                                      )}
+                                    </TabsContent>
+
+                                    {/* Fullscreen Portal - renders outside the tab */}
+                                    {isFullScreenEditor && currentQuestion.code && (
+                                      <div className="fixed  inset-0 z-[9999] bg-white dark:bg-gray-900">
+                                        <CodeRunner
+                                          code={currentQuestion.code}
+                                          language={currentQuestion.codeLang || ""}
+                                        // isFullScreenEditor={isFullScreenEditor}
+                                        // setIsFullScreenEditor={setIsFullScreenEditor}
+                                        />
+                                      </div>
                                     )}
-                                  </TabsContent>
+                                  </>
                                 </Tabs>
                               </Card>
                             </motion.div>
@@ -1747,12 +1787,12 @@ export default function TestPage() {
 
                   {/* Navigation */}
                   <div className="p-3 sm:p-4 border-t-2 border-gray-200 dark:border-gray-700 bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
-                    <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
+                    <div className="flex flex-row justify-between items-center gap-3">
                       <Button
                         variant="outline"
                         onClick={handlePrevious}
                         disabled={currentQuestionIndex === 0}
-                        className="flex items-center gap-2 w-full sm:w-auto font-bold px-6 py-2.5 rounded-lg border-2 border-blue-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:border-blue-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-105 shadow-sm hover:shadow-md"
+                        className="flex items-center gap-2 w-auto font-bold px-6 py-2.5 rounded-lg border-2 border-blue-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 hover:border-blue-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all hover:scale-105 shadow-sm hover:shadow-md"
                       >
                         <ChevronLeft className="h-4 w-4" />
                         <span>Previous</span>
@@ -1767,9 +1807,9 @@ export default function TestPage() {
                       <Button
                         onClick={handleNext}
                         disabled={currentQuestionIndex >= questions.length - 1}
-                        className="flex items-center gap-2 w-full sm:w-auto font-bold px-6 py-2.5 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all hover:scale-105 shadow-lg hover:shadow-xl"
+                        className="flex items-center gap-2 w-auto font-bold px-6 py-2.5 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white border-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 transition-all hover:scale-105 shadow-lg hover:shadow-xl"
                       >
-                        <span>Next</span>
+                        <span className="">Next</span>
                         <ChevronRight className="h-4 w-4" />
                       </Button>
                     </div>
