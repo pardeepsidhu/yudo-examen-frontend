@@ -458,11 +458,41 @@ export default function ExplorePage() {
             next={() => fetchTestSeries(page)}
             hasMore={hasMore}
             loader={
-              <div className="flex justify-center py-4 sm:py-12">
-                <div className="flex items-center gap-3 px-6 py-4 rounded-md sm:rounded-2xl bg-white shadow-lg border border-indigo-100">
-                  <Loader2 className="h-6 w-6 animate-spin text-indigo-600" />
-                  <span className="text-gray-700 font-medium">Loading more amazing tests...</span>
+              <div className="h-[30vh] w-[100%] flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-blue-50 relative overflow-hidden">
+                {/* Animated background blobs */}
+                <div className="absolute inset-0 pointer-events-none">
+                  <div className="absolute top-20 left-20 w-72 h-72 bg-indigo-200/20 rounded-full blur-3xl animate-blob" />
+                  <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl animate-blob animation-delay-2000" />
                 </div>
+
+                <div className="relative z-10 flex flex-col items-center space-y-6">
+                  {/* Animated loader container */}
+                  <div className="relative">
+                    {/* Outer spinning ring */}
+                    <div className="absolute inset-0 rounded-full border-4 border-indigo-200/30 animate-ping" />
+
+                    {/* Main loader */}
+                    <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-2xl">
+                      <Loader2 className="h-10 w-10 animate-spin text-white" />
+                    </div>
+
+                    {/* Glow effect */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 blur-xl opacity-50 animate-pulse" />
+                  </div>
+
+                  {/* Loading text with animation */}
+                  <div className="text-center space-y-2">
+                    <p className="text-xl font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent">
+                      Loading tests...
+                    </p>
+                    <div className="flex items-center justify-center gap-1">
+                      <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" />
+                      <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce animation-delay-200" />
+                      <span className="w-2 h-2 bg-sky-500 rounded-full animate-bounce animation-delay-400" />
+                    </div>
+                  </div>
+                </div>
+
               </div>
             }
             endMessage={
@@ -748,6 +778,16 @@ export default function ExplorePage() {
         .animation-delay-4000 {
           animation-delay: 4s;
         }
+
+        @keyframes blob {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+        50% { transform: translate(30px, -30px) scale(1.1); opacity: 0.3; }
+                      }
+        .animate-blob { animation: blob 7s ease-in-out infinite; }
+        .animation-delay-200 { animation-delay: 0.2s; }
+        .animation-delay-400 { animation-delay: 0.4s; }
+        .animation-delay-2000 { animation-delay: 2s; }
+                     
       `}</style>
     </div>
   );
