@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect, Suspense } from 'react';
-import { Plus, Trash2, Image as ImageIcon, Upload, Film, Link, Wand2, FileImage, FileVideo, Save, XCircle, PlayCircle, AlertCircle, RefreshCw, Settings, Eye, PlusIcon } from 'lucide-react';
+import { Plus, Trash2, Image as ImageIcon, Upload, Film, Link, Wand2, FileImage, FileVideo, Save, XCircle, PlayCircle, AlertCircle, RefreshCw, Settings, Eye, PlusIcon, Loader2 } from 'lucide-react';
 import { useTheme } from '../context/theme.context';
 import { cn } from '@/lib/utils';
 
@@ -47,6 +47,7 @@ export default function CreateTestSeries() {
   const { theme } = useTheme();
   const router = useRouter();
   const [testId, setTestId] = useState<string | null>(null);
+  const [initialLoading,setInitialLoading]=useState(true)
 
   useEffect(() => {
     if (localStorage.getItem("user")) {
@@ -636,18 +637,78 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
         setQuestions(res.testSeries.questions)
       }
     } catch (error) {
-      if (error)
-        toast.error("some error accred while fetching test")
+      console.log(error)
+      toast.error("some error accred while fetching test")
+    }
+    finally{
+      setInitialLoading(false)
     }
   }
 
-  console.log("soluntions", currentQuestion)
-
-  useEffect(() => {
+   useEffect(() => {
     if (testId) {
       hangleGetMyTest(testId)
     }
+    else{
+      setInitialLoading(false)
+    }
   }, [testId])
+
+
+
+  // Loading State
+    if (initialLoading) {
+      return (
+        <div className="h-screen w-screen flex items-center justify-center bg-gradient-to-br from-indigo-50 via-white to-blue-50 relative overflow-hidden">
+          {/* Animated background blobs */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-20 left-20 w-72 h-72 bg-indigo-200/20 rounded-full blur-3xl animate-blob" />
+            <div className="absolute bottom-20 right-20 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl animate-blob animation-delay-2000" />
+          </div>
+  
+          <div className="relative z-10 flex flex-col items-center space-y-6">
+            {/* Animated loader container */}
+            <div className="relative">
+              {/* Outer spinning ring */}
+              <div className="absolute inset-0 rounded-full border-4 border-indigo-200/30 animate-ping" />
+  
+              {/* Main loader */}
+              <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-2xl">
+                <Loader2 className="h-10 w-10 animate-spin text-white" />
+              </div>
+  
+              {/* Glow effect */}
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 blur-xl opacity-50 animate-pulse" />
+            </div>
+  
+            {/* Loading text with animation */}
+            <div className="text-center space-y-2">
+              <p className="text-xl font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent">
+                Loading test...
+              </p>
+              <div className="flex items-center justify-center gap-1">
+                <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" />
+                <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce animation-delay-200" />
+                <span className="w-2 h-2 bg-sky-500 rounded-full animate-bounce animation-delay-400" />
+              </div>
+            </div>
+          </div>
+  
+          <style jsx>{`
+          @keyframes blob {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+            50% { transform: translate(30px, -30px) scale(1.1); opacity: 0.3; }
+          }
+          .animate-blob { animation: blob 7s ease-in-out infinite; }
+          .animation-delay-200 { animation-delay: 0.2s; }
+          .animation-delay-400 { animation-delay: 0.4s; }
+          .animation-delay-2000 { animation-delay: 2s; }
+        `}</style>
+        </div>
+      );
+    }
+
+ 
 
   return (
     <Suspense fallback={<div className="text-center">Loading...</div>}>
@@ -1820,9 +1881,9 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                             </Dialog>
                           ) : (
                             <div className="flex gap-2">
-                            
-                            
-                             
+
+
+
                               <Button
                                 size="sm"
                                 onClick={() => removeMedia('video')}
@@ -1961,170 +2022,170 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                   </TabsContent>
 
                   <TabsContent value="preview" className="space-y-6 mt-6">
-  {/* Question Title */}
-  <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-4 border-2 border-indigo-100">
-    <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-      <svg className="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      {currentQuestion.title}
-    </h3>
-  </div>
+                    {/* Question Title */}
+                    <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-4 border-2 border-indigo-100">
+                      <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                        <svg className="h-5 w-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        {currentQuestion.title}
+                      </h3>
+                    </div>
 
-  {/* Description Section */}
-  {currentQuestion.description && (
-    <div className="space-y-2">
-      <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
-        <svg className="h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
-        </svg>
-        Description
-      </Label>
-      {/* <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-4 border-2 border-indigo-100 max-h-[300px] overflow-y-auto custom-scrollbar"> */}
-        {/* <div
+                    {/* Description Section */}
+                    {currentQuestion.description && (
+                      <div className="space-y-2">
+                        <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                          <svg className="h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
+                          </svg>
+                          Description
+                        </Label>
+                        {/* <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-4 border-2 border-indigo-100 max-h-[300px] overflow-y-auto custom-scrollbar"> */}
+                        {/* <div
           className="text-sm text-gray-700 leading-relaxed prose prose-sm max-w-none"
           dangerouslySetInnerHTML={{ __html: currentQuestion.description as TrustedHTML }}
         /> */}
-        <Editor readOnly showHeader={false} value={currentQuestion.description || ''}
-        className='bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-2 sm:p-4 border-2 border-indigo-100 max-h-[300px] overflow-y-auto custom-scrollbar'
-        />
-      {/* </div> */}
-    </div>
-  )}
+                        <Editor readOnly showHeader={false} value={currentQuestion.description || ''}
+                          className='bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-2 sm:p-4 border-2 border-indigo-100 max-h-[300px] overflow-y-auto custom-scrollbar'
+                        />
+                        {/* </div> */}
+                      </div>
+                    )}
 
-  {/* Solution Section */}
-  {currentQuestion.solution && (
-    <div className="space-y-2">
-      <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
-        <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        Solution
-      </Label>
-      <Editor readOnly showHeader={false} value={currentQuestion?.solution || ''}
-        className='bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-2 sm:p-4 border-2 border-indigo-100 max-h-[300px] overflow-y-auto custom-scrollbar'
-        />
-    </div>
-  )}
+                    {/* Solution Section */}
+                    {currentQuestion.solution && (
+                      <div className="space-y-2">
+                        <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                          <svg className="h-4 w-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          Solution
+                        </Label>
+                        <Editor readOnly showHeader={false} value={currentQuestion?.solution || ''}
+                          className='bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-2 sm:p-4 border-2 border-indigo-100 max-h-[300px] overflow-y-auto custom-scrollbar'
+                        />
+                      </div>
+                    )}
 
-  {/* Media Section */}
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    {currentQuestion.image && (
-      <div className="space-y-2">
-        <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
-          <svg className="h-4 w-4 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          Image
-        </Label>
-        <div className="relative rounded-lg overflow-hidden border-2 border-purple-200 shadow-lg group">
-          <Image
-            src={currentQuestion.image}
-            alt="Question image"
-            width={800}
-            height={240}
-            className="w-full h-60 object-cover transition-transform duration-300 group-hover:scale-105"
-            style={{ objectFit: 'cover' }}
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-        </div>
-      </div>
-    )}
+                    {/* Media Section */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {currentQuestion.image && (
+                        <div className="space-y-2">
+                          <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                            <svg className="h-4 w-4 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Image
+                          </Label>
+                          <div className="relative rounded-lg overflow-hidden border-2 border-purple-200 shadow-lg group">
+                            <Image
+                              src={currentQuestion.image}
+                              alt="Question image"
+                              width={800}
+                              height={240}
+                              className="w-full h-60 object-cover transition-transform duration-300 group-hover:scale-105"
+                              style={{ objectFit: 'cover' }}
+                              priority
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                          </div>
+                        </div>
+                      )}
 
-    {currentQuestion.video && (
-      <div className="space-y-2">
-        <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
-          <svg className="h-4 w-4 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-          </svg>
-          Video
-        </Label>
-        <div className="relative rounded-lg overflow-hidden border-2 border-pink-200 shadow-lg">
-          <iframe
-            src={getYouTubeEmbedUrl(currentQuestion.video)}
-            className="w-full h-60 rounded-lg"
-            allowFullScreen
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          />
-        </div>
-      </div>
-    )}
-  </div>
+                      {currentQuestion.video && (
+                        <div className="space-y-2">
+                          <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                            <svg className="h-4 w-4 text-pink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                            Video
+                          </Label>
+                          <div className="relative rounded-lg overflow-hidden border-2 border-pink-200 shadow-lg">
+                            <iframe
+                              src={getYouTubeEmbedUrl(currentQuestion.video)}
+                              className="w-full h-60 rounded-lg"
+                              allowFullScreen
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            />
+                          </div>
+                        </div>
+                      )}
+                    </div>
 
-  {/* Shorts Section */}
-  {currentQuestion.shorts && currentQuestion.shorts.length > 0 && (
-    <div className="space-y-2">
-      <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
-        <svg className="h-4 w-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
-        </svg>
-        Shorts ({currentQuestion.shorts.length})
-      </Label>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {currentQuestion.shorts.map((short, index) => (
-          <div key={index} className="relative rounded-lg overflow-hidden border-2 border-orange-200 shadow-lg">
-            <iframe
-              src={getYouTubeEmbedUrl(short)}
-              className="w-full h-48 rounded-lg"
-              allowFullScreen
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            />
-            <div className="absolute top-2 left-2 px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded-md">
-              Short {index + 1}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )}
+                    {/* Shorts Section */}
+                    {currentQuestion.shorts && currentQuestion.shorts.length > 0 && (
+                      <div className="space-y-2">
+                        <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                          <svg className="h-4 w-4 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                          </svg>
+                          Shorts ({currentQuestion.shorts.length})
+                        </Label>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {currentQuestion.shorts.map((short, index) => (
+                            <div key={index} className="relative rounded-lg overflow-hidden border-2 border-orange-200 shadow-lg">
+                              <iframe
+                                src={getYouTubeEmbedUrl(short)}
+                                className="w-full h-48 rounded-lg"
+                                allowFullScreen
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              />
+                              <div className="absolute top-2 left-2 px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded-md">
+                                Short {index + 1}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
-  {/* Options Section */}
-  <div className="space-y-2">
-    <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
-      <svg className="h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-      </svg>
-      Options
-    </Label>
-    <div className="space-y-3">
-      {currentQuestion.options.map((option, index) => (
-        <div
-          key={index}
-          className={cn(
-            'relative p-4 rounded-lg border-2 transition-all duration-200 group',
-            currentQuestion.rightOption === option 
-              ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-300 shadow-md' 
-              : 'bg-white border-indigo-100 hover:border-indigo-200 hover:shadow-sm'
-          )}
-        >
-          <div className="flex items-center gap-3">
-            <div className={cn(
-              'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm',
-              currentQuestion.rightOption === option
-                ? 'bg-green-500 text-white'
-                : 'bg-indigo-100 text-indigo-700 group-hover:bg-indigo-200'
-            )}>
-              {String.fromCharCode(65 + index)}
-            </div>
-            <div className="flex-1 text-sm font-medium text-gray-800">
-              {option}
-            </div>
-            {currentQuestion.rightOption === option && (
-              <div className="flex-shrink-0">
-                <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
+                    {/* Options Section */}
+                    <div className="space-y-2">
+                      <Label className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                        <svg className="h-4 w-4 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                        </svg>
+                        Options
+                      </Label>
+                      <div className="space-y-3">
+                        {currentQuestion.options.map((option, index) => (
+                          <div
+                            key={index}
+                            className={cn(
+                              'relative p-4 rounded-lg border-2 transition-all duration-200 group',
+                              currentQuestion.rightOption === option
+                                ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-300 shadow-md'
+                                : 'bg-white border-indigo-100 hover:border-indigo-200 hover:shadow-sm'
+                            )}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className={cn(
+                                'flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm',
+                                currentQuestion.rightOption === option
+                                  ? 'bg-green-500 text-white'
+                                  : 'bg-indigo-100 text-indigo-700 group-hover:bg-indigo-200'
+                              )}>
+                                {String.fromCharCode(65 + index)}
+                              </div>
+                              <div className="flex-1 text-sm font-medium text-gray-800">
+                                {option}
+                              </div>
+                              {currentQuestion.rightOption === option && (
+                                <div className="flex-shrink-0">
+                                  <svg className="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                  </svg>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
 
 
-</TabsContent>
+                  </TabsContent>
                 </Tabs>
               </CardContent>
             </Card>
@@ -2150,7 +2211,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
         </div>
 
 
-        
+
       </div>
       <style jsx global>{`
     .ql-toolbar {
