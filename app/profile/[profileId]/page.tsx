@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState} from 'react';
-import { useTheme } from '../../context/theme.context';
 import { getUserProfileAndTests } from '@/app/api/user.api';
 import { Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -13,7 +12,7 @@ import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 
 export default function ProfilePage() {
-  const { theme } = useTheme();
+
   const router = useRouter();
   const params = useParams();
   const profileId = params?.profileId as string;
@@ -55,13 +54,13 @@ export default function ProfilePage() {
       title: "Created Tests",
       value: myTests.length,
       icon: <BookOpen className="h-6 w-6" />,
-      color: theme.primary
+      color: "red"
     },
     {
       title: "Attended Tests",
       value: attendedTests.length,
       icon: <CheckCircle className="h-6 w-6" />,
-      color: theme.secondary
+      color: "red"
     }
   ];
 
@@ -69,8 +68,8 @@ export default function ProfilePage() {
     <div
       className="min-h-screen w-full relative overflow-x-hidden"
       style={{
-        background: `radial-gradient(circle at 80% 10%, ${theme.primary}10 0%, transparent 60%),
-                     radial-gradient(circle at 20% 90%, ${theme.secondary}15 0%, transparent 50%)`,
+        background: `radial-gradient(circle at 80% 10%, red 10 0%, transparent 60%),
+                     radial-gradient(circle at 20% 90%, red 15 0%, transparent 50%)`,
       }}
     >
       {/* Animated background blobs */}
@@ -79,7 +78,7 @@ export default function ProfilePage() {
       <div
         className="absolute top-1/2 left-1/2 w-[20rem] h-[20rem] sm:w-[32rem] sm:h-[32rem] rounded-full opacity-10 pointer-events-none z-0"
         style={{
-          background: `radial-gradient(circle at 60% 40%, ${theme.primary} 0%, transparent 70%)`,
+          background: `radial-gradient(circle at 60% 40%, red 0%, transparent 70%)`,
           transform: 'translate(-50%, -50%)',
           filter: 'blur(32px)',
         }}
@@ -97,14 +96,14 @@ export default function ProfilePage() {
               <div 
                 className="absolute inset-0 h-32"
                 style={{
-                  background: `linear-gradient(120deg, ${theme.primary}, ${theme.secondary})`,
+                  background: `linear-gradient(120deg, red, blue)`,
                   opacity: 0.8,
                 }}
               />
               <div className="flex flex-col sm:flex-row items-start pt-12 pb-6 px-6 relative">
                 <div 
                   className="relative h-24 w-24 sm:h-28 sm:w-28 rounded-full overflow-hidden border-4 shadow-lg -mt-12 z-10 bg-white group"
-                  style={{ borderColor: theme.white }}
+                  style={{ borderColor: "black" }}
                 >
                   <Image
                     src={profile?.profile || '/avatar_paceholder.jpeg'}
@@ -163,7 +162,7 @@ export default function ProfilePage() {
                       }}
                     > 
                       <CardHeader className="pb-2">
-                        <CardTitle className="font-bold text-2xl" style={{ color: theme.primary }}>
+                        <CardTitle className="font-bold text-2xl" style={{ color: "green" }}>
                           Ready to create a new test?
                         </CardTitle>
                         <p className="text-base text-gray-600 mt-2">
@@ -183,7 +182,7 @@ export default function ProfilePage() {
                           <Button
                             className="flex items-center gap-2 w-full font-semibold shadow-md"
                             style={{
-                              background: `linear-gradient(90deg, ${theme.primary} 60%, ${theme.secondary} 100%)`,
+                              background: `linear-gradient(90deg, red 60%, "red" 100%)`,
                               color: "#fff",
                               borderRadius: "0.75rem",
                               fontSize: "1.1rem"
@@ -198,11 +197,11 @@ export default function ProfilePage() {
         
         {/* Tabs Navigation */}
         <div className="flex items-center justify-between mb-8">
-          <div className="flex gap-3 bg-white rounded-full p-1 shadow-sm border" style={{ borderColor: `${theme.primary}20` }}>
+          <div className="flex gap-3 bg-white rounded-full p-1 shadow-sm border" style={{ borderColor: `red20` }}>
             <button
               className={`px-6  text-sm sm:test-md py-2 rounded-full font-semibold transition-all text-base flex items-center gap-2`}
               style={{
-                background: 'created' === 'created' ? theme.primary : 'transparent',
+                background: 'created' === 'created' ? "gray" : 'transparent',
                 color: 'created' === 'created' ? 'white' : 'gray',
               }}
               disabled
@@ -212,7 +211,7 @@ export default function ProfilePage() {
             <button
               className={`px-6 py-2  text-sm sm:test-md rounded-full font-semibold transition-all text-base flex items-center gap-2`}
               style={{
-                background: 'attended' === 'attended' ? theme.secondary : 'transparent',
+                background: 'attended' === 'attended' ? "whiteyellow" : 'transparent',
                 color: 'attended' === 'attended' ? 'white' : 'gray',
               }}
               disabled
@@ -225,7 +224,7 @@ export default function ProfilePage() {
         {/* Tab Content */}
         {loading ? (
           <div className="flex justify-center items-center h-64 bg-white rounded-xl shadow-sm">
-            <Loader2 className="h-8 w-8 animate-spin" style={{ color: theme.primary }} />
+            <Loader2 className="h-8 w-8 animate-spin" style={{ color: "white" }} />
           </div>
         ) : (
           <>
@@ -234,7 +233,7 @@ export default function ProfilePage() {
               {myTests.length === 0 ? (
                 <div className="bg-white rounded-xl shadow-sm p-10 text-center col-span-full">
                   <div className="mb-4">
-                    <AlertCircle className="h-12 w-12 mx-auto" style={{ color: `${theme.primary}60` }} />
+                    <AlertCircle className="h-12 w-12 mx-auto" style={{ color: `red60` }} />
                   </div>
                   <h3 className="text-lg font-semibold mb-2 text-gray-800">No tests created yet</h3>
                   <p className="text-gray-600 mb-6">This user has not created any test series yet.</p>
@@ -246,8 +245,8 @@ export default function ProfilePage() {
                     className="overflow-hidden border-0 shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.025]"
                     style={{
                       borderRadius: "1.25rem",
-                      background: `linear-gradient(120deg,${theme.white} 80%,${theme.primary}11 100%)`,
-                      border: `1.5px solid ${theme.primary}22`,
+                      background: `linear-gradient(120deg,freeen, 80%,red11 100%)`,
+                      border: `1.5px solid red22`,
                     }}
                   >
                     <div className="relative h-40 w-full">
@@ -264,8 +263,8 @@ export default function ProfilePage() {
                         <Badge 
                           className="font-medium" 
                           style={{ 
-                            background: theme.white,
-                            color: theme.primary
+                            background: "white",
+                            color: "orane"
                           }}
                         >
                           {test.category}
@@ -280,7 +279,7 @@ export default function ProfilePage() {
                     <CardContent className="pt-4">
                       <h3 
                         className="font-bold text-lg mb-2 line-clamp-1"
-                        style={{ color: theme.primary }}
+                        style={{ color: "ButtonFace" }}
                       >
                         {test.title}
                       </h3>
@@ -292,8 +291,8 @@ export default function ProfilePage() {
                             key={tag} 
                             className="text-xs" 
                             style={{ 
-                              background: `${theme.secondary}15`,
-                              color: theme.secondary
+                              background: `gray`,
+                              color: "yellow"
                             }}
                           >
                             {tag}
@@ -314,7 +313,7 @@ export default function ProfilePage() {
               {attendedTests.length === 0 ? (
                 <div className="bg-white rounded-xl shadow-sm p-10 text-center col-span-full">
                   <div className="mb-4">
-                    <Trophy className="h-12 w-12 mx-auto" style={{ color: `${theme.secondary}60` }} />
+                    <Trophy className="h-12 w-12 mx-auto" style={{ color: `red` }} />
                   </div>
                   <h3 className="text-lg font-semibold mb-2 text-gray-800">No tests attended yet</h3>
                   <p className="text-gray-600 mb-6">This user has not attended any tests yet.</p>
@@ -331,8 +330,8 @@ export default function ProfilePage() {
                       className="overflow-hidden border-0 shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.025]"
                       style={{
                         borderRadius: "1.25rem",
-                        background: `linear-gradient(120deg,${theme.white} 80%,${theme.secondary}11 100%)`,
-                        border: `1.5px solid ${theme.secondary}22`,
+                        background: `linear-gradient(120deg,red 80%,red , 100%)`,
+                        border: `1.5px soli dred `,
                       }}
                     >
                       <div className="relative h-40 w-full">
@@ -363,7 +362,7 @@ export default function ProfilePage() {
                           </div>
                           <Badge 
                             className="text-xs font-medium"
-                            style={{ background: theme.white, color: theme.secondary }}
+                            style={{ background: "red" , color: "whiteyellow" }}
                           >
                             {test.category}
                           </Badge>
@@ -373,7 +372,7 @@ export default function ProfilePage() {
                       <CardContent className="pt-4">
                         <h3 
                           className="font-bold text-lg mb-1 line-clamp-1"
-                          style={{ color: theme.secondary }}
+                          style={{ color: "whiteyellow" }}
                         >
                           {test.title}
                         </h3>
@@ -382,8 +381,8 @@ export default function ProfilePage() {
                           <div 
                             className="text-sm font-medium rounded-md px-2 py-0.5"
                             style={{
-                              background: `${theme.secondary}10`,
-                              color: theme.secondary
+                              background: `"whiteyellow"10`,
+                              color: `whiteyellow`
                             }}
                           >
                             Score: {attended.score}/{test.questions?.length || 0}
@@ -401,8 +400,8 @@ export default function ProfilePage() {
                               key={tag} 
                               className="text-xs" 
                               style={{ 
-                                background: `${theme.primary}15`,
-                                color: theme.primary
+                                background: `red15`,
+                                color: `white`
                               }}
                             >
                               {tag}
@@ -413,14 +412,14 @@ export default function ProfilePage() {
                           )}
                         </div>
                         
-                        <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: `${theme.secondary}15` }}>
+                        <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: `whiteyellow` }}>
                           <Link href={`/test/${test._id}`} className="w-full">
                             <Button 
                               size="sm" 
                               className="w-full flex items-center justify-center gap-1"
                               style={{ 
-                                background: theme.secondary,
-                                color: theme.white
+                                background: "yello",
+                                color: "orange"
                               }}
                             >
                               <Eye className="h-3 w-3" /> {isCompleted ? 'Review Test' : 'Continue Test'}

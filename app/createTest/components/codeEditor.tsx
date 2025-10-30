@@ -12,7 +12,7 @@ import {
   Wand2,
   Badge
 } from "lucide-react";
-import { useTheme } from "../../context/theme.context";
+
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -37,7 +37,7 @@ import { confirmAction } from "@/components/confirmAction";
 
 
 export const CodeEditor = ({currentQuestion,setCurrentQuestion}:{currentQuestion?:Question,setCurrentQuestion?: React.Dispatch<React.SetStateAction<Question>>}) => {
-  const { theme } = useTheme();
+
   const [language, setLanguage] = useState(currentQuestion?.codeLang?currentQuestion?.codeLang:"javascript");
   const [output, setOutput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -104,7 +104,6 @@ export const CodeEditor = ({currentQuestion,setCurrentQuestion}:{currentQuestion
     // Confirm language selection with user
     const confirm = await confirmAction(
       "Please ensure to select desired language first", 
-      theme, 
       "If selected please continue"
     );
     if(!confirm) return;

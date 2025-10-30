@@ -1,6 +1,6 @@
 import React, { useState, useEffect, KeyboardEvent } from "react";
 import axios from "axios";
-import { useTheme } from "../../context/theme.context";
+
 import { X, Tag, Plus, Loader2, Search } from "lucide-react";
 
 interface TestSeriesData {
@@ -20,7 +20,6 @@ interface TagSelectorProps {
 }
 
 const TagSelector = ({ category, testSeriesData, setTestSeriesData }: TagSelectorProps) => {
-  const { theme } = useTheme();
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestedTags, setSuggestedTags] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>(testSeriesData.tags || []);

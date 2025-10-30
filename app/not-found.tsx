@@ -2,18 +2,18 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useTheme } from "./context/theme.context";
+
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
 export default function NotFoundPage() {
-  const { theme } = useTheme();
+
 
   return (
     <div
       className="min-h-screen flex flex-col items-center justify-center px-4 py-12 relative overflow-hidden"
       style={{
-        background: `radial-gradient(circle at 80% 10%, ${theme.primary}10 0%, transparent 60%), radial-gradient(circle at 20% 90%, ${theme.secondary}15 0%, transparent 50%)`,
+        background: `radial-gradient(circle at 80% 10%, green 10 0%, transparent 60%), radial-gradient(circle at 20% 90%, ${theme.secondary}15 0%, transparent 50%)`,
       }}
     >
       {/* Animated background blobs */}
@@ -22,7 +22,7 @@ export default function NotFoundPage() {
       <div
         className="absolute top-1/2 left-1/2 w-[20rem] h-[20rem] sm:w-[32rem] sm:h-[32rem] rounded-full opacity-10 pointer-events-none z-0"
         style={{
-          background: `radial-gradient(circle at 60% 40%, ${theme.primary} 0%, transparent 70%)`,
+          background: `radial-gradient(circle at 60% 40%, red 0%, transparent 70%)`,
           transform: 'translate(-50%, -50%)',
           filter: 'blur(32px)',
         }}
@@ -60,8 +60,8 @@ export default function NotFoundPage() {
             <Button
               className="px-7 py-3 rounded-full text-lg font-semibold flex items-center gap-2 shadow-xl hover:scale-110 hover:shadow-pink-200/60 hover:-translate-y-1 transition-all duration-200"
               style={{
-                background: `linear-gradient(90deg, ${theme.primary} 0%, ${theme.secondary} 100%)`,
-                color: theme.white,
+                background: `linear-gradient(90deg, red 0%, green 100%)`,
+                color: "white",
               }}
             >
               <ArrowLeft className="h-5 w-5 group-hover:-translate-x-1 transition-transform duration-200" />

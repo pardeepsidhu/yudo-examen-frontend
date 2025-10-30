@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect, Suspense } from 'react';
 import { Plus, Trash2, Image as ImageIcon, Upload, Film, Link, Wand2, FileImage, FileVideo, Save, XCircle, PlayCircle, AlertCircle, RefreshCw, Settings, Eye, PlusIcon, Loader2 } from 'lucide-react';
-import { useTheme } from '../context/theme.context';
+
 import { cn } from '@/lib/utils';
 
 
@@ -18,7 +18,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogT
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { CodeEditor } from './components/codeEditor';
 import TagSelector from './components/TagSelector';
 import { createTest, getMyTest, updataMyTest, addNewQuestion, updageMyQuestion, deleteMyQuestion } from '../api/test.api';
 import { useRouter } from 'next/navigation';
@@ -28,6 +27,7 @@ import { confirmAction } from '@/components/confirmAction';
 import { genereateContent } from '../api/ai.api';
 import Image from 'next/image';
 import { Editor } from 'primereact/editor';
+import { CodeRunner as CodeEditor } from '../test/[testId]/codeRunner';
 // Types based on mongoose schema
 export type Question = {
   _id: string;
@@ -44,7 +44,7 @@ export type Question = {
 };
 
 export default function CreateTestSeries() {
-  const { theme } = useTheme();
+
   const router = useRouter();
   const [testId, setTestId] = useState<string | null>(null);
   const [initialLoading, setInitialLoading] = useState(true)
@@ -232,7 +232,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
       return;
     }
     try {
-      const confirmed = await confirmAction("Are you sure you want to delete this question? ", theme, "This action can't be undone!");
+      const confirmed = await confirmAction("Are you sure you want to delete this question? ", "This action can't be undone!");
       if (!confirmed) return;
 
       const res = await deleteMyQuestion(testId, id);
@@ -715,7 +715,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
       <div
         className="min-h-screen p-2 sm:p-4 md:p-6"
         style={{
-          background: theme.neutral,
+
 
         }}
       >
@@ -724,7 +724,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
           <div className="space-y-3">
             {/* Title with icon and gradient */}
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-600 shadow-lg">
+              <div className="p-2.5 rounded-sm bg-gradient-to-br from-indigo-500 to-blue-600 shadow-lg">
                 <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
@@ -783,7 +783,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {/* Left Column - Test Series Details */}
           <div className="lg:col-span-1">
-            <Card className="shadow-2xl border-0 gap-1 rounded-md sm:rounded-xl overflow-hidden bg-white/90 backdrop-blur-xl relative">
+            <Card className="shadow-2xl border-0 gap-1 rounded-sm sm:rounded-sm overflow-hidden bg-white/90 backdrop-blur-xl relative">
               {/* Gradient top border */}
               <div className="absolute top-2 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
 
@@ -829,26 +829,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                     Description
                   </Label>
                   <div className="border-2 border-indigo-100 rounded-lg overflow-hidden focus-within:border-indigo-400 focus-within:ring-1 focus-within:ring-indigo-100 transition-all">
-                    {/* <ReactQuill
-          theme="snow"
-          value={testSeriesData.description}
-          onChange={(value) => {
-            setTestSeriesData(prev => ({ ...prev, description: value }));
-          }}
-          placeholder="Describe your test series"
-          modules={{
-            toolbar: [
-              [{ 'header': [1, 2, 3, false] }],
-              ['bold', 'italic', 'underline', 'strike'],
-              [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-              [{ 'color': [] }, { 'background': [] }],
-              ['link'],
-              ['clean']
-            ]
-          }}
-          className="bg-white"
-          style={{ minHeight: '150px' }}
-        /> */}
+
                     <Editor
                       value={testSeriesData?.description || ""}
                       onTextChange={(e) => {
@@ -880,7 +861,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                           </>
                         ) : (
                           <>
-                            <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                            <div className="p-1 rounded-sm bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
                               <Wand2 className="h-3.5 w-3.5 text-indigo-600" />
                             </div>
                             <span className="text-indigo-600">Generate with AI</span>
@@ -1045,7 +1026,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
             </Card>
 
             {/* Questions List */}
-            <Card className="mt-6 shadow-2xl border-0 rounded-2xl overflow-hidden bg-white/90 backdrop-blur-xl relative">
+            <Card className="mt-6 shadow-2xl border-0 rounded-sm overflow-hidden bg-white/90 backdrop-blur-xl relative">
               {/* Gradient top border */}
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
 
@@ -1104,7 +1085,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                         {/* Question Header */}
                         <div className="mb-3 pr-32">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="px-2 py-0.5 rounded-md bg-indigo-100 text-indigo-700 font-bold text-xs">
+                            <span className="px-2 py-0.5 rounded-sm bg-indigo-100 text-indigo-700 font-bold text-xs">
                               Q{index + 1}
                             </span>
                             <span className="text-xs text-gray-500 font-medium">Question {index + 1}</span>
@@ -1162,7 +1143,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                   <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700" />
 
                   <div className="relative z-10 flex items-center justify-center gap-2 text-white">
-                    <div className="p-1 rounded-md bg-white/20">
+                    <div className="p-1 rounded-sm bg-white/20">
                       <Save className="h-4 w-4" />
                     </div>
                     <span>Save Test Series</span>
@@ -1174,7 +1155,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
 
           {/* Right Column - Question Editor */}
           <div className="lg:col-span-2">
-            <Card className="shadow-2xl border-0 gap-1 rounded-md sm:rounded-xl overflow-hidden bg-white/90 backdrop-blur-xl relative ">
+            <Card className="shadow-2xl border-0 gap-1 rounded-sm sm:rounded-sm overflow-hidden bg-white/90 backdrop-blur-xl relative ">
               {/* Gradient top border */}
               <div className="absolute top-2 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
               <CardHeader className="bg-gradient-to-br from-indigo-50 to-blue-50 border-b border-indigo-100 py-2 pb-2! mb-2!">
@@ -1425,7 +1406,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                               </>
                             ) : (
                               <>
-                                <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                                <div className="p-1 rounded-sm bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
                                   <Wand2 className="h-3.5 w-3.5 text-indigo-600" />
                                 </div>
                                 <span className="text-indigo-600">Generate with AI</span>
@@ -1510,7 +1491,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                               </>
                             ) : (
                               <>
-                                <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                                <div className="p-1 rounded-sm bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
                                   <Wand2 className="h-3.5 w-3.5 text-indigo-600" />
                                 </div>
                                 <span className="text-indigo-600">Generate with AI</span>
@@ -1594,7 +1575,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                               </>
                             ) : (
                               <>
-                                <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                                <div className="p-1 rounded-sm bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
                                   <Wand2 className="h-3.5 w-3.5 text-indigo-600" />
                                 </div>
                                 <span className="text-indigo-600">Generate with AI</span>
@@ -1627,9 +1608,10 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                               {currentQuestion.rightOption === option && (
                                 <Badge
                                   style={{
-                                    backgroundColor: theme.accent,
+                                    background: "rgba(0, 128, 0, 0.15)", // soft green with 15% opacity
                                     color: "black",
                                   }}
+                                  className='text-bold'
                                 >
                                   Correct
                                 </Badge>
@@ -1667,7 +1649,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
 
                   <TabsContent value="media" className="space-y-6 mt-0">
                     {/* Image Section */}
-                    <div className="relative overflow-hidden rounded-xl bg-white/90 backdrop-blur-xl shadow-xl border border-indigo-100">
+                    <div className="relative overflow-hidden rounded-sm bg-white/90 backdrop-blur-xl shadow-xl border border-indigo-100">
                       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
 
                       <div className="p-5 space-y-4">
@@ -1703,7 +1685,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                               >
                                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 <div className="relative z-10 flex items-center gap-2">
-                                  <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                                  <div className="p-1 rounded-sm bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
                                     <Upload className="h-3.5 w-3.5 text-indigo-600" />
                                   </div>
                                   <span className="text-indigo-600">Upload</span>
@@ -1719,7 +1701,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                                   >
                                     <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
                                     <div className="relative z-10 flex items-center gap-2">
-                                      <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                                      <div className="p-1 rounded-sm bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
                                         <Link className="h-3.5 w-3.5 text-indigo-600" />
                                       </div>
                                       <span className="hidden sm:block text-indigo-600">Use Link</span>
@@ -1816,7 +1798,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                     </div>
 
                     {/* Video Section */}
-                    <div className="relative overflow-hidden rounded-xl bg-white/90 backdrop-blur-xl shadow-xl border border-indigo-100">
+                    <div className="relative overflow-hidden rounded-sm bg-white/90 backdrop-blur-xl shadow-xl border border-indigo-100">
                       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
 
                       <div className="p-5 space-y-4">
@@ -1840,7 +1822,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                                 >
                                   <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
                                   <div className="relative z-10 flex items-center gap-2">
-                                    <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                                    <div className="p-1 rounded-sm bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
                                       <Link className="h-3.5 w-3.5 text-indigo-600" />
                                     </div>
                                     <span className="hidden sm:block text-indigo-600">Add Video Link</span>
@@ -1919,7 +1901,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                     </div>
 
                     {/* Shorts Section */}
-                    <div className="relative overflow-hidden rounded-xl bg-white/90 backdrop-blur-xl shadow-xl border border-indigo-100">
+                    <div className="relative overflow-hidden rounded-sm bg-white/90 backdrop-blur-xl shadow-xl border border-indigo-100">
                       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
 
                       <div className="p-5 space-y-4">
@@ -1943,7 +1925,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                                 >
                                   <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 to-blue-50 opacity-0 group-hover:opacity-100 transition-opacity" />
                                   <div className="relative z-10 flex items-center gap-2">
-                                    <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                                    <div className="p-1 rounded-sm bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
                                       <Link className="h-3.5 w-3.5 text-indigo-600" />
                                     </div>
                                     <span className="hidden sm:block text-indigo-600">Add Short</span>
@@ -2131,7 +2113,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
                                 allowFullScreen
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                               />
-                              <div className="absolute top-2 left-2 px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded-md">
+                              <div className="absolute top-2 left-2 px-2 py-1 bg-orange-500 text-white text-xs font-bold rounded-sm">
                                 Short {index + 1}
                               </div>
                             </div>
@@ -2201,7 +2183,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
               <div className="absolute inset-0 translate-x-[-100%] group-hover:translate-x-[100%] bg-gradient-to-r from-transparent via-white/25 to-transparent transition-transform duration-700" />
 
               <div className="relative z-10 flex items-center justify-center gap-2 text-white">
-                <div className="p-1 rounded-md bg-white/20">
+                <div className="p-1 rounded-sm bg-white/20">
                   <PlusIcon className="h-4 w-4" />
                 </div>
                 <span>Add Current Question</span>

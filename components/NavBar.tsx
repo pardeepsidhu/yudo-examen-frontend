@@ -199,7 +199,7 @@ export function NavBar() {
       </nav>
       
       {/* Spacer */}
-      <div className={`transition-all duration-500 ${scrolled ? 'h-20' : 'h-17'}`} />
+      <div className={`transition-all duration-500 ${scrolled ? 'h-20' : 'h-15'}`} />
 
       <style jsx>{`
         @keyframes shimmer {

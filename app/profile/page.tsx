@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
-import { useTheme } from '../context/theme.context';
+
 import { getMyProfile, sendResetPassLink, updateProfile } from '../api/user.api';
 import { getMyAllTestSeries, getMyAllTestAttended, deleteMyTest } from '../api/test.api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,7 +15,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
-  const { theme } = useTheme();
+
   const router = useRouter();
   const [profile, setProfile] = useState<any>(null);
   const [myTests, setMyTests] = useState<any[]>([]);
@@ -75,7 +75,6 @@ export default function ProfilePage() {
   const handleDeleteTest = async (id: string) => {
     const confirmed = await confirmAction(
       "Are you sure you want to delete this test series?",
-      theme,
       "This action cannot be undone."
     );
     if (!confirmed) return;
@@ -120,7 +119,6 @@ export default function ProfilePage() {
   const handleLogout = async () => {
     const confirmed = await confirmAction(
       "Are you sure you want to logout?",
-      theme,
       "You will be logged out from this device."
     );
     if (!confirmed) return;
@@ -194,13 +192,13 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       title: "Created Tests",
       value: myTests.length,
       icon: <BookOpen className="h-6 w-6" />,
-      color: theme.primary
+      color: 'red'
     },
     {
       title: "Attended Tests",
       value: attendedTests.length,
       icon: <CheckCircle className="h-6 w-6" />,
-      color: theme.secondary
+      color: 'yellow'
     }
   ];
 
@@ -208,8 +206,8 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     <div
       className="min-h-screen w-full relative overflow-x-hidden"
       style={{
-        background: `radial-gradient(circle at 80% 10%, ${theme.primary}10 0%, transparent 60%),
-                     radial-gradient(circle at 20% 90%, ${theme.secondary}15 0%, transparent 50%)`,
+        background: `radial-gradient(circle at 80% 10%, red10 0%, transparent 60%),
+                     radial-gradient(circle at 20% 90%, whiteyellow15 0%, transparent 50%)`,
       }}
     >
       {/* Animated background blobs */}
@@ -218,7 +216,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       <div
         className="absolute top-1/2 left-1/2 w-[20rem] h-[20rem] sm:w-[32rem] sm:h-[32rem] rounded-full opacity-10 pointer-events-none z-0"
         style={{
-          background: `radial-gradient(circle at 60% 40%, ${theme.primary} 0%, transparent 70%)`,
+          background: `radial-gradient(circle at 60% 40%, red 0%, transparent 70%)`,
           transform: 'translate(-50%, -50%)',
           filter: 'blur(32px)',
         }}
@@ -236,14 +234,14 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
               <div 
                 className="absolute inset-0 h-32"
                 style={{
-                  background: `linear-gradient(120deg, ${theme.primary}, ${theme.secondary})`,
+                  background: `linear-gradient(120deg, red, whiteyellow)`,
                   opacity: 0.8,
                 }}
               />
               <div className="flex flex-col sm:flex-row items-start pt-12 pb-6 px-6 relative">
                 <div 
                   className="relative h-24 w-24 sm:h-28 sm:w-28 rounded-full overflow-hidden border-4 shadow-lg -mt-12 z-10 bg-white group"
-                  style={{ borderColor: theme.white }}
+                  style={{ borderColor: 'white' }}
                 >
                   <Image
                     src={userData.profile || '/avatar_paceholder.jpeg'}
@@ -298,7 +296,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                       <Button
                         size="sm"
                         className="text-xs"
-                        style={{ background: theme.primary, color: "#fff" }}
+                        style={{ background: 'red', color: "#fff" }}
                         onClick={handleProfileUpdate}
                         disabled={isUploadingPhoto}
                       >
@@ -308,7 +306,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                         size="sm"
                         variant="outline"
                         className="text-xs"
-                        style={{ color: theme.primary, borderColor: theme.primary }}
+                        style={{ color: 'red', borderColor: 'red' }}
                         onClick={() => {
                           setEditMode(false);
                           setUserData({
@@ -329,7 +327,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                       size="sm"
                       variant="outline"
                       className="text-xs"
-                      style={{ color: theme.primary, borderColor: theme.primary }}
+                      style={{ color: 'red', borderColor: 'red' }}
                       onClick={() => setEditMode(true)}
                     >
                       Edit Profile
@@ -338,7 +336,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     size="sm"
     variant="outline"
     className="text-xs"
-    style={{ color: theme.primary, borderColor: theme.primary }}
+    style={{ color: 'red', borderColor: 'red' }}
     disabled={resetLoading}
     onClick={handleForgotPassword}
   >
@@ -402,7 +400,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
             }}
           >
             <CardHeader className="pb-2">
-              <CardTitle className="font-bold text-2xl" style={{ color: theme.primary }}>
+              <CardTitle className="font-bold text-2xl" style={{ color: 'red' }}>
                 Ready to create a new test?
               </CardTitle>
               <p className="text-base text-gray-600 mt-2">
@@ -422,7 +420,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                 <Button
                   className="flex items-center gap-2 w-full font-semibold shadow-md"
                   style={{
-                    background: `linear-gradient(90deg, ${theme.primary} 60%, ${theme.secondary} 100%)`,
+                    background: `linear-gradient(90deg, red 60%, whiteyellow 100%)`,
                     color: "#fff",
                     borderRadius: "0.75rem",
                     fontSize: "1.1rem"
@@ -437,11 +435,11 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         
         {/* Tabs Navigation */}
         <div className="flex items-center justify-between mb-8">
-          <div className="flex gap-3 bg-white rounded-full p-1 shadow-sm border" style={{ borderColor: `${theme.primary}20` }}>
+          <div className="flex gap-3 bg-white rounded-full p-1 shadow-sm border" style={{ borderColor: `red20` }}>
             <button
               className={`px-6 py-2 text-sm sm:test-md rounded-full font-semibold transition-all text-base flex items-center gap-2`}
               style={{
-                background: activeTab === 'created' ? theme.primary : 'transparent',
+                background: activeTab === 'created' ? 'red' : 'transparent',
                 color: activeTab === 'created' ? 'white' : 'gray',
               }}
               onClick={() => setActiveTab('created')}
@@ -451,7 +449,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
             <button
               className={`px-6 py-2 text-sm sm:test-md  rounded-full font-semibold transition-all text-base flex items-center gap-2`}
               style={{
-                background: activeTab === 'attended' ? theme.secondary : 'transparent',
+                background: activeTab === 'attended' ? 'yellow' : 'transparent',
                 color: activeTab === 'attended' ? 'white' : 'gray',
               }}
               onClick={() => setActiveTab('attended')}
@@ -466,8 +464,8 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                 variant="outline"
                 className="flex items-center gap-2 font-medium"
                 style={{
-                  color: theme.primary,
-                  borderColor: `${theme.primary}40`,
+                  color: 'red',
+                  borderColor: `red40`,
                 }}
               >
                 Explore More Tests
@@ -479,7 +477,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         {/* Tab Content */}
         {loading ? (
           <div className="flex justify-center items-center h-64 bg-white rounded-xl shadow-sm">
-            <Loader2 className="h-8 w-8 animate-spin" style={{ color: theme.primary }} />
+            <Loader2 className="h-8 w-8 animate-spin" style={{ color: 'red' }} />
           </div>
         ) : (
           <>
@@ -489,7 +487,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                 {myTests.length === 0 ? (
                   <div className="bg-white rounded-xl shadow-sm p-10 text-center">
                     <div className="mb-4">
-                      <AlertCircle className="h-12 w-12 mx-auto" style={{ color: `${theme.primary}60` }} />
+                      <AlertCircle className="h-12 w-12 mx-auto" style={{ color: `red60` }} />
                     </div>
                     <h3 className="text-lg font-semibold mb-2 text-gray-800">No tests created yet</h3>
                     <p className="text-gray-600 mb-6">Start creating your first test series to challenge students.</p>
@@ -497,7 +495,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                       <Button
                         className="flex items-center gap-2 font-medium"
                         style={{
-                          background: theme.primary,
+                          background: 'red',
                           color: "#fff",
                         }}
                       >
@@ -513,8 +511,8 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                         className="overflow-hidden border-0 shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.025]"
                         style={{
                           borderRadius: "1.25rem",
-                          background: `linear-gradient(120deg,${theme.white} 80%,${theme.primary}11 100%)`,
-                          border: `1.5px solid ${theme.primary}22`,
+                          background: `linear-gradient(120deg,'white' 80%,red11 100%)`,
+                          border: `1.5px solid red22`,
                         }}
                       >
                         <div className="relative h-40 w-full">
@@ -531,8 +529,8 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                             <Badge 
                               className="font-medium" 
                               style={{ 
-                                background: theme.white,
-                                color: theme.primary
+                                background: 'white',
+                                color: 'red'
                               }}
                             >
                               {test.category}
@@ -547,7 +545,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                         <CardContent className="pt-4">
                           <h3 
                             className="font-bold text-lg mb-2 line-clamp-1"
-                            style={{ color: theme.primary }}
+                            style={{ color: 'red' }}
                           >
                             {test.title}
                           </h3>
@@ -559,8 +557,8 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                                 key={tag} 
                                 className="text-xs" 
                                 style={{ 
-                                  background: `${theme.secondary}15`,
-                                  color: theme.secondary
+                                  background: `whiteyellow15`,
+                                  color: 'yellow'
                                 }}
                               >
                                 {tag}
@@ -571,14 +569,14 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                             )}
                           </div>
                           
-                          <div className="flex items-center justify-between gap-2 pt-3 border-t" style={{ borderColor: `${theme.primary}15` }}>
+                          <div className="flex items-center justify-between gap-2 pt-3 border-t" style={{ borderColor: `red15` }}>
                             <Link href={`/createTest?testId=${test._id}`} className="flex-1">
                               <Button 
                                 size="sm" 
                                 className="w-full flex items-center justify-center gap-1"
                                 style={{ 
-                                  background: theme.primary,
-                                  color: theme.white
+                                  background: 'red',
+                                  color: 'white'
                                 }}
                               >
                                 <Edit className="h-3 w-3" /> Edit
@@ -613,7 +611,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                 {attendedTests.length === 0 ? (
                   <div className="bg-white rounded-xl shadow-sm p-10 text-center">
                     <div className="mb-4">
-                      <Trophy className="h-12 w-12 mx-auto" style={{ color: `${theme.secondary}60` }} />
+                      <Trophy className="h-12 w-12 mx-auto" style={{ color: `whiteyellow60` }} />
                     </div>
                     <h3 className="text-lg font-semibold mb-2 text-gray-800">No tests attended yet</h3>
                     <p className="text-gray-600 mb-6">Explore available tests and challenge yourself.</p>
@@ -621,7 +619,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                       <Button
                         className="flex items-center gap-2 font-medium"
                         style={{
-                          background: theme.secondary,
+                          background: 'yellow',
                           color: "#fff",
                         }}
                       >
@@ -642,8 +640,8 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                           className="overflow-hidden border-0 shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-[1.025]"
                           style={{
                             borderRadius: "1.25rem",
-                            background: `linear-gradient(120deg,${theme.white} 80%,${theme.secondary}11 100%)`,
-                            border: `1.5px solid ${theme.secondary}22`,
+                            background: `linear-gradient(120deg,white 80%,whiteyellow11 100%)`,
+                            border: `1.5px solid whiteyellow22`,
                           }}
                         >
                           <div className="relative h-40 w-full">
@@ -674,7 +672,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                               </div>
                               <Badge 
                                 className="text-xs font-medium"
-                                style={{ background: theme.white, color: theme.secondary }}
+                                style={{ background: 'white', color: 'yellow' }}
                               >
                                 {test.category}
                               </Badge>
@@ -684,7 +682,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                           <CardContent className="pt-4">
                             <h3 
                               className="font-bold text-lg mb-1 line-clamp-1"
-                              style={{ color: theme.secondary }}
+                              style={{ color: 'yellow' }}
                             >
                               {test.title}
                             </h3>
@@ -693,8 +691,8 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                               <div 
                                 className="text-sm font-medium rounded-md px-2 py-0.5"
                                 style={{
-                                  background: `${theme.secondary}10`,
-                                  color: theme.secondary
+                                  background: `whiteyellow10`,
+                                  color: 'yellow'
                                 }}
                               >
                                 Score: {attended.score}/{test.questions?.length || 0}
@@ -712,8 +710,8 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                                   key={tag} 
                                   className="text-xs" 
                                   style={{ 
-                                    background: `${theme.primary}15`,
-                                    color: theme.primary
+                                    background: `red15`,
+                                    color: 'red'
                                   }}
                                 >
                                   {tag}
@@ -724,14 +722,14 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
                               )}
                             </div>
                             
-                            <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: `${theme.secondary}15` }}>
+                            <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: `whiteyellow15` }}>
                               <Link href={`/test/${test._id}`} className="w-full">
                                 <Button 
                                   size="sm" 
                                   className="w-full flex items-center justify-center gap-1"
                                   style={{ 
-                                    background: theme.secondary,
-                                    color: theme.white
+                                    background: 'yellow',
+                                    color: 'white'
                                   }}
                                 >
                                   <Eye className="h-3 w-3" /> {isCompleted ? 'Review Test' : 'Continue Test'}
@@ -755,7 +753,7 @@ const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
             <Button
               className="rounded-full h-14 w-14 flex items-center justify-center shadow-lg"
               style={{
-                background: `linear-gradient(135deg, ${theme.primary}, ${theme.secondary})`,
+                background: `linear-gradient(135deg, red, whiteyellow)`,
               }}
             >
               <PlusCircle className="h-6 w-6" />

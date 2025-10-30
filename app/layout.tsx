@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 // import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "./context/theme.context";
+
 import { Toaster } from 'react-hot-toast';
 import { NavBar } from "@/components/NavBar";
 
@@ -59,10 +59,10 @@ export default function RootLayout({
       >
          <PrimeReactProvider>
         <Toaster />
-        <ThemeProvider>
+        {/* <ThemeProvider> */}
           <NavBar />
         {children}
-        </ThemeProvider>
+        {/* </ThemeProvider> */}
         </PrimeReactProvider>
       </body>
     </html>
