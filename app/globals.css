@@ -124,3 +124,7 @@
 button{
   cursor: pointer;
 }
+html, body {
+  overflow-x: clip;
+  width: 100%;
+}

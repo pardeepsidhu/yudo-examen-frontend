@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 export default function NotFoundPage() {
 
 
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-12 relative overflow-hidden bg-gradient-to-br from-indigo-50 via-white to-blue-50">
       {/* Animated background blobs */}

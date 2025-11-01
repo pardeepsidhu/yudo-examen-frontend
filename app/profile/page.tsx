@@ -425,7 +425,7 @@ export default function ProfilePage({ profileId }: { profileId: string }) {
           </Card>
 
           {/* Create Test Card - Only for own profile */}
-          {isOwnProfile && (
+          {/* {isOwnProfile && ( */}
             <Card className="lg:col-span-4 relative overflow-hidden border border-blue-100/60 dark:border-gray-700 shadow-xl hover:shadow-2xl transition-all duration-500 bg-gradient-to-b from-white/95 to-blue-50/60 dark:from-gray-900/95 dark:to-gray-800/90 backdrop-blur-xl rounded-xl min-h-[24rem] flex flex-col justify-between">
 
               {/* Decorative gradient layer */}
@@ -482,7 +482,7 @@ export default function ProfilePage({ profileId }: { profileId: string }) {
                 </p>
               </CardContent>
             </Card>
-          )}
+          {/* )} */}
         </div>
 
         {/* Tabs Navigation */}
@@ -495,7 +495,7 @@ export default function ProfilePage({ profileId }: { profileId: string }) {
                 }`}
               onClick={() => setActiveTab('created')}
             >
-              <BookOpen className="h-5 w-5" /> {isOwnProfile ? 'My Tests' : 'Created Tests'}
+              <BookOpen className="h-5 w-5" /> {isOwnProfile ? 'My Tests' : 'Tests'}
             </button>
             <button
               className={`px-6 py-2.5 rounded-sm font-bold transition-all text-base flex items-center gap-2 ${activeTab === 'attended'

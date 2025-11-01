@@ -184,7 +184,7 @@ const TestDetails = ({ testData }: { testData: TestAttempt }) => {
 }
 
   return (
-  <div className="w-full min-h-screen p-2 sm:p-4 md:p-8 bg-gradient-to-br from-indigo-50 via-white to-blue-50 relative overflow-hidden">
+  <div className="w-full min-h-screen  bg-gradient-to-br from-indigo-50 via-white to-blue-50 relative overflow-hidden">
     {/* Animated background blobs */}
     <div className="absolute inset-0 pointer-events-none">
       <div className="absolute top-20 left-20 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl animate-blob" />
@@ -277,7 +277,7 @@ const TestDetails = ({ testData }: { testData: TestAttempt }) => {
             {/* Enhanced Stats Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <StatCard icon={<Trophy className="h-5 w-5" />} label="Score" value={progressData?.score} gradient="from-yellow-400 to-orange-500" />
-              <StatCard icon={<Target className="h-5 w-5" />} label="Accuracy" value={`${Math.floor((progressData?.score/progressData?.answeredQuestions)/100) || 0}%`} gradient="from-green-400 to-emerald-500" />
+              <StatCard icon={<Target className="h-5 w-5" />} label="Accuracy" value={`${progressData?.answeredQuestions ? Math.floor((Number(progressData.score) / Number(progressData.answeredQuestions)) * 100) : 0}%`} gradient="from-green-400 to-emerald-500" />
               <StatCard icon={<CheckCircle className="h-5 w-5" />} label="Answered" value={progressData?.answeredQuestions} gradient="from-blue-400 to-cyan-500" />
               <StatCard icon={<TrendingUp className="h-5 w-5" />} label="Progress" value={`${progressValue}%`} gradient="from-indigo-400 to-purple-500" />
             </div>

@@ -12,7 +12,7 @@ import {
   Wand2,
   Badge
 } from "lucide-react";
-import { useTheme } from "../../context/theme.context";
+
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -37,7 +37,7 @@ import { confirmAction } from "@/components/confirmAction";
 
 
 export const CodeEditor = ({currentQuestion,setCurrentQuestion}:{currentQuestion?:Question,setCurrentQuestion?: React.Dispatch<React.SetStateAction<Question>>}) => {
-  const { theme } = useTheme();
+
   const [language, setLanguage] = useState(currentQuestion?.codeLang?currentQuestion?.codeLang:"javascript");
   const [output, setOutput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -104,7 +104,6 @@ export const CodeEditor = ({currentQuestion,setCurrentQuestion}:{currentQuestion
     // Confirm language selection with user
     const confirm = await confirmAction(
       "Please ensure to select desired language first", 
-      theme, 
       "If selected please continue"
     );
     if(!confirm) return;
@@ -255,7 +254,7 @@ const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
   };
 
   return (
-   <div className="bg-white/90 backdrop-blur-xl rounded-2xl overflow-hidden border-0 shadow-2xl relative">
+   <div className="bg-white/90 backdrop-blur-xl rounded-sm overflow-hidden border-0 shadow-2xl relative">
   {/* Gradient top border */}
   <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500" />
   
@@ -308,7 +307,7 @@ const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
               </>
             ) : (
               <>
-                <div className="p-1 rounded-md bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
+                <div className="p-1 rounded-sm bg-indigo-100 group-hover:bg-indigo-200 transition-colors">
                   <Wand2 className="h-3.5 w-3.5 text-indigo-600" />
                 </div>
                 <span className="text-indigo-600">Generate with AI</span>
@@ -354,7 +353,7 @@ const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
-              <div className="p-1 rounded-md bg-white/20">
+              <div className="p-1 rounded-sm bg-white/20">
                 <Play className="h-3.5 w-3.5" />
               </div>
             )}

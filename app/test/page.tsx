@@ -31,7 +31,7 @@ interface TestSeries {
 }
 
 export default function ExplorePage() {
- 
+
   const [testSeries, setTestSeries] = useState<TestSeries[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -122,6 +122,7 @@ export default function ExplorePage() {
     'Chemistry',
     'Biology',
     'Other',
+    'placeholder'
   ];
 
   const cardVariants = {
@@ -297,7 +298,7 @@ export default function ExplorePage() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
                         transition={{ type: 'spring', duration: 0.3 }}
-                        className="absolute right-0  mt-3 w-full sm:w-96 bg-white rounded-md sm:rounded-2xl shadow-2xl z-50 border border-gray-100 overflow-hidden"
+                        className="fixed sm:absolute right-0  mt-3 w-full sm:w-96 bg-white rounded-md sm:rounded-2xl shadow-2xl z-50 border border-gray-100 overflow-hidden"
                       >
                         {/* Gradient Header */}
                         <div className="relative bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 px-4 sm:px-6 py-4 sm:py-5 overflow-hidden">
@@ -329,8 +330,8 @@ export default function ExplorePage() {
                               setIsFilterOpen(false);
                             }}
                             className={`w-full text-left px-4 sm:px-5 py-3 sm:py-4 rounded-md sm:rounded-2xl mb-2 sm:mb-3 transition-all duration-300 font-semibold flex items-center justify-between group ${selectedCategory === ''
-                                ? 'bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500 text-white shadow-lg scale-[1.02]'
-                                : 'hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 text-gray-700 hover:scale-[1.02]'
+                              ? 'bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500 text-white shadow-lg scale-[1.02]'
+                              : 'hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 text-gray-700 hover:scale-[1.02]'
                               }`}
                           >
                             <span className="flex items-center gap-3">
@@ -362,8 +363,8 @@ export default function ExplorePage() {
                                 setIsFilterOpen(false);
                               }}
                               className={`w-full text-left px-4 sm:px-5 py-3 sm:py-4 rounded-md sm:rounded-2xl mb-2 sm:mb-3 transition-all duration-300 font-semibold flex items-center justify-between group ${selectedCategory === category
-                                  ? 'bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500 text-white shadow-lg scale-[1.02]'
-                                  : 'hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 text-gray-700 hover:scale-[1.02]'
+                                ? 'bg-gradient-to-r from-indigo-500 via-blue-500 to-sky-500 text-white shadow-lg scale-[1.02]'
+                                : 'hover:bg-gradient-to-r hover:from-indigo-50 hover:to-blue-50 text-gray-700 hover:scale-[1.02]'
                                 }`}
                             >
                               <span className="flex items-center gap-3">
@@ -457,11 +458,38 @@ export default function ExplorePage() {
             next={() => fetchTestSeries(page)}
             hasMore={hasMore}
             loader={
-              <div className="flex justify-center py-4 sm:py-12">
-                <div className="flex items-center gap-3 px-6 py-4 rounded-md sm:rounded-2xl bg-white shadow-lg border border-indigo-100">
-                  <Loader2 className="h-6 w-6 animate-spin text-indigo-600" />
-                  <span className="text-gray-700 font-medium">Loading more amazing tests...</span>
+              <div className="h-[35vh] w-[100%] flex items-center justify-center  relative overflow-hidden">
+                {/* Animated background blobs */}
+                
+
+                <div className="relative z-10 flex flex-col items-center space-y-6">
+                  {/* Animated loader container */}
+                  <div className="relative">
+                    {/* Outer spinning ring */}
+                    <div className="absolute inset-0 rounded-full border-4 border-indigo-200/30 animate-ping" />
+
+                    {/* Main loader */}
+                    <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-2xl">
+                      <Loader2 className="h-10 w-10 animate-spin text-white" />
+                    </div>
+
+                    {/* Glow effect */}
+                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 blur-xl opacity-50 animate-pulse" />
+                  </div>
+
+                  {/* Loading text with animation */}
+                  <div className="text-center space-y-2">
+                    <p className="text-xl font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent">
+                      Loading tests...
+                    </p>
+                    <div className="flex items-center justify-center gap-1">
+                      <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" />
+                      <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce animation-delay-200" />
+                      <span className="w-2 h-2 bg-sky-500 rounded-full animate-bounce animation-delay-400" />
+                    </div>
+                  </div>
                 </div>
+
               </div>
             }
             endMessage={
@@ -534,7 +562,7 @@ export default function ExplorePage() {
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: index * 0.1 + 0.2 }}
                           >
-                         
+
                           </motion.div>
 
                           {/* Category Badge - Top Left */}
@@ -552,7 +580,7 @@ export default function ExplorePage() {
                           {/* Trending Indicator - if recently created */}
                           {new Date().getTime() - new Date(series.createdAt).getTime() < 7 * 24 * 60 * 60 * 1000 && (
                             <motion.div
-                              className="absolute top-4 left-1/2 -translate-x-1/2"
+                              className="absolute top-4 right-2 -translate-x-1/2"
                               initial={{ opacity: 0, y: -10 }}
                               animate={{ opacity: 1, y: 0 }}
                               transition={{ delay: index * 0.1 + 0.4 }}
@@ -612,10 +640,10 @@ export default function ExplorePage() {
 
                       <CardContent className="space-y-3 sm:space-y-4  px-6 pb-6">
                         <Link href={`/test/${series._id}`}>
-                         <div
-  className="text-sm text-gray-600  leading-relaxed group-hover:text-gray-700 transition-colors h-50 overflow-hidden"
-  dangerouslySetInnerHTML={{ __html: series.description }}
-/>
+                          <div
+                            className="text-sm text-gray-600  leading-relaxed group-hover:text-gray-700 transition-colors h-50 overflow-hidden"
+                            dangerouslySetInnerHTML={{ __html: series.description }}
+                          />
 
                           {/* Tags Section */}
                           <div className="flex flex-wrap gap-2 pt-3 pb-2">
@@ -747,6 +775,16 @@ export default function ExplorePage() {
         .animation-delay-4000 {
           animation-delay: 4s;
         }
+
+        @keyframes blob {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+        50% { transform: translate(30px, -30px) scale(1.1); opacity: 0.3; }
+                      }
+        .animate-blob { animation: blob 7s ease-in-out infinite; }
+        .animation-delay-200 { animation-delay: 0.2s; }
+        .animation-delay-400 { animation-delay: 0.4s; }
+        .animation-delay-2000 { animation-delay: 2s; }
+                     
       `}</style>
     </div>
   );
