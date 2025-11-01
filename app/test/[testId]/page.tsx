@@ -1684,8 +1684,10 @@ export default function TestPage() {
                                                   document.body.appendChild(elem);
 
                                                   // Try locking to landscape mode (Android Chrome supports)
-                                                  if (isMobile && screen.orientation?.lock) {
-                                                    screen.orientation.lock("landscape").catch(() => { });
+                                                  if (isMobile && (screen.orientation as any)?.lock) {
+                                                    (screen.orientation as any)
+                                                      .lock("landscape")
+                                                      .catch(() => { });
                                                   }
                                                 }}
 
@@ -1722,7 +1724,7 @@ export default function TestPage() {
                                                 src={getYouTubeEmbedUrl(`${getYouTubeEmbedUrl(currentQuestion.video)}`)}
                                                 className="w-full h-64 sm:h-80 "
                                                 allowFullScreen
-                                              
+
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                                 style={{ aspectRatio: "16/9" }}
                                               />
