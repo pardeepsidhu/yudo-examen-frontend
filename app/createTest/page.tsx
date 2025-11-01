@@ -48,7 +48,8 @@ export default function CreateTestSeries() {
   const router = useRouter();
   const [testId, setTestId] = useState<string | null>(null);
   const [initialLoading, setInitialLoading] = useState(true)
-
+  
+ 
   useEffect(() => {
     if (localStorage.getItem("user")) {
       const params = new URLSearchParams(window.location.search);
@@ -169,8 +170,10 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
         ...currentQuestion,
         testSeriesId: testSeriesData._id
       };
+
       if (currentQuestion._id.startsWith("question")) {
         const res = await addNewQuestion(questionData);
+
 
         if (!res.success) {
           toast.error(res.message || 'Failed to add question');
@@ -220,7 +223,7 @@ Respond exactly in HTML format — no JSON, no extra wrapping, only the HTML cod
       }
     }
     catch (error) {
-      if (error)
+       console.log(error)
         toast.error('Failed to add question');
     }
   }

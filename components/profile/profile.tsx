@@ -522,9 +522,39 @@ export default function ProfilePage({ profileId }: { profileId?: string }) {
 
         {/* Tab Content */}
         {loading ? (
-          <div className="flex justify-center items-center h-64 bg-white dark:bg-gray-800 rounded-md shadow-xl">
-            <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
-          </div>
+          <div className="h-[35vh] w-[100%] flex items-center justify-center  relative overflow-hidden">
+                          {/* Animated background blobs */}
+                          
+          
+                          <div className="relative z-10 flex flex-col items-center space-y-6">
+                            {/* Animated loader container */}
+                            <div className="relative">
+                              {/* Outer spinning ring */}
+                              <div className="absolute inset-0 rounded-full border-4 border-indigo-200/30 animate-ping" />
+          
+                              {/* Main loader */}
+                              <div className="relative w-20 h-20 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 flex items-center justify-center shadow-2xl">
+                                <Loader2 className="h-10 w-10 animate-spin text-white" />
+                              </div>
+          
+                              {/* Glow effect */}
+                              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-indigo-500 to-blue-600 blur-xl opacity-50 animate-pulse" />
+                            </div>
+          
+                            {/* Loading text with animation */}
+                            <div className="text-center space-y-2">
+                              <p className="text-xl font-bold bg-gradient-to-r from-indigo-600 via-blue-600 to-sky-500 bg-clip-text text-transparent">
+                                Loading tests...
+                              </p>
+                              <div className="flex items-center justify-center gap-1">
+                                <span className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" />
+                                <span className="w-2 h-2 bg-blue-500 rounded-full animate-bounce animation-delay-200" />
+                                <span className="w-2 h-2 bg-sky-500 rounded-full animate-bounce animation-delay-400" />
+                              </div>
+                            </div>
+                          </div>
+          
+                        </div>
         ) : (
           <>
             {/* Created Tests */}

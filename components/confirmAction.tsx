@@ -10,7 +10,7 @@ export const confirmAction = (title: string, warm?: string) =>
           relative bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl
           rounded-2xl shadow-2xl p-6 flex flex-col items-center gap-4
           border border-pink-200 dark:border-cyan-500/30
-          min-w-[320px] text-center animate-in fade-in zoom-in-95 z-[999999]
+          min-w-[320px] text-center animate-in fade-in zoom-in-95 z-[999999]!
         `}
       >
         {/* Accent ring animation */}
