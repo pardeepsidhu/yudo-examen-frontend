@@ -21,7 +21,6 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { googleLogin, otpVerify, resetPassword, sendResetPassLink, signin, signup } from '../api/user.api';
 import { useRouter } from 'next/navigation';
-import { useTheme } from '../context/theme.context';
 import toast from 'react-hot-toast';
 
 
@@ -46,7 +45,7 @@ export default function LoginSignup() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [token, setToken] = useState<string | null>(null)
   const router = useRouter()
-  const { theme } = useTheme()
+
 
 
 
@@ -387,7 +386,7 @@ export default function LoginSignup() {
 
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row" style={{ backgroundColor: theme.neutral }}>
+    <div className="min-h-screen flex flex-col md:flex-row" >
       {/* Left side - Form */}
 
       <div className="w-full md:w-1/2 flex justify-center items-center p-4 sm:p-6">

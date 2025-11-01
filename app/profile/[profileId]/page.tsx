@@ -3,7 +3,7 @@
 import React from 'react';
 
 import { useParams } from 'next/navigation';
-import ProfilePage from '../page';
+import ProfilePage from '../../../components/profile/profile';
 
 export default function Page() {
 
